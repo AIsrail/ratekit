@@ -1,665 +1,284 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Freelance Rate Calculator — Know Your Worth</title>
-  <meta name="description" content="Calculate your ideal freelance hourly, daily, and project rate based on your income goals, expenses, and working hours." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=IBM+Plex+Mono:wght@400;600&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RateKit — Free Business Calculators for Founders & Freelancers</title>
+<meta name="description" content="Free business calculators: freelance rate, SAFE equity, burn rate, LTV:CAC, break-even. Built for founders, startups and freelancers.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F8F9FC;
+  --white: #FFFFFF;
+  --border: #E2E8F0;
+  --ink: #0F172A;
+  --mid: #475569;
+  --muted: #94A3B8;
+  --blue: #2563EB;
+  --blue2: #1D4ED8;
+  --bluebg: #EFF6FF;
+  --green: #059669;
+  --amber: #D97706;
+  --red: #DC2626;
+  --font: 'Plus Jakarta Sans', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--font); background: var(--bg); color: var(--ink); line-height: 1.6; }
+a { text-decoration: none; color: inherit; }
 
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* NAV */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 48px; height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.logo { font-family: var(--font); font-size: 18px; font-weight: 700; color: var(--ink); letter-spacing: -.02em; }
+.logo span { color: var(--blue); }
+.nl { display: flex; align-items: center; gap: 4px; list-style: none; }
+.nl a {
+  font-size: 13px; font-weight: 500; color: var(--mid);
+  padding: 6px 12px; border-radius: 6px;
+  transition: background .15s, color .15s;
+}
+.nl a:hover { background: var(--bluebg); color: var(--blue); }
+.nl a.active { color: var(--blue); background: var(--bluebg); }
+.burger { display: none; background: none; border: none; font-size: 20px; cursor: pointer; padding: 4px 8px; }
 
-    :root {
-      --bg: #0e0f13;
-      --surface: #16181f;
-      --surface2: #1e2029;
-      --border: #2a2d3a;
-      --accent: #f0c040;
-      --accent2: #e07b39;
-      --text: #e8e9ef;
-      --muted: #7a7d8e;
-      --success: #4ade80;
-      --font-display: 'Playfair Display', serif;
-      --font-mono: 'IBM Plex Mono', monospace;
-      --font-body: 'Figtree', sans-serif;
-    }
+/* HERO */
+.hero {
+  padding: 80px 48px 64px;
+  text-align: center;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+}
+.hero-tag {
+  display: inline-block;
+  font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--blue); background: var(--bluebg);
+  padding: 5px 12px; border-radius: 99px; margin-bottom: 20px;
+}
+h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 700; letter-spacing: -.03em; line-height: 1.1;
+  color: var(--ink); margin-bottom: 16px;
+}
+h1 em { font-style: normal; color: var(--blue); }
+.hero-sub {
+  font-size: 17px; color: var(--mid); font-weight: 400;
+  max-width: 520px; margin: 0 auto 32px;
+}
+.hero-badges { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+.badge {
+  font-size: 12px; font-weight: 500; color: var(--mid);
+  display: flex; align-items: center; gap: 5px;
+}
+.badge::before { content: '✓'; color: var(--green); font-weight: 700; }
 
-    html { scroll-behavior: smooth; }
+/* TOOLS GRID */
+.tools-section { padding: 64px 48px; }
+.section-label {
+  font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 28px;
+}
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+.tool-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px;
+  transition: border-color .2s, box-shadow .2s, transform .2s;
+  display: flex; flex-direction: column;
+}
+.tool-card:hover {
+  border-color: var(--blue);
+  box-shadow: 0 8px 32px rgba(37,99,235,.08);
+  transform: translateY(-2px);
+}
+.card-icon {
+  width: 44px; height: 44px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; margin-bottom: 16px;
+}
+.card-title { font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+.card-desc { font-size: 14px; color: var(--mid); line-height: 1.65; flex: 1; margin-bottom: 20px; }
+.card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+.tag {
+  font-size: 11px; font-weight: 500;
+  padding: 3px 8px; border-radius: 4px;
+  background: var(--bg); color: var(--mid); border: 1px solid var(--border);
+}
+.card-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600; color: var(--blue);
+  transition: gap .15s;
+}
+.tool-card:hover .card-link { gap: 10px; }
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--font-body);
-      font-size: 15px;
-      line-height: 1.6;
-      min-height: 100vh;
-    }
+/* POPULAR BADGE */
+.card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+.popular-badge {
+  font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--amber); background: #FFFBEB;
+  padding: 3px 8px; border-radius: 4px; border: 1px solid #FDE68A;
+  white-space: nowrap;
+}
 
-    /* NOISE OVERLAY */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.4;
-    }
+/* FOOTER */
+footer {
+  background: var(--ink);
+  padding: 32px 48px;
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+}
+.flogo { font-size: 16px; font-weight: 700; color: white; }
+.flogo span { color: var(--blue); }
+.fcopy { font-size: 12px; color: rgba(255,255,255,.35); }
+.flinks { display: flex; gap: 20px; list-style: none; }
+.flinks a { font-size: 12px; color: rgba(255,255,255,.4); transition: color .2s; }
+.flinks a:hover { color: white; }
 
-    .wrapper {
-      position: relative;
-      z-index: 1;
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    /* HEADER */
-    header {
-      padding: 48px 0 32px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .header-tag {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--accent);
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-    }
-
-    h1 {
-      font-family: var(--font-display);
-      font-size: clamp(2rem, 5vw, 3.2rem);
-      font-weight: 700;
-      line-height: 1.15;
-      color: var(--text);
-    }
-
-    h1 span {
-      color: var(--accent);
-      font-style: italic;
-    }
-
-    .subtitle {
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 15px;
-      max-width: 520px;
-    }
-
-    /* MAIN GRID */
-    .main-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      padding: 36px 0;
-    }
-
-    @media (max-width: 680px) {
-      .main-grid { grid-template-columns: 1fr; }
-    }
-
-    /* PANEL */
-    .panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 28px;
-    }
-
-    .panel-title {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: var(--muted);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      margin-bottom: 22px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    /* FORM */
-    .field {
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text);
-      margin-bottom: 6px;
-    }
-
-    label .hint {
-      color: var(--muted);
-      font-weight: 300;
-      font-size: 12px;
-      margin-left: 4px;
-    }
-
-    .input-wrap {
-      display: flex;
-      align-items: center;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      overflow: hidden;
-      transition: border-color 0.2s;
-    }
-
-    .input-wrap:focus-within {
-      border-color: var(--accent);
-    }
-
-    .input-prefix, .input-suffix {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      color: var(--muted);
-      padding: 10px 12px;
-      background: var(--surface);
-      border-right: 1px solid var(--border);
-      white-space: nowrap;
-    }
-
-    .input-suffix {
-      border-right: none;
-      border-left: 1px solid var(--border);
-    }
-
-    input[type="number"], select {
-      flex: 1;
-      background: transparent;
-      border: none;
-      outline: none;
-      color: var(--text);
-      font-family: var(--font-mono);
-      font-size: 14px;
-      padding: 10px 12px;
-      width: 100%;
-      -moz-appearance: textfield;
-    }
-
-    input[type="number"]::-webkit-outer-spin-button,
-    input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
-
-    select {
-      cursor: pointer;
-      font-family: var(--font-body);
-    }
-
-    /* CURRENCY ROW */
-    .currency-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 22px;
-    }
-
-    .currency-btn {
-      flex: 1;
-      padding: 8px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--muted);
-      font-family: var(--font-mono);
-      font-size: 12px;
-      cursor: pointer;
-      transition: all 0.18s;
-      text-align: center;
-    }
-
-    .currency-btn.active {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: rgba(240,192,64,0.07);
-    }
-
-    /* RESULTS PANEL */
-    .results-panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 28px;
-      grid-column: span 2;
-    }
-
-    @media (max-width: 680px) {
-      .results-panel { grid-column: span 1; }
-    }
-
-    .results-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin-bottom: 28px;
-    }
-
-    @media (max-width: 520px) {
-      .results-grid { grid-template-columns: 1fr; }
-    }
-
-    .rate-card {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 20px;
-      position: relative;
-      overflow: hidden;
-      transition: border-color 0.2s;
-    }
-
-    .rate-card.primary {
-      border-color: var(--accent);
-      background: rgba(240,192,64,0.05);
-    }
-
-    .rate-card::after {
-      content: '';
-      position: absolute;
-      top: 0; right: 0;
-      width: 60px; height: 60px;
-      background: radial-gradient(circle at top right, rgba(240,192,64,0.12), transparent 70%);
-      pointer-events: none;
-    }
-
-    .rate-label {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: var(--muted);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-
-    .rate-value {
-      font-family: var(--font-display);
-      font-size: clamp(1.6rem, 3vw, 2.2rem);
-      font-weight: 700;
-      color: var(--text);
-      line-height: 1;
-    }
-
-    .rate-card.primary .rate-value { color: var(--accent); }
-
-    .rate-sub {
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 6px;
-    }
-
-    /* BREAKDOWN */
-    .breakdown-title {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: var(--muted);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      margin-bottom: 14px;
-    }
-
-    .bar-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 10px;
-    }
-
-    .bar-label {
-      font-size: 12px;
-      color: var(--muted);
-      width: 130px;
-      flex-shrink: 0;
-    }
-
-    .bar-track {
-      flex: 1;
-      height: 6px;
-      background: var(--surface2);
-      border-radius: 99px;
-      overflow: hidden;
-    }
-
-    .bar-fill {
-      height: 100%;
-      border-radius: 99px;
-      transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    .bar-amount {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      color: var(--text);
-      width: 90px;
-      text-align: right;
-      flex-shrink: 0;
-    }
-
-    /* QUICK ESTIMATES */
-    .estimates-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-top: 20px;
-      padding-top: 20px;
-      border-top: 1px solid var(--border);
-    }
-
-    @media (max-width: 480px) {
-      .estimates-grid { grid-template-columns: 1fr; }
-    }
-
-    .estimate-item {
-      background: var(--surface2);
-      border-radius: 8px;
-      padding: 14px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .estimate-name {
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    .estimate-value {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text);
-    }
-
-    /* TIPS */
-    .tip-box {
-      margin-top: 20px;
-      padding: 14px 18px;
-      background: rgba(224,123,57,0.07);
-      border-left: 3px solid var(--accent2);
-      border-radius: 0 8px 8px 0;
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    .tip-box strong { color: var(--accent2); }
-
-    /* FOOTER */
-    footer {
-      padding: 28px 0;
-      border-top: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .footer-text {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    /* ANIMATE IN */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .panel, .results-panel {
-      animation: fadeUp 0.5s ease both;
-    }
-
-    .results-panel { animation-delay: 0.1s; }
-  </style>
+/* RESPONSIVE */
+@media(max-width: 768px) {
+  nav { padding: 0 20px; }
+  .nl { display: none; position: fixed; top: 60px; left: 0; right: 0; background: white; border-bottom: 1px solid var(--border); flex-direction: column; padding: 12px; gap: 2px; z-index: 99; }
+  .nl.open { display: flex; }
+  .nl a { padding: 10px 16px; }
+  .burger { display: block; }
+  .hero { padding: 48px 20px 40px; }
+  .tools-section { padding: 40px 20px; }
+  footer { padding: 24px 20px; flex-direction: column; align-items: flex-start; }
+}
+</style>
 </head>
 <body>
-<div class="wrapper">
 
-  <header>
-    <div class="header-tag">Free Tool · No signup</div>
-    <h1>Know Your <span>Freelance Rate</span></h1>
-    <p class="subtitle">Enter your goals and we'll calculate the minimum rate you should charge — hourly, daily, and per project.</p>
-  </header>
+<nav id="nav">
+  <a href="/" class="logo">Rate<span>Kit</span></a>
+  <button class="burger" onclick="toggleNav()">☰</button>
+  <ul class="nl" id="nl">
+    <li><a href="/freelance-rate.html">Freelance Rate</a></li>
+    <li><a href="/safe-calculator.html">SAFE Calculator</a></li>
+    <li><a href="/burn-rate.html">Burn Rate</a></li>
+    <li><a href="/ltv-cac.html">LTV : CAC</a></li>
+    <li><a href="/break-even.html">Break-even</a></li>
+  </ul>
+</nav>
 
-  <div class="main-grid">
-
-    <!-- LEFT: INCOME & EXPENSES -->
-    <div class="panel">
-      <div class="panel-title">Income & Expenses</div>
-
-      <div style="margin-bottom:16px;">
-        <div class="panel-title" style="margin-bottom:10px; border:none; padding:0;">Currency</div>
-        <div class="currency-row">
-          <button class="currency-btn active" onclick="setCurrency('USD','$')">$ USD</button>
-          <button class="currency-btn" onclick="setCurrency('EUR','€')">€ EUR</button>
-          <button class="currency-btn" onclick="setCurrency('GBP','£')">£ GBP</button>
-          <button class="currency-btn" onclick="setCurrency('AUD','A$')">A$ AUD</button>
-        </div>
-      </div>
-
-      <div class="field">
-        <label>Desired Annual Income <span class="hint">(take-home)</span></label>
-        <div class="input-wrap">
-          <span class="input-prefix" id="symbol1">$</span>
-          <input type="number" id="income" value="60000" min="0" oninput="calc()" />
-        </div>
-      </div>
-
-      <div class="field">
-        <label>Annual Business Expenses <span class="hint">(tools, subscriptions...)</span></label>
-        <div class="input-wrap">
-          <span class="input-prefix" id="symbol2">$</span>
-          <input type="number" id="expenses" value="5000" min="0" oninput="calc()" />
-        </div>
-      </div>
-
-      <div class="field">
-        <label>Tax Rate <span class="hint">(%)</span></label>
-        <div class="input-wrap">
-          <input type="number" id="tax" value="25" min="0" max="99" oninput="calc()" />
-          <span class="input-suffix">%</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- RIGHT: WORKING HOURS -->
-    <div class="panel">
-      <div class="panel-title">Working Schedule</div>
-
-      <div class="field">
-        <label>Billable Hours per Day</label>
-        <div class="input-wrap">
-          <input type="number" id="hours" value="6" min="1" max="16" oninput="calc()" />
-          <span class="input-suffix">hrs</span>
-        </div>
-      </div>
-
-      <div class="field">
-        <label>Working Days per Week</label>
-        <div class="input-wrap">
-          <input type="number" id="days" value="5" min="1" max="7" oninput="calc()" />
-          <span class="input-suffix">days</span>
-        </div>
-      </div>
-
-      <div class="field">
-        <label>Vacation Weeks per Year</label>
-        <div class="input-wrap">
-          <input type="number" id="vacation" value="4" min="0" max="30" oninput="calc()" />
-          <span class="input-suffix">wks</span>
-        </div>
-      </div>
-
-      <div class="field">
-        <label>Non-billable Time <span class="hint">(admin, marketing...)</span></label>
-        <div class="input-wrap">
-          <input type="number" id="overhead" value="20" min="0" max="80" oninput="calc()" />
-          <span class="input-suffix">%</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- RESULTS -->
-    <div class="results-panel">
-      <div class="panel-title">Your Minimum Rates</div>
-
-      <div class="results-grid">
-        <div class="rate-card primary">
-          <div class="rate-label">Hourly Rate</div>
-          <div class="rate-value" id="rate-hourly">—</div>
-          <div class="rate-sub">minimum to charge</div>
-        </div>
-        <div class="rate-card">
-          <div class="rate-label">Daily Rate</div>
-          <div class="rate-value" id="rate-daily">—</div>
-          <div class="rate-sub" id="rate-daily-sub">per working day</div>
-        </div>
-        <div class="rate-card">
-          <div class="rate-label">Monthly Target</div>
-          <div class="rate-value" id="rate-monthly">—</div>
-          <div class="rate-sub">gross revenue needed</div>
-        </div>
-      </div>
-
-      <!-- BREAKDOWN BARS -->
-      <div class="breakdown-title">Annual Revenue Breakdown</div>
-
-      <div class="bar-item">
-        <span class="bar-label">Take-home income</span>
-        <div class="bar-track"><div class="bar-fill" id="bar-income" style="background:#4ade80;width:0%"></div></div>
-        <span class="bar-amount" id="lbl-income">—</span>
-      </div>
-      <div class="bar-item">
-        <span class="bar-label">Taxes</span>
-        <div class="bar-track"><div class="bar-fill" id="bar-tax" style="background:#f87171;width:0%"></div></div>
-        <span class="bar-amount" id="lbl-tax">—</span>
-      </div>
-      <div class="bar-item">
-        <span class="bar-label">Business expenses</span>
-        <div class="bar-track"><div class="bar-fill" id="bar-exp" style="background:#60a5fa;width:0%"></div></div>
-        <span class="bar-amount" id="lbl-exp">—</span>
-      </div>
-
-      <!-- QUICK ESTIMATES -->
-      <div class="estimates-grid">
-        <div class="estimate-item">
-          <span class="estimate-name">🔥 1-week project</span>
-          <span class="estimate-value" id="est-week">—</span>
-        </div>
-        <div class="estimate-item">
-          <span class="estimate-name">📦 2-week project</span>
-          <span class="estimate-value" id="est-2week">—</span>
-        </div>
-        <div class="estimate-item">
-          <span class="estimate-name">🚀 1-month project</span>
-          <span class="estimate-value" id="est-month">—</span>
-        </div>
-        <div class="estimate-item">
-          <span class="estimate-name">💼 3-month project</span>
-          <span class="estimate-value" id="est-quarter">—</span>
-        </div>
-      </div>
-
-      <div class="tip-box" id="tip-box">
-        <strong>💡 Pro tip:</strong> Add <strong>20–30%</strong> on top of this minimum for your actual quote — this is just your break-even rate. Experienced freelancers often charge 2–3× their minimum.
-      </div>
-    </div>
-
+<div class="hero">
+  <div class="hero-tag">Free · No signup · Instant results</div>
+  <h1>Business calculators for<br><em>founders & freelancers</em></h1>
+  <p class="hero-sub">Make smarter financial decisions with tools built for startups, consultants, and independent professionals.</p>
+  <div class="hero-badges">
+    <span class="badge">100% free forever</span>
+    <span class="badge">No data stored</span>
+    <span class="badge">Works on mobile</span>
+    <span class="badge">Instant calculations</span>
   </div>
-
-  <footer>
-    <span class="footer-text">Freelance Rate Calculator — Free, no signup, no data stored.</span>
-    <span class="footer-text" style="font-family:var(--font-mono); font-size:11px; color: var(--accent);">Know your worth. Charge accordingly.</span>
-  </footer>
-
 </div>
 
+<section class="tools-section">
+  <div class="section-label">All tools — 5 calculators</div>
+  <div class="tools-grid">
+
+    <a href="/freelance-rate.html" class="tool-card">
+      <div class="card-header">
+        <div class="card-icon" style="background:#EFF6FF;">💰</div>
+        <span class="popular-badge">⭐ Popular</span>
+      </div>
+      <div class="card-title">Freelance Rate Calculator</div>
+      <p class="card-desc">Calculate the minimum hourly, daily, and project rate you need to charge based on your income goals, expenses, and working schedule.</p>
+      <div class="card-tags">
+        <span class="tag">Freelancers</span>
+        <span class="tag">Consultants</span>
+        <span class="tag">Agencies</span>
+      </div>
+      <span class="card-link">Open calculator →</span>
+    </a>
+
+    <a href="/safe-calculator.html" class="tool-card">
+      <div class="card-header">
+        <div class="card-icon" style="background:#F0FDF4;">📊</div>
+        <span class="popular-badge">🚀 Startups</span>
+      </div>
+      <div class="card-title">SAFE Equity Calculator</div>
+      <p class="card-desc">Model your SAFE note conversion, ownership percentage, and dilution. Supports valuation cap, discount rate, and MFN provisions.</p>
+      <div class="card-tags">
+        <span class="tag">Startups</span>
+        <span class="tag">Founders</span>
+        <span class="tag">Investors</span>
+      </div>
+      <span class="card-link">Open calculator →</span>
+    </a>
+
+    <a href="/burn-rate.html" class="tool-card">
+      <div class="card-header">
+        <div class="card-icon" style="background:#FFF7ED;">🔥</div>
+      </div>
+      <div class="card-title">Burn Rate & Runway</div>
+      <p class="card-desc">Find out how long your startup can survive on current cash. Calculate gross and net burn rate, runway in months, and zero-cash date.</p>
+      <div class="card-tags">
+        <span class="tag">Startups</span>
+        <span class="tag">CFOs</span>
+        <span class="tag">Founders</span>
+      </div>
+      <span class="card-link">Open calculator →</span>
+    </a>
+
+    <a href="/ltv-cac.html" class="tool-card">
+      <div class="card-header">
+        <div class="card-icon" style="background:#F5F3FF;">📈</div>
+      </div>
+      <div class="card-title">LTV : CAC Calculator</div>
+      <p class="card-desc">Calculate your Customer Lifetime Value and Customer Acquisition Cost. Find out if your unit economics are healthy and how to improve them.</p>
+      <div class="card-tags">
+        <span class="tag">SaaS</span>
+        <span class="tag">Growth</span>
+        <span class="tag">Marketing</span>
+      </div>
+      <span class="card-link">Open calculator →</span>
+    </a>
+
+    <a href="/break-even.html" class="tool-card">
+      <div class="card-header">
+        <div class="card-icon" style="background:#FFF1F2;">⚖️</div>
+      </div>
+      <div class="card-title">Break-even Calculator</div>
+      <p class="card-desc">Determine how many units you need to sell (or revenue you need to generate) to cover your fixed and variable costs and start turning a profit.</p>
+      <div class="card-tags">
+        <span class="tag">Business</span>
+        <span class="tag">Pricing</span>
+        <span class="tag">Planning</span>
+      </div>
+      <span class="card-link">Open calculator →</span>
+    </a>
+
+  </div>
+</section>
+
+<footer>
+  <div class="flogo">Rate<span>Kit</span></div>
+  <span class="fcopy">© 2026 RateKit · Free business calculators · No signup required</span>
+  <ul class="flinks">
+    <li><a href="/freelance-rate.html">Freelance Rate</a></li>
+    <li><a href="/safe-calculator.html">SAFE</a></li>
+    <li><a href="/burn-rate.html">Burn Rate</a></li>
+    <li><a href="/ltv-cac.html">LTV:CAC</a></li>
+    <li><a href="/break-even.html">Break-even</a></li>
+  </ul>
+</footer>
+
 <script>
-  let sym = '$';
-
-  function setCurrency(code, symbol) {
-    sym = symbol;
-    document.querySelectorAll('.currency-btn').forEach(b => b.classList.remove('active'));
-    event.target.classList.add('active');
-    document.querySelectorAll('[id^="symbol"]').forEach(el => el.textContent = symbol);
-    calc();
-  }
-
-  function fmt(n) {
-    if (n >= 1000) return sym + Math.round(n).toLocaleString();
-    return sym + n.toFixed(0);
-  }
-
-  function calc() {
-    const income   = parseFloat(document.getElementById('income').value) || 0;
-    const expenses = parseFloat(document.getElementById('expenses').value) || 0;
-    const tax      = parseFloat(document.getElementById('tax').value) || 0;
-    const hrsDay   = parseFloat(document.getElementById('hours').value) || 1;
-    const daysWk   = parseFloat(document.getElementById('days').value) || 5;
-    const vacation = parseFloat(document.getElementById('vacation').value) || 0;
-    const overhead = parseFloat(document.getElementById('overhead').value) || 0;
-
-    // Working weeks per year
-    const workWeeks = 52 - vacation;
-    const workDays  = workWeeks * daysWk;
-    const totalHrs  = workDays * hrsDay;
-
-    // Billable hours after overhead
-    const billableHrs = totalHrs * (1 - overhead / 100);
-
-    // Gross revenue needed
-    const taxMultiplier = 1 / (1 - tax / 100);
-    const grossNeeded = (income + expenses) * taxMultiplier;
-
-    // Rates
-    const hourly  = billableHrs > 0 ? grossNeeded / billableHrs : 0;
-    const daily   = hourly * hrsDay;
-    const monthly = grossNeeded / 12;
-
-    // UI
-    document.getElementById('rate-hourly').textContent  = fmt(hourly);
-    document.getElementById('rate-daily').textContent   = fmt(daily);
-    document.getElementById('rate-daily-sub').textContent = `${hrsDay}h billable day`;
-    document.getElementById('rate-monthly').textContent = fmt(monthly);
-
-    // Breakdown bars
-    const taxes  = (grossNeeded - income - expenses);
-    const total  = grossNeeded;
-
-    document.getElementById('lbl-income').textContent = fmt(income);
-    document.getElementById('lbl-tax').textContent    = fmt(taxes > 0 ? taxes : 0);
-    document.getElementById('lbl-exp').textContent    = fmt(expenses);
-
-    document.getElementById('bar-income').style.width = total > 0 ? (income / total * 100) + '%' : '0%';
-    document.getElementById('bar-tax').style.width    = total > 0 ? (Math.max(0, taxes) / total * 100) + '%' : '0%';
-    document.getElementById('bar-exp').style.width    = total > 0 ? (expenses / total * 100) + '%' : '0%';
-
-    // Estimates
-    const weekDays = daysWk;
-    document.getElementById('est-week').textContent    = fmt(daily * weekDays);
-    document.getElementById('est-2week').textContent   = fmt(daily * weekDays * 2);
-    document.getElementById('est-month').textContent   = fmt(daily * daysWk * (workWeeks / 12));
-    document.getElementById('est-quarter').textContent = fmt(daily * daysWk * (workWeeks / 4));
-
-    // Dynamic tip
-    let tip = '';
-    if (hourly < 15) {
-      tip = `<strong>⚠️ Heads up:</strong> Your calculated rate is quite low. Consider reducing expenses, working fewer non-billable hours, or adjusting your income target.`;
-    } else if (hourly > 200) {
-      tip = `<strong>🎯 Senior territory:</strong> Rates above ${fmt(200)}/hr are achievable for specialized skills (AI, legal, finance). Make sure your portfolio justifies it.`;
-    } else {
-      tip = `<strong>💡 Pro tip:</strong> Add <strong>20–30%</strong> on top of this minimum for your actual quote — this is your break-even rate. Experienced freelancers often charge 2–3× their minimum.`;
-    }
-    document.getElementById('tip-box').innerHTML = tip;
-  }
-
-  // Run on load
-  calc();
+function toggleNav() { document.getElementById('nl').classList.toggle('open'); }
+document.querySelectorAll('.nl a').forEach(a => a.addEventListener('click', () => document.getElementById('nl').classList.remove('open')));
 </script>
 </body>
 </html>

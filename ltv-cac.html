@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LTV:CAC Calculator — RateKit</title>
+<meta name="description" content="Calculate Customer Lifetime Value (LTV) and Customer Acquisition Cost (CAC). Find out if your unit economics are healthy. Free tool for SaaS and startups.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F8F9FC;--white:#FFFFFF;--border:#E2E8F0;--ink:#0F172A;--mid:#475569;--muted:#94A3B8;--blue:#2563EB;--bluebg:#EFF6FF;--green:#059669;--greenbg:#ECFDF5;--amber:#D97706;--red:#DC2626;--redbg:#FEF2F2;--purple:#7C3AED;--purplebg:#F5F3FF;--font:'Plus Jakarta Sans',sans-serif;--mono:'JetBrains Mono',monospace;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh;}
+a{text-decoration:none;color:inherit;}
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 48px;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.logo{font-size:18px;font-weight:700;color:var(--ink);letter-spacing:-.02em;}.logo span{color:var(--blue);}
+.nl{display:flex;align-items:center;gap:4px;list-style:none;}
+.nl a{font-size:13px;font-weight:500;color:var(--mid);padding:6px 12px;border-radius:6px;transition:background .15s,color .15s;}
+.nl a:hover{background:var(--bluebg);color:var(--blue);}
+.nl a.active{color:var(--blue);background:var(--bluebg);}
+.burger{display:none;background:none;border:none;font-size:20px;cursor:pointer;padding:4px 8px;}
+.page-header{background:var(--white);border-bottom:1px solid var(--border);padding:48px 48px 40px;}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:16px;}
+.breadcrumb a{color:var(--blue);}
+.page-tag{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--purple);margin-bottom:10px;}
+h1{font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:700;letter-spacing:-.02em;line-height:1.15;margin-bottom:10px;}
+.page-sub{font-size:15px;color:var(--mid);max-width:520px;}
+main{padding:40px 48px 64px;max-width:1100px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
+.panel{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;}
+.panel-title{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:24px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.field{margin-bottom:16px;}
+.lbl{display:block;font-size:12px;font-weight:600;color:var(--mid);margin-bottom:6px;}
+.hint{font-weight:400;color:var(--muted);}
+.input-wrap{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:8px;background:var(--white);overflow:hidden;transition:border-color .15s;}
+.input-wrap:focus-within{border-color:var(--blue);}
+.ifix{font-family:var(--mono);font-size:13px;color:var(--muted);padding:10px 12px;background:var(--bg);border-right:1px solid var(--border);white-space:nowrap;}
+.ifix-r{border-right:none;border-left:1px solid var(--border);}
+input[type="number"]{flex:1;background:transparent;border:none;outline:none;color:var(--ink);font-family:var(--mono);font-size:14px;padding:10px 12px;width:100%;-moz-appearance:textfield;}
+input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;}
+
+/* RATIO DISPLAY */
+.ratio-panel{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:32px;margin-bottom:20px;text-align:center;}
+.ratio-value{font-family:var(--mono);font-size:clamp(3rem,8vw,5rem);font-weight:700;line-height:1;margin-bottom:8px;transition:color .3s;}
+.ratio-label{font-size:14px;color:var(--mid);margin-bottom:16px;}
+.ratio-verdict{display:inline-block;font-size:13px;font-weight:600;padding:6px 16px;border-radius:99px;}
+
+/* METRICS ROW */
+.metrics-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.m-card{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:20px;}
+.m-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.m-value{font-family:var(--mono);font-size:1.5rem;font-weight:600;color:var(--ink);line-height:1;}
+.m-sub{font-size:11px;color:var(--muted);margin-top:6px;}
+
+/* BENCHMARKS */
+.bench-panel{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:20px;}
+.bench-row{display:flex;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid var(--border);}
+.bench-row:last-child{border-bottom:none;}
+.bench-range{font-family:var(--mono);font-size:13px;font-weight:600;width:80px;flex-shrink:0;}
+.bench-bar-wrap{flex:1;height:6px;background:var(--bg);border-radius:99px;overflow:hidden;}
+.bench-bar{height:100%;border-radius:99px;}
+.bench-label{font-size:13px;color:var(--mid);width:180px;flex-shrink:0;}
+.bench-verdict{font-size:11px;font-weight:600;padding:3px 10px;border-radius:4px;}
+
+.info-box{background:var(--bluebg);border:1px solid #BFDBFE;border-radius:10px;padding:16px 20px;font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:20px;}
+.info-box strong{color:var(--blue);}
+
+footer{background:var(--ink);padding:28px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;}
+.flogo{font-size:16px;font-weight:700;color:white;}.flogo span{color:var(--blue);}
+.fcopy{font-size:12px;color:rgba(255,255,255,.3);}
+.flinks{display:flex;gap:20px;list-style:none;}
+.flinks a{font-size:12px;color:rgba(255,255,255,.4);transition:color .2s;}
+.flinks a:hover{color:white;}
+
+@media(max-width:900px){nav,.page-header,main,footer{padding-left:24px;padding-right:24px;}.grid-2{grid-template-columns:1fr;}.metrics-row{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){nav{padding:0 16px;}.nl{display:none;position:fixed;top:60px;left:0;right:0;background:white;border-bottom:1px solid var(--border);flex-direction:column;padding:12px;gap:2px;z-index:99;}.nl.open{display:flex;}.burger{display:block;}.page-header,main{padding-left:16px;padding-right:16px;}.metrics-row{grid-template-columns:1fr 1fr;}footer{padding:20px 16px;flex-direction:column;align-items:flex-start;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo">Rate<span>Kit</span></a>
+  <button class="burger" onclick="toggleNav()">☰</button>
+  <ul class="nl" id="nl">
+    <li><a href="/freelance-rate.html">Freelance Rate</a></li>
+    <li><a href="/safe-calculator.html">SAFE Calculator</a></li>
+    <li><a href="/burn-rate.html">Burn Rate</a></li>
+    <li><a href="/ltv-cac.html" class="active">LTV : CAC</a></li>
+    <li><a href="/break-even.html">Break-even</a></li>
+  </ul>
+</nav>
+<div class="page-header">
+  <div class="breadcrumb"><a href="/">RateKit</a> › LTV:CAC Calculator</div>
+  <div class="page-tag">📈 Growth Tool</div>
+  <h1>LTV : CAC Calculator</h1>
+  <p class="page-sub">Calculate your Customer Lifetime Value and Customer Acquisition Cost. Find out if your unit economics are healthy and sustainable.</p>
+</div>
+<main>
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-title">Customer Lifetime Value (LTV)</div>
+      <div class="field"><label class="lbl">Average Revenue per Customer <span class="hint">(monthly)</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="arpu" value="99" min="0" oninput="calc()"></div></div>
+      <div class="field"><label class="lbl">Gross Margin <span class="hint">(after COGS)</span></label><div class="input-wrap"><input type="number" id="margin" value="70" min="0" max="100" oninput="calc()"><span class="ifix ifix-r">%</span></div></div>
+      <div class="field"><label class="lbl">Monthly Churn Rate <span class="hint">(% who cancel)</span></label><div class="input-wrap"><input type="number" id="churn" value="3" min="0.1" max="100" step="0.1" oninput="calc()"><span class="ifix ifix-r">%/mo</span></div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Customer Acquisition Cost (CAC)</div>
+      <div class="field"><label class="lbl">Monthly Sales & Marketing Spend</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="spend" value="20000" min="0" oninput="calc()"></div></div>
+      <div class="field"><label class="lbl">New Customers Acquired <span class="hint">(per month)</span></label><div class="input-wrap"><input type="number" id="newcust" value="50" min="1" oninput="calc()"></div></div>
+      <div class="field"><label class="lbl">Sales Cycle Length <span class="hint">(optional)</span></label><div class="input-wrap"><input type="number" id="cycle" value="1" min="1" max="24" oninput="calc()"><span class="ifix ifix-r">months</span></div></div>
+    </div>
+  </div>
+
+  <div class="ratio-panel">
+    <div class="ratio-value" id="ratio-val">—</div>
+    <div class="ratio-label">LTV : CAC Ratio</div>
+    <div class="ratio-verdict" id="ratio-verdict"></div>
+  </div>
+
+  <div class="metrics-row">
+    <div class="m-card">
+      <div class="m-label">Customer LTV</div>
+      <div class="m-value" id="m-ltv">—</div>
+      <div class="m-sub">lifetime value</div>
+    </div>
+    <div class="m-card">
+      <div class="m-label">CAC</div>
+      <div class="m-value" id="m-cac">—</div>
+      <div class="m-sub">to acquire 1 customer</div>
+    </div>
+    <div class="m-card">
+      <div class="m-label">CAC Payback</div>
+      <div class="m-value" id="m-payback">—</div>
+      <div class="m-sub">months to recover CAC</div>
+    </div>
+    <div class="m-card">
+      <div class="m-label">Avg. Customer Life</div>
+      <div class="m-value" id="m-life">—</div>
+      <div class="m-sub">months before churn</div>
+    </div>
+  </div>
+
+  <div class="bench-panel">
+    <div class="panel-title">Industry Benchmarks</div>
+    <div class="bench-row">
+      <span class="bench-range" style="color:var(--red);">&lt; 1:1</span>
+      <div class="bench-bar-wrap"><div class="bench-bar" style="width:25%;background:var(--red);"></div></div>
+      <span class="bench-label">Losing money on every customer</span>
+      <span class="bench-verdict" style="background:var(--redbg);color:var(--red);">Critical</span>
+    </div>
+    <div class="bench-row">
+      <span class="bench-range" style="color:var(--amber);">1:1 – 3:1</span>
+      <div class="bench-bar-wrap"><div class="bench-bar" style="width:50%;background:var(--amber);"></div></div>
+      <span class="bench-label">Marginal — needs improvement</span>
+      <span class="bench-verdict" style="background:#FFFBEB;color:var(--amber);">Below target</span>
+    </div>
+    <div class="bench-row">
+      <span class="bench-range" style="color:var(--green);">3:1 – 5:1</span>
+      <div class="bench-bar-wrap"><div class="bench-bar" style="width:75%;background:var(--green);"></div></div>
+      <span class="bench-label">Healthy — SaaS gold standard</span>
+      <span class="bench-verdict" style="background:var(--greenbg);color:var(--green);">✅ Healthy</span>
+    </div>
+    <div class="bench-row">
+      <span class="bench-range" style="color:var(--blue);">&gt; 5:1</span>
+      <div class="bench-bar-wrap"><div class="bench-bar" style="width:100%;background:var(--blue);"></div></div>
+      <span class="bench-label">Excellent — may be under-investing in growth</span>
+      <span class="bench-verdict" style="background:var(--bluebg);color:var(--blue);">Excellent</span>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <strong>💡 Formula:</strong> LTV = (ARPU × Gross Margin %) / Monthly Churn Rate &nbsp;·&nbsp; CAC = Monthly S&M Spend / New Customers &nbsp;·&nbsp; Payback = CAC / (ARPU × Gross Margin %)
+  </div>
+</main>
+<footer>
+  <div class="flogo">Rate<span>Kit</span></div>
+  <span class="fcopy">© 2026 RateKit · Free · No data stored</span>
+  <ul class="flinks">
+    <li><a href="/freelance-rate.html">Freelance Rate</a></li>
+    <li><a href="/safe-calculator.html">SAFE</a></li>
+    <li><a href="/burn-rate.html">Burn Rate</a></li>
+    <li><a href="/break-even.html">Break-even</a></li>
+  </ul>
+</footer>
+<script>
+function fmt(n){return '$'+Math.round(n).toLocaleString('en-US');}
+function calc(){
+  const arpu=+document.getElementById('arpu').value||0;
+  const margin=+document.getElementById('margin').value||0;
+  const churn=+document.getElementById('churn').value||1;
+  const spend=+document.getElementById('spend').value||0;
+  const newcust=+document.getElementById('newcust').value||1;
+
+  const ltv = (arpu*(margin/100))/(churn/100);
+  const cac = spend/newcust;
+  const ratio = cac>0?ltv/cac:0;
+  const payback = (arpu*(margin/100))>0?cac/(arpu*(margin/100)):0;
+  const life = 1/(churn/100);
+
+  document.getElementById('m-ltv').textContent=fmt(ltv);
+  document.getElementById('m-cac').textContent=fmt(cac);
+  document.getElementById('m-payback').textContent=payback.toFixed(1)+' mo';
+  document.getElementById('m-life').textContent=life.toFixed(1)+' mo';
+
+  const rv=document.getElementById('ratio-val');
+  const vd=document.getElementById('ratio-verdict');
+  rv.textContent=ratio.toFixed(1)+':1';
+
+  if(ratio<1){rv.style.color='var(--red)';vd.style.cssText='background:var(--redbg);color:var(--red);';vd.textContent='🚨 Losing money — fix unit economics urgently';}
+  else if(ratio<3){rv.style.color='var(--amber)';vd.style.cssText='background:#FFFBEB;color:var(--amber);';vd.textContent='⚠️ Below target — reduce CAC or increase retention';}
+  else if(ratio<=5){rv.style.color='var(--green)';vd.style.cssText='background:var(--greenbg);color:var(--green);';vd.textContent='✅ Healthy — great unit economics';}
+  else{rv.style.color='var(--blue)';vd.style.cssText='background:var(--bluebg);color:var(--blue);';vd.textContent='🚀 Excellent — consider investing more in growth';}
+}
+function toggleNav(){document.getElementById('nl').classList.toggle('open');}
+calc();
+</script>
+</body>
+</html>

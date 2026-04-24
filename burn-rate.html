@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Burn Rate & Runway Calculator — RateKit</title>
+<meta name="description" content="Calculate your startup's gross and net burn rate, cash runway in months, and zero-cash date. Free tool for founders and CFOs.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F8F9FC;--white:#FFFFFF;--border:#E2E8F0;--ink:#0F172A;--mid:#475569;--muted:#94A3B8;--blue:#2563EB;--blue2:#1D4ED8;--bluebg:#EFF6FF;--green:#059669;--greenbg:#ECFDF5;--amber:#D97706;--red:#DC2626;--redbg:#FEF2F2;--font:'Plus Jakarta Sans',sans-serif;--mono:'JetBrains Mono',monospace;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh;}
+a{text-decoration:none;color:inherit;}
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 48px;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.logo{font-size:18px;font-weight:700;color:var(--ink);letter-spacing:-.02em;}.logo span{color:var(--blue);}
+.nl{display:flex;align-items:center;gap:4px;list-style:none;}
+.nl a{font-size:13px;font-weight:500;color:var(--mid);padding:6px 12px;border-radius:6px;transition:background .15s,color .15s;}
+.nl a:hover{background:var(--bluebg);color:var(--blue);}
+.nl a.active{color:var(--blue);background:var(--bluebg);}
+.burger{display:none;background:none;border:none;font-size:20px;cursor:pointer;padding:4px 8px;}
+.page-header{background:var(--white);border-bottom:1px solid var(--border);padding:48px 48px 40px;}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:16px;}
+.breadcrumb a{color:var(--blue);}
+.page-tag{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-bottom:10px;}
+h1{font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:700;letter-spacing:-.02em;line-height:1.15;margin-bottom:10px;}
+.page-sub{font-size:15px;color:var(--mid);max-width:520px;}
+main{padding:40px 48px 64px;max-width:1100px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
+.panel{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;}
+.panel-title{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:24px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.field{margin-bottom:16px;}
+.lbl{display:block;font-size:12px;font-weight:600;color:var(--mid);margin-bottom:6px;}
+.hint{font-weight:400;color:var(--muted);}
+.input-wrap{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:8px;background:var(--white);overflow:hidden;transition:border-color .15s;}
+.input-wrap:focus-within{border-color:var(--blue);}
+.ifix{font-family:var(--mono);font-size:13px;color:var(--muted);padding:10px 12px;background:var(--bg);border-right:1px solid var(--border);white-space:nowrap;}
+.ifix-r{border-right:none;border-left:1px solid var(--border);}
+input[type="number"]{flex:1;background:transparent;border:none;outline:none;color:var(--ink);font-family:var(--mono);font-size:14px;padding:10px 12px;width:100%;-moz-appearance:textfield;}
+input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;}
+input[type="date"]{flex:1;background:transparent;border:none;outline:none;color:var(--ink);font-family:var(--font);font-size:14px;padding:10px 12px;width:100%;}
+
+/* RESULTS */
+.results-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.r-card{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:20px;}
+.r-card.green{background:var(--greenbg);border-color:#6EE7B7;}
+.r-card.amber{background:#FFFBEB;border-color:#FDE68A;}
+.r-card.red{background:var(--redbg);border-color:#FECACA;}
+.r-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.r-card.green .r-label{color:var(--green);}
+.r-card.amber .r-label{color:var(--amber);}
+.r-card.red .r-label{color:var(--red);}
+.r-value{font-family:var(--mono);font-size:1.6rem;font-weight:600;color:var(--ink);line-height:1;}
+.r-card.green .r-value{color:var(--green);}
+.r-card.amber .r-value{color:var(--amber);}
+.r-card.red .r-value{color:var(--red);}
+.r-sub{font-size:11px;color:var(--muted);margin-top:6px;}
+
+/* RUNWAY BAR */
+.runway-panel{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:20px;}
+.rw-bar-wrap{margin-top:16px;}
+.rw-bar-track{height:12px;background:var(--bg);border-radius:99px;overflow:hidden;margin-bottom:8px;}
+.rw-bar-fill{height:100%;border-radius:99px;transition:width .6s ease,background .3s;}
+.rw-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);}
+
+/* MONTHLY TABLE */
+.table-panel{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:20px;}
+.table-title{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead th{text-align:left;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:8px 12px;background:var(--bg);border-bottom:1px solid var(--border);}
+tbody td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--mid);}
+tbody td.mono{font-family:var(--mono);}
+tbody td.danger{color:var(--red);font-weight:600;}
+tbody tr:last-child td{border-bottom:none;}
+
+.info-box{background:var(--bluebg);border:1px solid #BFDBFE;border-radius:10px;padding:16px 20px;font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:20px;}
+.info-box strong{color:var(--blue);}
+
+footer{background:var(--ink);padding:28px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;}
+.flogo{font-size:16px;font-weight:700;color:white;}.flogo span{color:var(--blue);}
+.fcopy{font-size:12px;color:rgba(255,255,255,.3);}
+.flinks{display:flex;gap:20px;list-style:none;}
+.flinks a{font-size:12px;color:rgba(255,255,255,.4);transition:color .2s;}
+.flinks a:hover{color:white;}
+
+@media(max-width:900px){nav,.page-header,main,footer{padding-left:24px;padding-right:24px;}.grid-2{grid-template-columns:1fr;}.results-row{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){nav{padding:0 16px;}.nl{display:none;position:fixed;top:60px;left:0;right:0;background:white;border-bottom:1px solid var(--border);flex-direction:column;padding:12px;gap:2px;z-index:99;}.nl.open{display:flex;}.burger{display:block;}.page-header,main{padding-left:16px;padding-right:16px;}.results-row{grid-template-columns:1fr 1fr;}footer{padding:20px 16px;flex-direction:column;align-items:flex-start;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo">Rate<span>Kit</span></a>
+  <button class="burger" onclick="toggleNav()">☰</button>
+  <ul class="nl" id="nl">
+    <li><a href="/freelance-rate.html">Freelance Rate</a></li>
+    <li><a href="/safe-calculator.html">SAFE Calculator</a></li>
+    <li><a href="/burn-rate.html" class="active">Burn Rate</a></li>
+    <li><a href="/ltv-cac.html">LTV : CAC</a></li>
+    <li><a href="/break-even.html">Break-even</a></li>
+  </ul>
+</nav>
+<div class="page-header">
+  <div class="breadcrumb"><a href="/">RateKit</a> › Burn Rate & Runway</div>
+  <div class="page-tag">🔥 Startup Tool</div>
+  <h1>Burn Rate & Runway Calculator</h1>
+  <p class="page-sub">Find out how long your startup can survive on current cash. Calculate gross and net burn rate, runway in months, and your zero-cash date.</p>
+</div>
+<main>
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-title">Cash Position</div>
+      <div class="field"><label class="lbl">Cash in Bank <span class="hint">(current balance)</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="cash" value="500000" min="0" oninput="calc()"></div></div>
+      <div class="field"><label class="lbl">Start Date</label><div class="input-wrap"><input type="date" id="startdate" oninput="calc()"></div></div>
+      <div class="field"><label class="lbl">Fundraising Target <span class="hint">(optional, next round)</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="target" value="0" min="0" oninput="calc()"></div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Monthly Financials</div>
+      <div class="field"><label class="lbl">Gross Burn <span class="hint">(total monthly expenses)</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="grossburn" value="50000" min="0" oninput="calc()"></div></div>
+      <div class="field"><label class="lbl">Monthly Revenue <span class="hint">(MRR / monthly income)</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="revenue" value="10000" min="0" oninput="calc()"></div></div>
+      <div class="field"><label class="lbl">Monthly Revenue Growth <span class="hint">(optional)</span></label><div class="input-wrap"><input type="number" id="growth" value="0" min="0" max="100" oninput="calc()"><span class="ifix ifix-r">%/mo</span></div></div>
+    </div>
+  </div>
+
+  <div class="results-row">
+    <div class="r-card red" id="card-burn">
+      <div class="r-label">Net Burn Rate</div>
+      <div class="r-value" id="r-netburn">—</div>
+      <div class="r-sub">per month</div>
+    </div>
+    <div class="r-card amber" id="card-gross">
+      <div class="r-label">Gross Burn</div>
+      <div class="r-value" id="r-grossburn">—</div>
+      <div class="r-sub">total monthly spend</div>
+    </div>
+    <div class="r-card green" id="card-runway">
+      <div class="r-label">Runway</div>
+      <div class="r-value" id="r-runway">—</div>
+      <div class="r-sub" id="r-runway-sub">months</div>
+    </div>
+    <div class="r-card" id="card-date">
+      <div class="r-label">Zero-Cash Date</div>
+      <div class="r-value" id="r-date" style="font-size:1.1rem;">—</div>
+      <div class="r-sub">estimated</div>
+    </div>
+  </div>
+
+  <div class="runway-panel">
+    <div class="panel-title">Cash Runway Visualization</div>
+    <div class="rw-bar-wrap">
+      <div class="rw-bar-track"><div class="rw-bar-fill" id="rw-bar" style="width:0%;background:var(--green);"></div></div>
+      <div class="rw-labels"><span id="rw-label-left">Now</span><span id="rw-label-right">Zero cash</span></div>
+    </div>
+  </div>
+
+  <div class="table-panel">
+    <div class="table-title">Monthly Cash Projection</div>
+    <table>
+      <thead><tr><th>Month</th><th>Revenue</th><th>Burn</th><th>Net</th><th>Cash Balance</th></tr></thead>
+      <tbody id="proj-table"></tbody>
+    </table>
+  </div>
+
+  <div class="info-box">
+    <strong>💡 Rule of thumb:</strong> VCs typically want to see <strong>18+ months of runway</strong> before investing. If you have less than 6 months, you should be fundraising now. Net burn = Gross burn − Revenue.
+  </div>
+</main>
+<footer>
+  <div class="flogo">Rate<span>Kit</span></div>
+  <span class="fcopy">© 2026 RateKit · Free · No data stored</span>
+  <ul class="flinks">
+    <li><a href="/freelance-rate.html">Freelance Rate</a></li>
+    <li><a href="/safe-calculator.html">SAFE</a></li>
+    <li><a href="/ltv-cac.html">LTV:CAC</a></li>
+    <li><a href="/break-even.html">Break-even</a></li>
+  </ul>
+</footer>
+<script>
+function fmt(n){return '$'+Math.round(Math.abs(n)).toLocaleString('en-US');}
+function fmtSigned(n){return (n>=0?'+':'-')+'$'+Math.round(Math.abs(n)).toLocaleString();}
+
+// Set default start date to today
+document.getElementById('startdate').value = new Date().toISOString().split('T')[0];
+
+function calc(){
+  const cash = +document.getElementById('cash').value||0;
+  const grossBurn = +document.getElementById('grossburn').value||0;
+  const rev = +document.getElementById('revenue').value||0;
+  const growth = +document.getElementById('growth').value||0;
+  const startDate = new Date(document.getElementById('startdate').value||Date.now());
+
+  const netBurn = grossBurn - rev;
+  document.getElementById('r-netburn').textContent = fmt(netBurn)+'/mo';
+  document.getElementById('r-grossburn').textContent = fmt(grossBurn)+'/mo';
+
+  // Color card based on burn
+  const burnCard = document.getElementById('card-burn');
+  burnCard.className = 'r-card ' + (netBurn <= 0 ? 'green' : netBurn > grossBurn * 0.8 ? 'red' : 'amber');
+
+  // Project runway month by month
+  let balance = cash;
+  let months = 0;
+  let monthlyRev = rev;
+  const rows = [];
+
+  for(let i = 1; i <= 60; i++) {
+    const net = grossBurn - monthlyRev;
+    balance -= net;
+    months = i;
+    const d = new Date(startDate);
+    d.setMonth(d.getMonth() + i);
+    rows.push({
+      month: d.toLocaleDateString('en-US',{month:'short',year:'numeric'}),
+      rev: monthlyRev,
+      burn: grossBurn,
+      net: net,
+      balance: balance
+    });
+    if(balance <= 0) break;
+    monthlyRev *= (1 + growth/100);
+  }
+
+  const runway = rows.filter(r=>r.balance>0).length;
+  document.getElementById('r-runway').textContent = runway + ' mo';
+  document.getElementById('r-runway-sub').textContent = runway >= 18 ? '✅ Healthy' : runway >= 6 ? '⚠️ Raise soon' : '🚨 Critical';
+
+  const zeroDate = rows.find(r=>r.balance<=0);
+  const zeroCashDate = zeroDate ? new Date(startDate.getTime());
+  if(zeroDate){
+    zeroCashDate.setMonth(zeroCashDate.getMonth() + runway + 1);
+    document.getElementById('r-date').textContent = zeroCashDate.toLocaleDateString('en-US',{month:'short',year:'numeric'});
+  } else {
+    document.getElementById('r-date').textContent = '60+ mo';
+  }
+
+  // Runway bar
+  const pct = Math.min(100, runway / 24 * 100);
+  const barColor = runway >= 18 ? 'var(--green)' : runway >= 6 ? 'var(--amber)' : 'var(--red)';
+  document.getElementById('rw-bar').style.width = pct + '%';
+  document.getElementById('rw-bar').style.background = barColor;
+
+  // Table (show up to 12 months)
+  const tableRows = rows.slice(0,12).map(r=>`
+    <tr>
+      <td>${r.month}</td>
+      <td class="mono">$${Math.round(r.rev).toLocaleString()}</td>
+      <td class="mono">$${Math.round(r.burn).toLocaleString()}</td>
+      <td class="mono ${r.net>0?'danger':''}">${fmtSigned(-r.net)}</td>
+      <td class="mono ${r.balance<0?'danger':''}">$${Math.round(Math.max(0,r.balance)).toLocaleString()}</td>
+    </tr>
+  `).join('');
+  document.getElementById('proj-table').innerHTML = tableRows;
+}
+function toggleNav(){document.getElementById('nl').classList.toggle('open');}
+calc();
+</script>
+</body>
+</html>

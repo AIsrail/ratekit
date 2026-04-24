@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAFE Note Equity Calculator — RateKit</title>
+<meta name="description" content="Calculate your SAFE note conversion, ownership percentage, and dilution. Supports valuation cap, discount rate. Free tool for founders and investors.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#F8F9FC;--white:#FFFFFF;--border:#E2E8F0;
+  --ink:#0F172A;--mid:#475569;--muted:#94A3B8;
+  --blue:#2563EB;--blue2:#1D4ED8;--bluebg:#EFF6FF;
+  --green:#059669;--greenbg:#ECFDF5;
+  --amber:#D97706;--red:#DC2626;
+  --font:'Plus Jakarta Sans',sans-serif;--mono:'JetBrains Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh;}
+a{text-decoration:none;color:inherit;}
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 48px;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.logo{font-size:18px;font-weight:700;color:var(--ink);letter-spacing:-.02em;}.logo span{color:var(--blue);}
+.nl{display:flex;align-items:center;gap:4px;list-style:none;}
+.nl a{font-size:13px;font-weight:500;color:var(--mid);padding:6px 12px;border-radius:6px;transition:background .15s,color .15s;}
+.nl a:hover{background:var(--bluebg);color:var(--blue);}
+.nl a.active{color:var(--blue);background:var(--bluebg);}
+.burger{display:none;background:none;border:none;font-size:20px;cursor:pointer;padding:4px 8px;}
+.page-header{background:var(--white);border-bottom:1px solid var(--border);padding:48px 48px 40px;}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:16px;}
+.breadcrumb a{color:var(--blue);}
+.page-tag{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:10px;}
+h1{font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:700;letter-spacing:-.02em;line-height:1.15;margin-bottom:10px;}
+.page-sub{font-size:15px;color:var(--mid);max-width:560px;}
+main{padding:40px 48px 64px;max-width:1100px;}
+
+/* SAFE SPECIFIC */
+.safe-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
+.panel{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;}
+.panel-title{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:24px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.field{margin-bottom:16px;}
+.lbl{display:block;font-size:12px;font-weight:600;color:var(--mid);margin-bottom:6px;}
+.hint{font-weight:400;color:var(--muted);}
+.input-wrap{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:8px;background:var(--white);overflow:hidden;transition:border-color .15s;}
+.input-wrap:focus-within{border-color:var(--blue);}
+.ifix{font-family:var(--mono);font-size:13px;color:var(--muted);padding:10px 12px;background:var(--bg);border-right:1px solid var(--border);white-space:nowrap;}
+.ifix-r{border-right:none;border-left:1px solid var(--border);}
+input[type="number"]{flex:1;background:transparent;border:none;outline:none;color:var(--ink);font-family:var(--mono);font-size:14px;padding:10px 12px;width:100%;-moz-appearance:textfield;}
+input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;}
+select{flex:1;background:transparent;border:none;outline:none;color:var(--ink);font-family:var(--font);font-size:14px;padding:10px 12px;cursor:pointer;}
+
+/* SAFE TYPE TOGGLE */
+.type-toggle{display:flex;gap:0;margin-bottom:24px;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;}
+.type-btn{flex:1;padding:9px;background:transparent;border:none;font-family:var(--font);font-size:13px;font-weight:500;color:var(--mid);cursor:pointer;transition:all .15s;}
+.type-btn.active{background:var(--blue);color:white;}
+
+/* RESULTS */
+.results-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.r-card{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:20px;}
+.r-card.highlight{background:var(--greenbg);border-color:#6EE7B7;}
+.r-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.r-card.highlight .r-label{color:var(--green);}
+.r-value{font-family:var(--mono);font-size:1.6rem;font-weight:600;color:var(--ink);line-height:1;}
+.r-card.highlight .r-value{color:var(--green);}
+.r-sub{font-size:11px;color:var(--muted);margin-top:6px;}
+
+/* DILUTION TABLE */
+.table-panel{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:20px;}
+.table-title{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead th{text-align:left;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:8px 12px;background:var(--bg);border-bottom:1px solid var(--border);}
+tbody td{padding:12px;border-bottom:1px solid var(--border);color:var(--mid);}
+tbody td:first-child{font-weight:600;color:var(--ink);}
+tbody td.mono{font-family:var(--mono);color:var(--ink);}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr.total td{background:var(--bluebg);font-weight:600;color:var(--blue);}
+tbody tr.total td.mono{font-family:var(--mono);}
+
+/* INFO BOX */
+.info-box{background:var(--bluebg);border:1px solid #BFDBFE;border-radius:10px;padding:16px 20px;font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:20px;}
+.info-box strong{color:var(--blue);}
+.warn-box{background:#FFFBEB;border:1px solid #FDE68A;border-radius:10px;padding:16px 20px;font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:20px;}
+.warn-box strong{color:var(--amber);}
+
+footer{background:var(--ink);padding:28px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;}
+.flogo{font-size:16px;font-weight:700;color:white;}.flogo span{color:var(--blue);}
+.fcopy{font-size:12px;color:rgba(255,255,255,.3);}
+.flinks{display:flex;gap:20px;list-style:none;}
+.flinks a{font-size:12px;color:rgba(255,255,255,.4);transition:color .2s;}
+.flinks a:hover{color:white;}
+
+@media(max-width:900px){
+  nav,.page-header,main,footer{padding-left:24px;padding-right:24px;}
+  .safe-grid{grid-template-columns:1fr;}
+  .results-row{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:600px){
+  nav{padding:0 16px;}
+  .nl{display:none;position:fixed;top:60px;left:0;right:0;background:white;border-bottom:1px solid var(--border);flex-direction:column;padding:12px;gap:2px;z-index:99;}
+  .nl.open{display:flex;}
+  .burger{display:block;}
+  .page-header,main{padding-left:16px;padding-right:16px;}
+  .results-row{grid-template-columns:1fr 1fr;}
+  footer{padding:20px 16px;flex-direction:column;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Rate<span>Kit</span></a>
+  <button class="burger" onclick="toggleNav()">☰</button>
+  <ul class="nl" id="nl">
+    <li><a href="/freelance-rate.html">Freelance Rate</a></li>
+    <li><a href="/safe-calculator.html" class="active">SAFE Calculator</a></li>
+    <li><a href="/burn-rate.html">Burn Rate</a></li>
+    <li><a href="/ltv-cac.html">LTV : CAC</a></li>
+    <li><a href="/break-even.html">Break-even</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <div class="breadcrumb"><a href="/">RateKit</a> › SAFE Equity Calculator</div>
+  <div class="page-tag">🚀 Startup Tool</div>
+  <h1>SAFE Note Equity Calculator</h1>
+  <p class="page-sub">Model your SAFE note conversion and see exactly what ownership percentage investors receive. Supports post-money SAFE (YC standard), valuation cap and discount rate.</p>
+</div>
+
+<main>
+  <div class="info-box">
+    <strong>What is a SAFE?</strong> A SAFE (Simple Agreement for Future Equity) is a startup financing instrument created by Y Combinator. Investors give money now in exchange for equity at the next priced round, at a discount or capped valuation. This calculator uses the <strong>post-money SAFE</strong> model (YC standard since 2018).
+  </div>
+
+  <div class="safe-grid">
+    <div class="panel">
+      <div class="panel-title">SAFE Terms</div>
+
+      <div class="field">
+        <label class="lbl">SAFE Type</label>
+        <div class="type-toggle">
+          <button class="type-btn active" onclick="setType('cap',this)">Valuation Cap</button>
+          <button class="type-btn" onclick="setType('discount',this)">Discount Only</button>
+          <button class="type-btn" onclick="setType('both',this)">Cap + Discount</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="lbl">Investment Amount</label>
+        <div class="input-wrap"><span class="ifix">$</span><input type="number" id="investment" value="250000" min="0" oninput="calc()"></div>
+      </div>
+
+      <div class="field" id="cap-field">
+        <label class="lbl">Valuation Cap <span class="hint">(post-money)</span></label>
+        <div class="input-wrap"><span class="ifix">$</span><input type="number" id="valcap" value="5000000" min="0" oninput="calc()"></div>
+      </div>
+
+      <div class="field" id="discount-field" style="display:none;">
+        <label class="lbl">Discount Rate <span class="hint">(off next round price)</span></label>
+        <div class="input-wrap"><input type="number" id="discount" value="20" min="0" max="50" oninput="calc()"><span class="ifix ifix-r">%</span></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Next Priced Round</div>
+      <div class="field">
+        <label class="lbl">Pre-money Valuation</label>
+        <div class="input-wrap"><span class="ifix">$</span><input type="number" id="premoney" value="10000000" min="0" oninput="calc()"></div>
+      </div>
+      <div class="field">
+        <label class="lbl">New Investment Raised</label>
+        <div class="input-wrap"><span class="ifix">$</span><input type="number" id="newround" value="2000000" min="0" oninput="calc()"></div>
+      </div>
+      <div class="field">
+        <label class="lbl">Existing Shares (pre-round)</label>
+        <div class="input-wrap"><input type="number" id="shares" value="10000000" min="1" oninput="calc()"><span class="ifix ifix-r">shares</span></div>
+      </div>
+      <div class="field">
+        <label class="lbl">Option Pool (new) <span class="hint">(added pre-round)</span></label>
+        <div class="input-wrap"><input type="number" id="optpool" value="10" min="0" max="30" oninput="calc()"><span class="ifix ifix-r">%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="results-row">
+    <div class="r-card highlight">
+      <div class="r-label">Investor Ownership</div>
+      <div class="r-value" id="r-ownership">—</div>
+      <div class="r-sub">at conversion</div>
+    </div>
+    <div class="r-card">
+      <div class="r-label">Effective Price/Share</div>
+      <div class="r-value" id="r-price">—</div>
+      <div class="r-sub">SAFE conversion price</div>
+    </div>
+    <div class="r-card">
+      <div class="r-label">Shares Issued</div>
+      <div class="r-value" id="r-shares">—</div>
+      <div class="r-sub">to SAFE investor</div>
+    </div>
+    <div class="r-card">
+      <div class="r-label">Founder Dilution</div>
+      <div class="r-value" id="r-dilution">—</div>
+      <div class="r-sub">from this SAFE</div>
+    </div>
+  </div>
+
+  <div class="table-panel">
+    <div class="table-title">Cap Table After Conversion</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Stakeholder</th>
+          <th>Shares</th>
+          <th>Ownership %</th>
+          <th>Value (at round price)</th>
+        </tr>
+      </thead>
+      <tbody id="captable">
+        <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px;">Enter values above to see cap table</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="warn-box">
+    <strong>⚠️ Disclaimer:</strong> This calculator is for illustrative purposes only and uses simplified assumptions. Real SAFE conversions may involve pro-rata rights, MFN clauses, side letters, and other terms. Always consult a startup lawyer before signing any legal documents.
+  </div>
+</main>
+
+<footer>
+  <div class="flogo">Rate<span>Kit</span></div>
+  <span class="fcopy">© 2026 RateKit · Free · No data stored</span>
+  <ul class="flinks">
+    <li><a href="/freelance-rate.html">Freelance Rate</a></li>
+    <li><a href="/burn-rate.html">Burn Rate</a></li>
+    <li><a href="/ltv-cac.html">LTV:CAC</a></li>
+    <li><a href="/break-even.html">Break-even</a></li>
+  </ul>
+</footer>
+
+<script>
+let safeType = 'cap';
+function setType(t, btn) {
+  safeType = t;
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('cap-field').style.display = (t === 'discount') ? 'none' : 'block';
+  document.getElementById('discount-field').style.display = (t === 'cap') ? 'none' : 'block';
+  calc();
+}
+function fmtNum(n) { return n >= 1000000 ? (n/1000000).toFixed(2)+'M' : n >= 1000 ? (n/1000).toFixed(1)+'K' : Math.round(n).toLocaleString(); }
+function fmtPct(n) { return n.toFixed(2) + '%'; }
+function fmtUSD(n) { return '$' + Math.round(n).toLocaleString(); }
+
+function calc() {
+  const inv = +document.getElementById('investment').value || 0;
+  const cap = +document.getElementById('valcap').value || 0;
+  const disc = +document.getElementById('discount').value || 0;
+  const pre = +document.getElementById('premoney').value || 1;
+  const newRound = +document.getElementById('newround').value || 0;
+  const existShares = +document.getElementById('shares').value || 1;
+  const optPool = +document.getElementById('optpool').value || 0;
+
+  const postMoney = pre + newRound;
+
+  // Option pool shares added pre-round (dilutes founders)
+  const optPoolShares = Math.round(existShares * optPool / (100 - optPool));
+  const totalPreShares = existShares + optPoolShares;
+
+  // Price per share at next round (pre-money / total shares before new investors)
+  const roundPricePerShare = pre / totalPreShares;
+
+  // SAFE conversion price
+  let conversionPrice;
+  if (safeType === 'cap') {
+    conversionPrice = cap / totalPreShares;
+  } else if (safeType === 'discount') {
+    conversionPrice = roundPricePerShare * (1 - disc / 100);
+  } else {
+    // Both: use lower of cap price or discount price
+    const capPrice = cap / totalPreShares;
+    const discPrice = roundPricePerShare * (1 - disc / 100);
+    conversionPrice = Math.min(capPrice, discPrice);
+  }
+
+  // Shares issued to SAFE investor
+  const safeShares = conversionPrice > 0 ? Math.round(inv / conversionPrice) : 0;
+
+  // New round shares
+  const newRoundShares = roundPricePerShare > 0 ? Math.round(newRound / roundPricePerShare) : 0;
+
+  // Total shares after everything
+  const totalShares = totalPreShares + safeShares + newRoundShares;
+
+  const ownershipPct = totalShares > 0 ? (safeShares / totalShares * 100) : 0;
+  const founderDilution = totalShares > 0 ? (safeShares / totalShares * 100) : 0;
+
+  // Update result cards
+  document.getElementById('r-ownership').textContent = fmtPct(ownershipPct);
+  document.getElementById('r-price').textContent = conversionPrice > 0 ? '$' + conversionPrice.toFixed(4) : '—';
+  document.getElementById('r-shares').textContent = fmtNum(safeShares);
+  document.getElementById('r-dilution').textContent = fmtPct(founderDilution);
+
+  // Cap table
+  const founderPct = existShares / totalShares * 100;
+  const optPct = optPoolShares / totalShares * 100;
+  const newInvPct = newRoundShares / totalShares * 100;
+
+  document.getElementById('captable').innerHTML = `
+    <tr><td>Founders</td><td class="mono">${fmtNum(existShares)}</td><td class="mono">${fmtPct(founderPct)}</td><td class="mono">${fmtUSD(existShares * roundPricePerShare)}</td></tr>
+    <tr><td>Option Pool</td><td class="mono">${fmtNum(optPoolShares)}</td><td class="mono">${fmtPct(optPct)}</td><td class="mono">${fmtUSD(optPoolShares * roundPricePerShare)}</td></tr>
+    <tr><td>SAFE Investor</td><td class="mono">${fmtNum(safeShares)}</td><td class="mono">${fmtPct(ownershipPct)}</td><td class="mono">${fmtUSD(safeShares * roundPricePerShare)}</td></tr>
+    <tr><td>New Round Investors</td><td class="mono">${fmtNum(newRoundShares)}</td><td class="mono">${fmtPct(newInvPct)}</td><td class="mono">${fmtUSD(newRound)}</td></tr>
+    <tr class="total"><td>Total</td><td class="mono">${fmtNum(totalShares)}</td><td class="mono">100.00%</td><td class="mono">${fmtUSD(postMoney)}</td></tr>
+  `;
+}
+function toggleNav() { document.getElementById('nl').classList.toggle('open'); }
+calc();
+</script>
+</body>
+</html>
