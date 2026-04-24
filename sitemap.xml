@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://ratekit.org/</loc><priority>1.0</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://ratekit.org/freelance-rate.html</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://ratekit.org/safe-calculator.html</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://ratekit.org/burn-rate.html</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://ratekit.org/ltv-cac.html</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://ratekit.org/break-even.html</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
+</urlset>
