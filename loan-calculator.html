@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Loan & APR Calculator — RateKit</title>
+<meta name="description" content="Calculate monthly payments, total interest, and true APR for business loans. Compare loan options side by side. Free loan calculator for entrepreneurs.">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon-180x180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F8F9FC;--white:#FFFFFF;--border:#E2E8F0;--ink:#0F172A;--mid:#475569;--muted:#94A3B8;--blue:#2563EB;--bluebg:#EFF6FF;--green:#059669;--greenbg:#ECFDF5;--amber:#D97706;--red:#DC2626;--redbg:#FEF2F2;--font:'Plus Jakarta Sans',sans-serif;--mono:'JetBrains Mono',monospace;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh;}
+a{text-decoration:none;color:inherit;}
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 48px;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.logo{font-size:18px;font-weight:700;color:var(--ink);letter-spacing:-.02em;}.logo span{color:var(--blue);}
+.nl{display:flex;align-items:center;gap:2px;list-style:none;flex-wrap:wrap;}
+.nl a{font-size:12px;font-weight:500;color:var(--mid);padding:5px 10px;border-radius:6px;transition:background .15s,color .15s;}
+.nl a:hover{background:var(--bluebg);color:var(--blue);}
+.nl a.active{color:var(--blue);background:var(--bluebg);}
+.burger{display:none;background:none;border:none;font-size:20px;cursor:pointer;padding:4px 8px;}
+.page-header{background:var(--white);border-bottom:1px solid var(--border);padding:48px 48px 40px;}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:16px;}
+.breadcrumb a{color:var(--blue);}
+.page-tag{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);margin-bottom:10px;}
+h1{font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:700;letter-spacing:-.02em;line-height:1.15;margin-bottom:10px;}
+.page-sub{font-size:15px;color:var(--mid);max-width:520px;}
+main{padding:40px 48px 64px;max-width:900px;}
+.panel{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:20px;}
+.panel-title{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.field{margin-bottom:16px;}
+.lbl{display:block;font-size:12px;font-weight:600;color:var(--mid);margin-bottom:6px;}
+.hint{font-weight:400;color:var(--muted);}
+.input-wrap{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:8px;background:var(--white);overflow:hidden;transition:border-color .15s;}
+.input-wrap:focus-within{border-color:var(--blue);}
+.ifix{font-family:var(--mono);font-size:13px;color:var(--muted);padding:10px 12px;background:var(--bg);border-right:1px solid var(--border);white-space:nowrap;}
+.ifix-r{border-right:none;border-left:1px solid var(--border);}
+input[type="number"]{flex:1;background:transparent;border:none;outline:none;color:var(--ink);font-family:var(--mono);font-size:14px;padding:10px 12px;width:100%;-moz-appearance:textfield;}
+input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;}
+.results-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.r-card{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:22px;}
+.r-card.primary{background:var(--blue);border-color:var(--blue);}
+.r-card.red{background:var(--redbg);border-color:#FECACA;}
+.r-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.r-card.primary .r-label{color:rgba(255,255,255,.6);}
+.r-card.red .r-label{color:var(--red);}
+.r-value{font-family:var(--mono);font-size:clamp(1.3rem,2.5vw,1.9rem);font-weight:600;color:var(--ink);line-height:1;}
+.r-card.primary .r-value{color:white;}
+.r-card.red .r-value{color:var(--red);}
+.r-sub{font-size:11px;color:var(--muted);margin-top:6px;}
+.r-card.primary .r-sub{color:rgba(255,255,255,.5);}
+.amort-panel{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:20px;overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:500px;}
+thead th{text-align:left;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:8px 10px;background:var(--bg);border-bottom:1px solid var(--border);}
+tbody td{padding:8px 10px;border-bottom:1px solid var(--border);color:var(--mid);}
+tbody td.mono{font-family:var(--mono);color:var(--ink);}
+tbody tr:last-child td{border-bottom:none;}
+.info-box{background:var(--bluebg);border:1px solid #BFDBFE;border-radius:10px;padding:16px 20px;font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:20px;}
+.info-box strong{color:var(--blue);}
+footer{background:var(--ink);padding:28px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;}
+.flogo{font-size:16px;font-weight:700;color:white;}.flogo span{color:var(--blue);}
+.fcopy{font-size:12px;color:rgba(255,255,255,.3);}
+.flinks{display:flex;gap:14px;list-style:none;flex-wrap:wrap;}
+.flinks a{font-size:12px;color:rgba(255,255,255,.4);transition:color .2s;}
+.flinks a:hover{color:white;}
+@media(max-width:768px){nav{padding:0 16px;}.nl{display:none;position:fixed;top:60px;left:0;right:0;background:white;border-bottom:1px solid var(--border);flex-direction:column;padding:12px;gap:2px;z-index:99;}.nl.open{display:flex;}.burger{display:block;}.page-header,main{padding-left:16px;padding-right:16px;}.results-row{grid-template-columns:1fr 1fr;}footer{padding:20px 16px;flex-direction:column;align-items:flex-start;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo">Rate<span>Kit</span></a>
+  <button class="burger" onclick="toggleNav()">☰</button>
+  <ul class="nl" id="nl">
+    <li><a href="/freelance-rate.html">Freelance Rate</a></li>
+    <li><a href="/stripe-fee.html">Stripe/PayPal Fee</a></li>
+    <li><a href="/vat-calculator.html">VAT/GST</a></li>
+    <li><a href="/roi-calculator.html">ROI</a></li>
+    <li><a href="/profit-margin.html">Profit Margin</a></li>
+    <li><a href="/self-employment-tax.html">SE Tax</a></li>
+    <li><a href="/loan-calculator.html" class="active">Loan</a></li>
+    <li><a href="/safe-calculator.html">SAFE</a></li>
+    <li><a href="/burn-rate.html">Burn Rate</a></li>
+    <li><a href="/ltv-cac.html">LTV:CAC</a></li>
+    <li><a href="/break-even.html">Break-even</a></li>
+  </ul>
+</nav>
+<div class="page-header">
+  <div class="breadcrumb"><a href="/">RateKit</a> › Business Loan Calculator</div>
+  <div class="page-tag">🏦 Finance Tool</div>
+  <h1>Business Loan & APR Calculator</h1>
+  <p class="page-sub">Calculate monthly payments, total interest cost, and true APR. See the full amortization schedule for any business loan.</p>
+</div>
+<main>
+  <div class="panel">
+    <div class="field"><label class="lbl">Loan Amount</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="principal" value="100000" min="0" oninput="calc()"></div></div>
+    <div class="field"><label class="lbl">Annual Interest Rate (APR)</label><div class="input-wrap"><input type="number" id="rate" value="8.5" min="0" max="100" step="0.1" oninput="calc()"><span class="ifix ifix-r">%</span></div></div>
+    <div class="field"><label class="lbl">Loan Term</label><div class="input-wrap"><input type="number" id="term" value="60" min="1" max="360" oninput="calc()"><span class="ifix ifix-r">months</span></div></div>
+    <div class="field"><label class="lbl">Origination Fee <span class="hint">(optional)</span></label><div class="input-wrap"><input type="number" id="fee" value="0" min="0" max="10" step="0.1" oninput="calc()"><span class="ifix ifix-r">%</span></div></div>
+  </div>
+
+  <div class="results-row">
+    <div class="r-card primary">
+      <div class="r-label">Monthly Payment</div>
+      <div class="r-value" id="r-monthly">—</div>
+      <div class="r-sub">principal + interest</div>
+    </div>
+    <div class="r-card red">
+      <div class="r-label">Total Interest</div>
+      <div class="r-value" id="r-interest">—</div>
+      <div class="r-sub">total cost of borrowing</div>
+    </div>
+    <div class="r-card">
+      <div class="r-label">Total Repayment</div>
+      <div class="r-value" id="r-total">—</div>
+      <div class="r-sub">principal + all interest</div>
+    </div>
+    <div class="r-card">
+      <div class="r-label">True APR</div>
+      <div class="r-value" id="r-apr">—</div>
+      <div class="r-sub">incl. origination fee</div>
+    </div>
+  </div>
+
+  <div class="amort-panel">
+    <div class="panel-title">Amortization Schedule (first 12 months)</div>
+    <table>
+      <thead><tr><th>#</th><th>Payment</th><th>Principal</th><th>Interest</th><th>Balance</th></tr></thead>
+      <tbody id="amort-body"></tbody>
+    </table>
+  </div>
+
+  <div class="info-box">
+    <strong>💡 Tip:</strong> The true cost of a loan includes origination fees, not just the interest rate. A loan with a lower rate but high fees can cost more than a higher-rate loan with no fees. Always compare <strong>total repayment amounts</strong>, not just monthly payments.
+  </div>
+</main>
+<footer>
+  <div class="flogo">Rate<span>Kit</span></div>
+  <span class="fcopy">© 2026 RateKit · Free · No data stored</span>
+  <ul class="flinks">
+    <li><a href="/roi-calculator.html">ROI</a></li>
+    <li><a href="/break-even.html">Break-even</a></li>
+    <li><a href="/profit-margin.html">Profit Margin</a></li>
+    <li><a href="/burn-rate.html">Burn Rate</a></li>
+  </ul>
+</footer>
+<script>
+function fmt(n){return '$'+Math.round(n).toLocaleString('en-US');}
+function calc(){
+  const P=+document.getElementById('principal').value||0;
+  const annualRate=+document.getElementById('rate').value||0;
+  const n=+document.getElementById('term').value||1;
+  const feePct=+document.getElementById('fee').value||0;
+  const r=annualRate/100/12;
+  let monthly;
+  if(r===0){monthly=P/n;}
+  else{monthly=P*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);}
+  const totalRepay=monthly*n;
+  const totalInterest=totalRepay-P;
+  const feeAmt=P*feePct/100;
+  const trueAPR=annualRate+(feePct/n*12);
+
+  document.getElementById('r-monthly').textContent=fmt(monthly);
+  document.getElementById('r-interest').textContent=fmt(totalInterest);
+  document.getElementById('r-total').textContent=fmt(totalRepay);
+  document.getElementById('r-apr').textContent=trueAPR.toFixed(2)+'%';
+
+  // Amortization (12 months)
+  let balance=P;
+  let rows='';
+  for(let i=1;i<=Math.min(12,n);i++){
+    const interest=balance*r;
+    const principal=monthly-interest;
+    balance-=principal;
+    rows+=`<tr>
+      <td>${i}</td>
+      <td class="mono">${fmt(monthly)}</td>
+      <td class="mono">${fmt(principal)}</td>
+      <td class="mono">${fmt(interest)}</td>
+      <td class="mono">${fmt(Math.max(0,balance))}</td>
+    </tr>`;
+  }
+  if(n>12) rows+=`<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:12px;">... ${n-12} more months</td></tr>`;
+  document.getElementById('amort-body').innerHTML=rows;
+}
+function toggleNav(){document.getElementById('nl').classList.toggle('open');}
+calc();
+</script>
+</body>
+</html>

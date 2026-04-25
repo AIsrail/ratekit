@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VAT & GST Calculator — RateKit</title>
+<meta name="description" content="Add or remove VAT and GST from any price. Supports all countries and custom rates. Free VAT calculator for invoicing and business.">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon-180x180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F8F9FC;--white:#FFFFFF;--border:#E2E8F0;--ink:#0F172A;--mid:#475569;--muted:#94A3B8;--blue:#2563EB;--bluebg:#EFF6FF;--green:#059669;--greenbg:#ECFDF5;--amber:#D97706;--font:'Plus Jakarta Sans',sans-serif;--mono:'JetBrains Mono',monospace;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh;}
+a{text-decoration:none;color:inherit;}
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 48px;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.logo{font-size:18px;font-weight:700;color:var(--ink);letter-spacing:-.02em;}.logo span{color:var(--blue);}
+.nl{display:flex;align-items:center;gap:2px;list-style:none;flex-wrap:wrap;}
+.nl a{font-size:12px;font-weight:500;color:var(--mid);padding:5px 10px;border-radius:6px;transition:background .15s,color .15s;}
+.nl a:hover{background:var(--bluebg);color:var(--blue);}
+.nl a.active{color:var(--blue);background:var(--bluebg);}
+.burger{display:none;background:none;border:none;font-size:20px;cursor:pointer;padding:4px 8px;}
+.page-header{background:var(--white);border-bottom:1px solid var(--border);padding:48px 48px 40px;}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:16px;}
+.breadcrumb a{color:var(--blue);}
+.page-tag{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:10px;}
+h1{font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:700;letter-spacing:-.02em;line-height:1.15;margin-bottom:10px;}
+.page-sub{font-size:15px;color:var(--mid);max-width:520px;}
+main{padding:40px 48px 64px;max-width:900px;}
+.panel{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:20px;}
+.panel-title{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.field{margin-bottom:16px;}
+.lbl{display:block;font-size:12px;font-weight:600;color:var(--mid);margin-bottom:6px;}
+.input-wrap{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:8px;background:var(--white);overflow:hidden;transition:border-color .15s;}
+.input-wrap:focus-within{border-color:var(--blue);}
+.ifix{font-family:var(--mono);font-size:13px;color:var(--muted);padding:10px 12px;background:var(--bg);border-right:1px solid var(--border);white-space:nowrap;}
+.ifix-r{border-right:none;border-left:1px solid var(--border);}
+input[type="number"]{flex:1;background:transparent;border:none;outline:none;color:var(--ink);font-family:var(--mono);font-size:14px;padding:10px 12px;width:100%;-moz-appearance:textfield;}
+input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;}
+select{flex:1;background:transparent;border:none;outline:none;color:var(--ink);font-family:var(--font);font-size:14px;padding:10px 12px;cursor:pointer;}
+.mode-toggle{display:flex;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:24px;}
+.mode-btn{flex:1;padding:10px;background:transparent;border:none;font-family:var(--font);font-size:13px;font-weight:500;color:var(--mid);cursor:pointer;transition:all .15s;}
+.mode-btn.active{background:var(--blue);color:white;}
+.results-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+.r-card{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:22px;}
+.r-card.primary{background:var(--blue);border-color:var(--blue);}
+.r-card.green{background:var(--greenbg);border-color:#6EE7B7;}
+.r-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.r-card.primary .r-label{color:rgba(255,255,255,.6);}
+.r-card.green .r-label{color:var(--green);}
+.r-value{font-family:var(--mono);font-size:clamp(1.4rem,2.5vw,2rem);font-weight:600;color:var(--ink);line-height:1;}
+.r-card.primary .r-value{color:white;}
+.r-card.green .r-value{color:var(--green);}
+.r-sub{font-size:11px;color:var(--muted);margin-top:6px;}
+.r-card.primary .r-sub{color:rgba(255,255,255,.5);}
+.rates-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:4px;}
+.rate-chip{background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;cursor:pointer;transition:all .15s;font-size:13px;}
+.rate-chip:hover{border-color:var(--blue);}
+.rate-chip.active{border-color:var(--blue);background:var(--bluebg);color:var(--blue);}
+.rate-chip .country{font-weight:600;font-size:12px;}
+.rate-chip .rate{font-family:var(--mono);font-size:11px;color:var(--muted);}
+.info-box{background:var(--bluebg);border:1px solid #BFDBFE;border-radius:10px;padding:16px 20px;font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:20px;}
+.info-box strong{color:var(--blue);}
+footer{background:var(--ink);padding:28px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;}
+.flogo{font-size:16px;font-weight:700;color:white;}.flogo span{color:var(--blue);}
+.fcopy{font-size:12px;color:rgba(255,255,255,.3);}
+.flinks{display:flex;gap:14px;list-style:none;flex-wrap:wrap;}
+.flinks a{font-size:12px;color:rgba(255,255,255,.4);transition:color .2s;}
+.flinks a:hover{color:white;}
+@media(max-width:768px){nav{padding:0 16px;}.nl{display:none;position:fixed;top:60px;left:0;right:0;background:white;border-bottom:1px solid var(--border);flex-direction:column;padding:12px;gap:2px;z-index:99;}.nl.open{display:flex;}.burger{display:block;}.page-header,main{padding-left:16px;padding-right:16px;}.results-grid{grid-template-columns:1fr 1fr;}footer{padding:20px 16px;flex-direction:column;align-items:flex-start;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo">Rate<span>Kit</span></a>
+  <button class="burger" onclick="toggleNav()">☰</button>
+  <ul class="nl" id="nl">
+    <li><a href="/freelance-rate.html">Freelance Rate</a></li>
+    <li><a href="/stripe-fee.html">Stripe/PayPal Fee</a></li>
+    <li><a href="/vat-calculator.html" class="active">VAT/GST</a></li>
+    <li><a href="/roi-calculator.html">ROI</a></li>
+    <li><a href="/profit-margin.html">Profit Margin</a></li>
+    <li><a href="/self-employment-tax.html">SE Tax</a></li>
+    <li><a href="/loan-calculator.html">Loan</a></li>
+    <li><a href="/safe-calculator.html">SAFE</a></li>
+    <li><a href="/burn-rate.html">Burn Rate</a></li>
+    <li><a href="/ltv-cac.html">LTV:CAC</a></li>
+    <li><a href="/break-even.html">Break-even</a></li>
+  </ul>
+</nav>
+<div class="page-header">
+  <div class="breadcrumb"><a href="/">RateKit</a> › VAT & GST Calculator</div>
+  <div class="page-tag">🌍 Global Tool</div>
+  <h1>VAT & GST Calculator</h1>
+  <p class="page-sub">Add or remove VAT/GST from any price. Supports all major countries and custom rates. Perfect for invoicing.</p>
+</div>
+<main>
+  <div class="panel">
+    <div class="panel-title">Mode</div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" onclick="setMode('add',this)">Add tax to price</button>
+      <button class="mode-btn" onclick="setMode('remove',this)">Remove tax from price</button>
+    </div>
+    <div class="field">
+      <label class="lbl" id="amount-lbl">Price (excl. tax)</label>
+      <div class="input-wrap"><span class="ifix">$</span><input type="number" id="amount" value="1000" min="0" step="0.01" oninput="calc()"></div>
+    </div>
+    <div class="field">
+      <label class="lbl">Tax Rate</label>
+      <div class="input-wrap"><input type="number" id="rate" value="20" min="0" max="100" step="0.1" oninput="calc()"><span class="ifix ifix-r">%</span></div>
+    </div>
+    <div class="field">
+      <label class="lbl">Quick select by country</label>
+      <div class="rates-grid" id="rate-chips"></div>
+    </div>
+  </div>
+
+  <div class="results-grid">
+    <div class="r-card">
+      <div class="r-label">Price excl. tax</div>
+      <div class="r-value" id="r-excl">—</div>
+      <div class="r-sub">net amount</div>
+    </div>
+    <div class="r-card primary">
+      <div class="r-label">Tax amount</div>
+      <div class="r-value" id="r-tax">—</div>
+      <div class="r-sub" id="r-tax-sub">VAT/GST</div>
+    </div>
+    <div class="r-card green">
+      <div class="r-label">Price incl. tax</div>
+      <div class="r-value" id="r-incl">—</div>
+      <div class="r-sub">gross amount</div>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <strong>💡 Note:</strong> "Add tax" means your entered price is the net (pre-tax) price. "Remove tax" means your price already includes tax and you want to find the net amount. Always check local regulations for correct invoicing.
+  </div>
+</main>
+
+<footer>
+  <div class="flogo">Rate<span>Kit</span></div>
+  <span class="fcopy">© 2026 RateKit · Free · No data stored</span>
+  <ul class="flinks">
+    <li><a href="/stripe-fee.html">Stripe Fee</a></li>
+    <li><a href="/roi-calculator.html">ROI</a></li>
+    <li><a href="/profit-margin.html">Profit Margin</a></li>
+    <li><a href="/freelance-rate.html">Freelance Rate</a></li>
+  </ul>
+</footer>
+
+<script>
+let mode = 'add';
+const countries = [
+  {name:'🇬🇧 UK', rate:20}, {name:'🇩🇪 Germany', rate:19}, {name:'🇫🇷 France', rate:20},
+  {name:'🇳🇱 Netherlands', rate:21}, {name:'🇦🇺 Australia GST', rate:10},
+  {name:'🇨🇦 Canada HST', rate:13}, {name:'🇮🇳 India GST', rate:18},
+  {name:'🇳🇿 New Zealand', rate:15}, {name:'🇿🇦 South Africa', rate:15},
+  {name:'🇸🇬 Singapore', rate:9}, {name:'🇯🇵 Japan', rate:10}, {name:'🇸🇪 Sweden', rate:25},
+];
+
+// Build chips
+document.getElementById('rate-chips').innerHTML = countries.map((c,i) =>
+  `<div class="rate-chip${i===0?' active':''}" onclick="setRate(${c.rate},this)">
+    <div class="country">${c.name}</div>
+    <div class="rate">${c.rate}%</div>
+  </div>`).join('');
+
+function setRate(r, el) {
+  document.querySelectorAll('.rate-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('rate').value = r;
+  calc();
+}
+function setMode(m, btn) {
+  mode = m;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('amount-lbl').textContent = m === 'add' ? 'Price (excl. tax)' : 'Price (incl. tax)';
+  calc();
+}
+function fmt(n) { return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+function calc() {
+  const amount = parseFloat(document.getElementById('amount').value) || 0;
+  const rate = parseFloat(document.getElementById('rate').value) || 0;
+  let excl, tax, incl;
+  if (mode === 'add') {
+    excl = amount; tax = amount * rate / 100; incl = amount + tax;
+  } else {
+    incl = amount; excl = amount / (1 + rate / 100); tax = incl - excl;
+  }
+  document.getElementById('r-excl').textContent = fmt(excl);
+  document.getElementById('r-tax').textContent = fmt(tax);
+  document.getElementById('r-incl').textContent = fmt(incl);
+  document.getElementById('r-tax-sub').textContent = `${rate}% rate`;
+}
+function toggleNav() { document.getElementById('nl').classList.toggle('open'); }
+calc();
+</script>
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stripe & PayPal Fee Calculator — RateKit</title>
+<meta name="description" content="Calculate exact Stripe and PayPal fees. Find out how much to charge your client to receive your desired amount after processing fees. Free, instant.">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon-180x180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F8F9FC;--white:#FFFFFF;--border:#E2E8F0;--ink:#0F172A;--mid:#475569;--muted:#94A3B8;--blue:#2563EB;--bluebg:#EFF6FF;--green:#059669;--greenbg:#ECFDF5;--amber:#D97706;--red:#DC2626;--redbg:#FEF2F2;--font:'Plus Jakarta Sans',sans-serif;--mono:'JetBrains Mono',monospace;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh;}
+a{text-decoration:none;color:inherit;}
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 48px;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.logo{font-size:18px;font-weight:700;color:var(--ink);letter-spacing:-.02em;}.logo span{color:var(--blue);}
+.nl{display:flex;align-items:center;gap:2px;list-style:none;flex-wrap:wrap;}
+.nl a{font-size:12px;font-weight:500;color:var(--mid);padding:5px 10px;border-radius:6px;transition:background .15s,color .15s;}
+.nl a:hover{background:var(--bluebg);color:var(--blue);}
+.nl a.active{color:var(--blue);background:var(--bluebg);}
+.burger{display:none;background:none;border:none;font-size:20px;cursor:pointer;padding:4px 8px;}
+.page-header{background:var(--white);border-bottom:1px solid var(--border);padding:48px 48px 40px;}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:16px;}
+.breadcrumb a{color:var(--blue);}
+.page-tag{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:10px;}
+h1{font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:700;letter-spacing:-.02em;line-height:1.15;margin-bottom:10px;}
+.page-sub{font-size:15px;color:var(--mid);max-width:520px;}
+main{padding:40px 48px 64px;max-width:900px;}
+.panel{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:20px;}
+.panel-title{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.field{margin-bottom:16px;}
+.lbl{display:block;font-size:12px;font-weight:600;color:var(--mid);margin-bottom:6px;}
+.input-wrap{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:8px;background:var(--white);overflow:hidden;transition:border-color .15s;}
+.input-wrap:focus-within{border-color:var(--blue);}
+.ifix{font-family:var(--mono);font-size:13px;color:var(--muted);padding:10px 12px;background:var(--bg);border-right:1px solid var(--border);white-space:nowrap;}
+.ifix-r{border-right:none;border-left:1px solid var(--border);}
+input[type="number"]{flex:1;background:transparent;border:none;outline:none;color:var(--ink);font-family:var(--mono);font-size:14px;padding:10px 12px;width:100%;-moz-appearance:textfield;}
+input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;}
+select{flex:1;background:transparent;border:none;outline:none;color:var(--ink);font-family:var(--font);font-size:14px;padding:10px 12px;cursor:pointer;}
+
+/* MODE TOGGLE */
+.mode-toggle{display:flex;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:24px;}
+.mode-btn{flex:1;padding:10px;background:transparent;border:none;font-family:var(--font);font-size:13px;font-weight:500;color:var(--mid);cursor:pointer;transition:all .15s;text-align:center;}
+.mode-btn.active{background:var(--blue);color:white;}
+
+/* PROCESSOR TABS */
+.proc-tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+.proc-btn{padding:8px 16px;background:var(--white);border:1.5px solid var(--border);border-radius:8px;font-family:var(--font);font-size:13px;font-weight:500;color:var(--mid);cursor:pointer;transition:all .15s;}
+.proc-btn.active{border-color:var(--blue);color:var(--blue);background:var(--bluebg);}
+
+/* RESULTS */
+.results-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+.r-card{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:22px;}
+.r-card.primary{background:var(--blue);border-color:var(--blue);}
+.r-card.green{background:var(--greenbg);border-color:#6EE7B7;}
+.r-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.r-card.primary .r-label{color:rgba(255,255,255,.6);}
+.r-card.green .r-label{color:var(--green);}
+.r-value{font-family:var(--mono);font-size:clamp(1.4rem,2.5vw,2rem);font-weight:600;color:var(--ink);line-height:1;}
+.r-card.primary .r-value{color:white;}
+.r-card.green .r-value{color:var(--green);}
+.r-sub{font-size:11px;color:var(--muted);margin-top:6px;}
+.r-card.primary .r-sub{color:rgba(255,255,255,.5);}
+
+/* COMPARISON TABLE */
+.comp-table{width:100%;border-collapse:collapse;font-size:13px;}
+.comp-table th{text-align:left;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:8px 12px;background:var(--bg);border-bottom:1px solid var(--border);}
+.comp-table td{padding:12px;border-bottom:1px solid var(--border);color:var(--mid);}
+.comp-table td.mono{font-family:var(--mono);color:var(--ink);}
+.comp-table tr:last-child td{border-bottom:none;}
+.comp-table tr.best td{background:var(--greenbg);}
+.comp-table tr.best td.mono{color:var(--green);font-weight:600;}
+
+.info-box{background:var(--bluebg);border:1px solid #BFDBFE;border-radius:10px;padding:16px 20px;font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:20px;}
+.info-box strong{color:var(--blue);}
+
+footer{background:var(--ink);padding:28px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;}
+.flogo{font-size:16px;font-weight:700;color:white;}.flogo span{color:var(--blue);}
+.fcopy{font-size:12px;color:rgba(255,255,255,.3);}
+.flinks{display:flex;gap:14px;list-style:none;flex-wrap:wrap;}
+.flinks a{font-size:12px;color:rgba(255,255,255,.4);transition:color .2s;}
+.flinks a:hover{color:white;}
+@media(max-width:768px){nav{padding:0 16px;}.nl{display:none;position:fixed;top:60px;left:0;right:0;background:white;border-bottom:1px solid var(--border);flex-direction:column;padding:12px;gap:2px;z-index:99;}.nl.open{display:flex;}.burger{display:block;}.page-header,main{padding-left:16px;padding-right:16px;}.results-grid{grid-template-columns:1fr 1fr;}footer{padding:20px 16px;flex-direction:column;align-items:flex-start;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo">Rate<span>Kit</span></a>
+  <button class="burger" onclick="toggleNav()">☰</button>
+  <ul class="nl" id="nl">
+    <li><a href="/freelance-rate.html">Freelance Rate</a></li>
+    <li><a href="/stripe-fee.html" class="active">Stripe/PayPal Fee</a></li>
+    <li><a href="/vat-calculator.html">VAT/GST</a></li>
+    <li><a href="/roi-calculator.html">ROI</a></li>
+    <li><a href="/profit-margin.html">Profit Margin</a></li>
+    <li><a href="/self-employment-tax.html">SE Tax</a></li>
+    <li><a href="/loan-calculator.html">Loan</a></li>
+    <li><a href="/safe-calculator.html">SAFE</a></li>
+    <li><a href="/burn-rate.html">Burn Rate</a></li>
+    <li><a href="/ltv-cac.html">LTV:CAC</a></li>
+    <li><a href="/break-even.html">Break-even</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <div class="breadcrumb"><a href="/">RateKit</a> › Stripe & PayPal Fee Calculator</div>
+  <div class="page-tag">🔥 Most Popular</div>
+  <h1>Stripe & PayPal Fee Calculator</h1>
+  <p class="page-sub">Find out exactly how much to charge your client so you receive your desired amount after payment processing fees.</p>
+</div>
+
+<main>
+  <div class="panel">
+    <div class="panel-title">Mode</div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" onclick="setMode('receive',this)">I want to receive...</button>
+      <button class="mode-btn" onclick="setMode('charge',this)">I'm charging...</button>
+    </div>
+
+    <div class="panel-title">Payment Processor</div>
+    <div class="proc-tabs">
+      <button class="proc-btn active" onclick="setProc('stripe',this)">Stripe (2.9% + $0.30)</button>
+      <button class="proc-btn" onclick="setProc('paypal',this)">PayPal (3.49% + $0.49)</button>
+      <button class="proc-btn" onclick="setProc('square',this)">Square (2.6% + $0.10)</button>
+      <button class="proc-btn" onclick="setProc('custom',this)">Custom</button>
+    </div>
+
+    <div class="field" id="custom-fields" style="display:none;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div>
+          <label class="lbl">Percentage fee</label>
+          <div class="input-wrap"><input type="number" id="custom-pct" value="2.9" step="0.01" min="0" oninput="calc()"><span class="ifix ifix-r">%</span></div>
+        </div>
+        <div>
+          <label class="lbl">Fixed fee</label>
+          <div class="input-wrap"><span class="ifix">$</span><input type="number" id="custom-fixed" value="0.30" step="0.01" min="0" oninput="calc()"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="lbl" id="amount-label">Amount you want to receive</label>
+      <div class="input-wrap"><span class="ifix">$</span><input type="number" id="amount" value="1000" min="0" step="0.01" oninput="calc()"></div>
+    </div>
+  </div>
+
+  <div class="results-grid">
+    <div class="r-card primary">
+      <div class="r-label" id="r1-label">Charge your client</div>
+      <div class="r-value" id="r-charge">—</div>
+      <div class="r-sub">to receive your amount</div>
+    </div>
+    <div class="r-card">
+      <div class="r-label">Fee amount</div>
+      <div class="r-value" id="r-fee">—</div>
+      <div class="r-sub" id="r-fee-sub">processing fee</div>
+    </div>
+    <div class="r-card green">
+      <div class="r-label" id="r3-label">You receive</div>
+      <div class="r-value" id="r-receive">—</div>
+      <div class="r-sub">after fees</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Processor Comparison</div>
+    <table class="comp-table">
+      <thead><tr><th>Processor</th><th>Rate</th><th>Fee on this amount</th><th>You receive</th></tr></thead>
+      <tbody id="comp-body"></tbody>
+    </table>
+  </div>
+
+  <div class="info-box">
+    <strong>💡 Pro tip:</strong> To pass fees to your client, use the formula: <strong>Charge = (Amount + Fixed Fee) / (1 − Percentage)</strong>. Always disclose processing fees upfront in your invoices.
+  </div>
+</main>
+
+<footer>
+  <div class="flogo">Rate<span>Kit</span></div>
+  <span class="fcopy">© 2026 RateKit · Free · No data stored</span>
+  <ul class="flinks">
+    <li><a href="/vat-calculator.html">VAT/GST</a></li>
+    <li><a href="/roi-calculator.html">ROI</a></li>
+    <li><a href="/profit-margin.html">Profit Margin</a></li>
+    <li><a href="/freelance-rate.html">Freelance Rate</a></li>
+    <li><a href="/safe-calculator.html">SAFE</a></li>
+  </ul>
+</footer>
+
+<script>
+let mode = 'receive';
+let proc = {pct: 2.9, fixed: 0.30};
+
+function setMode(m, btn) {
+  mode = m;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('amount-label').textContent = m === 'receive' ? 'Amount you want to receive' : 'Amount you are charging';
+  document.getElementById('r1-label').textContent = m === 'receive' ? 'Charge your client' : 'You will receive';
+  document.getElementById('r3-label').textContent = m === 'receive' ? 'You receive' : 'Fee amount';
+  calc();
+}
+
+function setProc(p, btn) {
+  document.querySelectorAll('.proc-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('custom-fields').style.display = p === 'custom' ? 'block' : 'none';
+  const rates = {stripe:{pct:2.9,fixed:0.30}, paypal:{pct:3.49,fixed:0.49}, square:{pct:2.6,fixed:0.10}, custom:{pct:2.9,fixed:0.30}};
+  proc = rates[p];
+  if (p !== 'custom') {
+    document.getElementById('custom-pct').value = proc.pct;
+    document.getElementById('custom-fixed').value = proc.fixed;
+  }
+  calc();
+}
+
+function fmt(n) { return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+
+function calc() {
+  const pct = parseFloat(document.getElementById('custom-pct').value) || proc.pct;
+  const fixed = parseFloat(document.getElementById('custom-fixed').value) || proc.fixed;
+  const amount = parseFloat(document.getElementById('amount').value) || 0;
+
+  let charge, fee, receive;
+  if (mode === 'receive') {
+    charge = (amount + fixed) / (1 - pct / 100);
+    fee = charge - amount;
+    receive = amount;
+  } else {
+    fee = amount * (pct / 100) + fixed;
+    receive = amount - fee;
+    charge = amount;
+  }
+
+  document.getElementById('r-charge').textContent = fmt(mode === 'receive' ? charge : receive);
+  document.getElementById('r-fee').textContent = fmt(fee);
+  document.getElementById('r-receive').textContent = fmt(mode === 'receive' ? receive : charge);
+  document.getElementById('r-fee-sub').textContent = `${pct}% + ${fmt(fixed)}`;
+
+  // Comparison
+  const processors = [
+    {name: 'Stripe', pct: 2.9, fixed: 0.30},
+    {name: 'PayPal', pct: 3.49, fixed: 0.49},
+    {name: 'Square', pct: 2.6, fixed: 0.10},
+    {name: 'Wise Business', pct: 0.5, fixed: 0.00},
+  ];
+  const base = mode === 'receive' ? amount : amount;
+  const rows = processors.map(p => {
+    let r;
+    if (mode === 'receive') {
+      const c = (base + p.fixed) / (1 - p.pct / 100);
+      r = { fee: c - base, receive: base, charge: c };
+    } else {
+      const f = amount * (p.pct / 100) + p.fixed;
+      r = { fee: f, receive: amount - f, charge: amount };
+    }
+    return { ...p, ...r };
+  });
+  const maxReceive = Math.max(...rows.map(r => r.receive));
+  document.getElementById('comp-body').innerHTML = rows.map(r => `
+    <tr${r.receive === maxReceive ? ' class="best"' : ''}>
+      <td>${r.name}${r.receive === maxReceive ? ' ✅' : ''}</td>
+      <td style="color:var(--muted);font-size:12px;">${r.pct}% + ${fmt(r.fixed)}</td>
+      <td class="mono">${fmt(r.fee)}</td>
+      <td class="mono">${fmt(r.receive)}</td>
+    </tr>`).join('');
+}
+
+function toggleNav() { document.getElementById('nl').classList.toggle('open'); }
+calc();
+</script>
+</body>
+</html>

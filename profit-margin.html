@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profit Margin Calculator — RateKit</title>
+<meta name="description" content="Calculate gross profit margin, net profit margin, and markup. Free profit margin calculator for e-commerce, retail, and business pricing.">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon-180x180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F8F9FC;--white:#FFFFFF;--border:#E2E8F0;--ink:#0F172A;--mid:#475569;--muted:#94A3B8;--blue:#2563EB;--bluebg:#EFF6FF;--green:#059669;--greenbg:#ECFDF5;--amber:#D97706;--red:#DC2626;--redbg:#FEF2F2;--font:'Plus Jakarta Sans',sans-serif;--mono:'JetBrains Mono',monospace;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh;}
+a{text-decoration:none;color:inherit;}
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 48px;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.logo{font-size:18px;font-weight:700;color:var(--ink);letter-spacing:-.02em;}.logo span{color:var(--blue);}
+.nl{display:flex;align-items:center;gap:2px;list-style:none;flex-wrap:wrap;}
+.nl a{font-size:12px;font-weight:500;color:var(--mid);padding:5px 10px;border-radius:6px;transition:background .15s,color .15s;}
+.nl a:hover{background:var(--bluebg);color:var(--blue);}
+.nl a.active{color:var(--blue);background:var(--bluebg);}
+.burger{display:none;background:none;border:none;font-size:20px;cursor:pointer;padding:4px 8px;}
+.page-header{background:var(--white);border-bottom:1px solid var(--border);padding:48px 48px 40px;}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:16px;}
+.breadcrumb a{color:var(--blue);}
+.page-tag{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);margin-bottom:10px;}
+h1{font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:700;letter-spacing:-.02em;line-height:1.15;margin-bottom:10px;}
+.page-sub{font-size:15px;color:var(--mid);max-width:520px;}
+main{padding:40px 48px 64px;max-width:900px;}
+.panel{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:20px;}
+.panel-title{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.field{margin-bottom:16px;}
+.lbl{display:block;font-size:12px;font-weight:600;color:var(--mid);margin-bottom:6px;}
+.hint{font-weight:400;color:var(--muted);}
+.input-wrap{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:8px;background:var(--white);overflow:hidden;transition:border-color .15s;}
+.input-wrap:focus-within{border-color:var(--blue);}
+.ifix{font-family:var(--mono);font-size:13px;color:var(--muted);padding:10px 12px;background:var(--bg);border-right:1px solid var(--border);white-space:nowrap;}
+.ifix-r{border-right:none;border-left:1px solid var(--border);}
+input[type="number"]{flex:1;background:transparent;border:none;outline:none;color:var(--ink);font-family:var(--mono);font-size:14px;padding:10px 12px;width:100%;-moz-appearance:textfield;}
+input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;}
+.mode-toggle{display:flex;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:24px;}
+.mode-btn{flex:1;padding:10px;background:transparent;border:none;font-family:var(--font);font-size:13px;font-weight:500;color:var(--mid);cursor:pointer;transition:all .15s;}
+.mode-btn.active{background:var(--blue);color:white;}
+.results-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.r-card{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:22px;}
+.r-card.primary{background:var(--blue);border-color:var(--blue);}
+.r-card.green{background:var(--greenbg);border-color:#6EE7B7;}
+.r-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.r-card.primary .r-label{color:rgba(255,255,255,.6);}
+.r-card.green .r-label{color:var(--green);}
+.r-value{font-family:var(--mono);font-size:clamp(1.3rem,2.5vw,1.9rem);font-weight:600;color:var(--ink);line-height:1;}
+.r-card.primary .r-value{color:white;}
+.r-card.green .r-value{color:var(--green);}
+.r-sub{font-size:11px;color:var(--muted);margin-top:6px;}
+.r-card.primary .r-sub{color:rgba(255,255,255,.5);}
+.bench-panel{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:20px;}
+.bench-row{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid var(--border);}
+.bench-row:last-child{border-bottom:none;}
+.bench-name{font-size:13px;color:var(--mid);width:180px;flex-shrink:0;}
+.bench-range{font-family:var(--mono);font-size:12px;font-weight:600;width:70px;flex-shrink:0;}
+.bench-bar-wrap{flex:1;height:5px;background:var(--bg);border-radius:99px;overflow:hidden;}
+.bench-bar{height:100%;border-radius:99px;}
+.info-box{background:var(--bluebg);border:1px solid #BFDBFE;border-radius:10px;padding:16px 20px;font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:20px;}
+.info-box strong{color:var(--blue);}
+footer{background:var(--ink);padding:28px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;}
+.flogo{font-size:16px;font-weight:700;color:white;}.flogo span{color:var(--blue);}
+.fcopy{font-size:12px;color:rgba(255,255,255,.3);}
+.flinks{display:flex;gap:14px;list-style:none;flex-wrap:wrap;}
+.flinks a{font-size:12px;color:rgba(255,255,255,.4);transition:color .2s;}
+.flinks a:hover{color:white;}
+@media(max-width:768px){nav{padding:0 16px;}.nl{display:none;position:fixed;top:60px;left:0;right:0;background:white;border-bottom:1px solid var(--border);flex-direction:column;padding:12px;gap:2px;z-index:99;}.nl.open{display:flex;}.burger{display:block;}.page-header,main{padding-left:16px;padding-right:16px;}.results-row{grid-template-columns:1fr 1fr;}footer{padding:20px 16px;flex-direction:column;align-items:flex-start;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo">Rate<span>Kit</span></a>
+  <button class="burger" onclick="toggleNav()">☰</button>
+  <ul class="nl" id="nl">
+    <li><a href="/freelance-rate.html">Freelance Rate</a></li>
+    <li><a href="/stripe-fee.html">Stripe/PayPal Fee</a></li>
+    <li><a href="/vat-calculator.html">VAT/GST</a></li>
+    <li><a href="/roi-calculator.html">ROI</a></li>
+    <li><a href="/profit-margin.html" class="active">Profit Margin</a></li>
+    <li><a href="/self-employment-tax.html">SE Tax</a></li>
+    <li><a href="/loan-calculator.html">Loan</a></li>
+    <li><a href="/safe-calculator.html">SAFE</a></li>
+    <li><a href="/burn-rate.html">Burn Rate</a></li>
+    <li><a href="/ltv-cac.html">LTV:CAC</a></li>
+    <li><a href="/break-even.html">Break-even</a></li>
+  </ul>
+</nav>
+<div class="page-header">
+  <div class="breadcrumb"><a href="/">RateKit</a> › Profit Margin Calculator</div>
+  <div class="page-tag">🛒 E-commerce & Retail</div>
+  <h1>Profit Margin Calculator</h1>
+  <p class="page-sub">Calculate gross profit margin, net margin, and markup. Find your selling price from cost and desired margin, or vice versa.</p>
+</div>
+<main>
+  <div class="panel">
+    <div class="panel-title">Calculate from</div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" onclick="setMode('cost',this)">Cost + Revenue → Margin</button>
+      <button class="mode-btn" onclick="setMode('margin',this)">Cost + Margin → Selling Price</button>
+    </div>
+    <div id="cost-mode">
+      <div class="field"><label class="lbl">Revenue / Selling Price</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="revenue" value="100" min="0" step="0.01" oninput="calc()"></div></div>
+      <div class="field"><label class="lbl">Cost of Goods (COGS)</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="cogs" value="40" min="0" step="0.01" oninput="calc()"></div></div>
+      <div class="field"><label class="lbl">Operating Expenses <span class="hint">(optional, for net margin)</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="opex" value="20" min="0" step="0.01" oninput="calc()"></div></div>
+    </div>
+    <div id="margin-mode" style="display:none;">
+      <div class="field"><label class="lbl">Cost of Goods (COGS)</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="cost2" value="40" min="0" step="0.01" oninput="calc()"></div></div>
+      <div class="field"><label class="lbl">Desired Gross Margin</label><div class="input-wrap"><input type="number" id="target-margin" value="60" min="0" max="100" step="0.1" oninput="calc()"><span class="ifix ifix-r">%</span></div></div>
+    </div>
+  </div>
+
+  <div class="results-row">
+    <div class="r-card primary">
+      <div class="r-label" id="r1-lbl">Gross Margin</div>
+      <div class="r-value" id="r-margin">—</div>
+      <div class="r-sub" id="r1-sub">of revenue</div>
+    </div>
+    <div class="r-card">
+      <div class="r-label" id="r2-lbl">Gross Profit</div>
+      <div class="r-value" id="r-profit">—</div>
+      <div class="r-sub" id="r2-sub">revenue − COGS</div>
+    </div>
+    <div class="r-card">
+      <div class="r-label">Markup</div>
+      <div class="r-value" id="r-markup">—</div>
+      <div class="r-sub">above cost</div>
+    </div>
+    <div class="r-card green">
+      <div class="r-label" id="r4-lbl">Net Margin</div>
+      <div class="r-value" id="r-net">—</div>
+      <div class="r-sub">after operating expenses</div>
+    </div>
+  </div>
+
+  <div class="bench-panel">
+    <div class="panel-title">Industry Benchmarks (Gross Margin)</div>
+    <div class="bench-row"><span class="bench-name">SaaS / Software</span><span class="bench-range" style="color:var(--green);">70–80%</span><div class="bench-bar-wrap"><div class="bench-bar" style="width:75%;background:var(--green);"></div></div></div>
+    <div class="bench-row"><span class="bench-name">Consulting / Services</span><span class="bench-range" style="color:var(--blue);">60–70%</span><div class="bench-bar-wrap"><div class="bench-bar" style="width:65%;background:var(--blue);"></div></div></div>
+    <div class="bench-row"><span class="bench-name">E-commerce / Retail</span><span class="bench-range" style="color:var(--amber);">30–50%</span><div class="bench-bar-wrap"><div class="bench-bar" style="width:40%;background:var(--amber);"></div></div></div>
+    <div class="bench-row"><span class="bench-name">Manufacturing</span><span class="bench-range" style="color:var(--amber);">25–35%</span><div class="bench-bar-wrap"><div class="bench-bar" style="width:30%;background:var(--amber);"></div></div></div>
+    <div class="bench-row"><span class="bench-name">Restaurants / Food</span><span class="bench-range" style="color:var(--red);">10–20%</span><div class="bench-bar-wrap"><div class="bench-bar" style="width:15%;background:var(--red);"></div></div></div>
+  </div>
+
+  <div class="info-box">
+    <strong>📐 Key difference:</strong> <strong>Margin</strong> = Profit / Revenue × 100 (e.g. 60% margin on $100 sale = $60 profit). <strong>Markup</strong> = Profit / Cost × 100 (e.g. 150% markup on $40 cost = $60 profit). Same number, different base.
+  </div>
+</main>
+<footer>
+  <div class="flogo">Rate<span>Kit</span></div>
+  <span class="fcopy">© 2026 RateKit · Free · No data stored</span>
+  <ul class="flinks">
+    <li><a href="/stripe-fee.html">Stripe Fee</a></li>
+    <li><a href="/roi-calculator.html">ROI</a></li>
+    <li><a href="/break-even.html">Break-even</a></li>
+    <li><a href="/ltv-cac.html">LTV:CAC</a></li>
+  </ul>
+</footer>
+<script>
+let mode='cost';
+function setMode(m,btn){
+  mode=m;
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('cost-mode').style.display=m==='cost'?'block':'none';
+  document.getElementById('margin-mode').style.display=m==='margin'?'block':'none';
+  calc();
+}
+function fmt(n){return '$'+Math.abs(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');}
+function calc(){
+  if(mode==='cost'){
+    const rev=+document.getElementById('revenue').value||1;
+    const cogs=+document.getElementById('cogs').value||0;
+    const opex=+document.getElementById('opex').value||0;
+    const grossProfit=rev-cogs;
+    const grossMargin=grossProfit/rev*100;
+    const markup=cogs>0?grossProfit/cogs*100:0;
+    const netProfit=grossProfit-opex;
+    const netMargin=netProfit/rev*100;
+    document.getElementById('r-margin').textContent=grossMargin.toFixed(1)+'%';
+    document.getElementById('r-profit').textContent=fmt(grossProfit);
+    document.getElementById('r-markup').textContent=markup.toFixed(1)+'%';
+    document.getElementById('r-net').textContent=netMargin.toFixed(1)+'%';
+    document.getElementById('r4-lbl').textContent='Net Margin';
+    document.getElementById('r2-lbl').textContent='Gross Profit';
+    document.getElementById('r1-lbl').textContent='Gross Margin';
+  } else {
+    const cost=+document.getElementById('cost2').value||1;
+    const margin=+document.getElementById('target-margin').value||0;
+    const price=cost/(1-margin/100);
+    const profit=price-cost;
+    const markup=profit/cost*100;
+    document.getElementById('r-margin').textContent=margin.toFixed(1)+'%';
+    document.getElementById('r-profit').textContent=fmt(price);
+    document.getElementById('r-markup').textContent=markup.toFixed(1)+'%';
+    document.getElementById('r-net').textContent=fmt(profit);
+    document.getElementById('r1-lbl').textContent='Target Margin';
+    document.getElementById('r2-lbl').textContent='Selling Price';
+    document.getElementById('r4-lbl').textContent='Gross Profit';
+  }
+}
+function toggleNav(){document.getElementById('nl').classList.toggle('open');}
+calc();
+</script>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Self-Employment Tax Calculator 2026 — RateKit</title>
+<meta name="description" content="Calculate US self-employment tax (15.3%), quarterly estimated payments, and how much to set aside from each paycheck. Free SE tax calculator for freelancers.">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon-180x180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F8F9FC;--white:#FFFFFF;--border:#E2E8F0;--ink:#0F172A;--mid:#475569;--muted:#94A3B8;--blue:#2563EB;--bluebg:#EFF6FF;--green:#059669;--greenbg:#ECFDF5;--amber:#D97706;--red:#DC2626;--redbg:#FEF2F2;--font:'Plus Jakarta Sans',sans-serif;--mono:'JetBrains Mono',monospace;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh;}
+a{text-decoration:none;color:inherit;}
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 48px;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.logo{font-size:18px;font-weight:700;color:var(--ink);letter-spacing:-.02em;}.logo span{color:var(--blue);}
+.nl{display:flex;align-items:center;gap:2px;list-style:none;flex-wrap:wrap;}
+.nl a{font-size:12px;font-weight:500;color:var(--mid);padding:5px 10px;border-radius:6px;transition:background .15s,color .15s;}
+.nl a:hover{background:var(--bluebg);color:var(--blue);}
+.nl a.active{color:var(--blue);background:var(--bluebg);}
+.burger{display:none;background:none;border:none;font-size:20px;cursor:pointer;padding:4px 8px;}
+.page-header{background:var(--white);border-bottom:1px solid var(--border);padding:48px 48px 40px;}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:16px;}
+.breadcrumb a{color:var(--blue);}
+.page-tag{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-bottom:10px;}
+h1{font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:700;letter-spacing:-.02em;line-height:1.15;margin-bottom:10px;}
+.page-sub{font-size:15px;color:var(--mid);max-width:520px;}
+main{padding:40px 48px 64px;max-width:900px;}
+.panel{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:20px;}
+.panel-title{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.field{margin-bottom:16px;}
+.lbl{display:block;font-size:12px;font-weight:600;color:var(--mid);margin-bottom:6px;}
+.hint{font-weight:400;color:var(--muted);}
+.input-wrap{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:8px;background:var(--white);overflow:hidden;transition:border-color .15s;}
+.input-wrap:focus-within{border-color:var(--blue);}
+.ifix{font-family:var(--mono);font-size:13px;color:var(--muted);padding:10px 12px;background:var(--bg);border-right:1px solid var(--border);white-space:nowrap;}
+.ifix-r{border-right:none;border-left:1px solid var(--border);}
+input[type="number"]{flex:1;background:transparent;border:none;outline:none;color:var(--ink);font-family:var(--mono);font-size:14px;padding:10px 12px;width:100%;-moz-appearance:textfield;}
+input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;}
+select{flex:1;background:transparent;border:none;outline:none;color:var(--ink);font-family:var(--font);font-size:14px;padding:10px 12px;cursor:pointer;}
+.results-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+.big-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
+.r-card{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:22px;}
+.r-card.primary{background:var(--red);border-color:var(--red);}
+.r-card.green{background:var(--greenbg);border-color:#6EE7B7;}
+.r-card.amber{background:#FFFBEB;border-color:#FDE68A;}
+.r-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.r-card.primary .r-label{color:rgba(255,255,255,.6);}
+.r-card.green .r-label{color:var(--green);}
+.r-card.amber .r-label{color:var(--amber);}
+.r-value{font-family:var(--mono);font-size:clamp(1.4rem,2.5vw,2rem);font-weight:600;color:var(--ink);line-height:1;}
+.r-card.primary .r-value{color:white;}
+.r-card.green .r-value{color:var(--green);}
+.r-card.amber .r-value{color:var(--amber);}
+.r-sub{font-size:11px;color:var(--muted);margin-top:6px;}
+.r-card.primary .r-sub{color:rgba(255,255,255,.5);}
+.breakdown-panel{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:20px;}
+.bd-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.bd-row:last-child{border-bottom:none;font-weight:600;color:var(--ink);}
+.bd-label{color:var(--mid);}
+.bd-value{font-family:var(--mono);color:var(--ink);}
+.quarterly-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
+.q-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center;}
+.q-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.q-date{font-size:11px;color:var(--amber);margin-bottom:8px;font-weight:500;}
+.q-value{font-family:var(--mono);font-size:1.2rem;font-weight:600;color:var(--ink);}
+.warn-box{background:#FFFBEB;border:1px solid #FDE68A;border-radius:10px;padding:16px 20px;font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:20px;}
+.warn-box strong{color:var(--amber);}
+footer{background:var(--ink);padding:28px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;}
+.flogo{font-size:16px;font-weight:700;color:white;}.flogo span{color:var(--blue);}
+.fcopy{font-size:12px;color:rgba(255,255,255,.3);}
+.flinks{display:flex;gap:14px;list-style:none;flex-wrap:wrap;}
+.flinks a{font-size:12px;color:rgba(255,255,255,.4);transition:color .2s;}
+.flinks a:hover{color:white;}
+@media(max-width:768px){nav{padding:0 16px;}.nl{display:none;position:fixed;top:60px;left:0;right:0;background:white;border-bottom:1px solid var(--border);flex-direction:column;padding:12px;gap:2px;z-index:99;}.nl.open{display:flex;}.burger{display:block;}.page-header,main{padding-left:16px;padding-right:16px;}.results-row,.big-row,.quarterly-grid{grid-template-columns:1fr 1fr;}footer{padding:20px 16px;flex-direction:column;align-items:flex-start;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo">Rate<span>Kit</span></a>
+  <button class="burger" onclick="toggleNav()">☰</button>
+  <ul class="nl" id="nl">
+    <li><a href="/freelance-rate.html">Freelance Rate</a></li>
+    <li><a href="/stripe-fee.html">Stripe/PayPal Fee</a></li>
+    <li><a href="/vat-calculator.html">VAT/GST</a></li>
+    <li><a href="/roi-calculator.html">ROI</a></li>
+    <li><a href="/profit-margin.html">Profit Margin</a></li>
+    <li><a href="/self-employment-tax.html" class="active">SE Tax</a></li>
+    <li><a href="/loan-calculator.html">Loan</a></li>
+    <li><a href="/safe-calculator.html">SAFE</a></li>
+    <li><a href="/burn-rate.html">Burn Rate</a></li>
+    <li><a href="/ltv-cac.html">LTV:CAC</a></li>
+    <li><a href="/break-even.html">Break-even</a></li>
+  </ul>
+</nav>
+<div class="page-header">
+  <div class="breadcrumb"><a href="/">RateKit</a> › Self-Employment Tax Calculator</div>
+  <div class="page-tag">🇺🇸 US Tax Tool · 2026</div>
+  <h1>Self-Employment Tax Calculator</h1>
+  <p class="page-sub">Calculate exactly how much SE tax (15.3%) you owe, how much to set aside from each payment, and your quarterly estimated tax due dates.</p>
+</div>
+<main>
+  <div class="panel">
+    <div class="field"><label class="lbl">Annual Freelance / Self-Employment Income</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="income" value="80000" min="0" oninput="calc()"></div></div>
+    <div class="field"><label class="lbl">Business Expenses <span class="hint">(deductible)</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="expenses" value="10000" min="0" oninput="calc()"></div></div>
+    <div class="field"><label class="lbl">Filing Status</label><div class="input-wrap"><select id="filing" onchange="calc()"><option value="single">Single</option><option value="married">Married Filing Jointly</option><option value="hoh">Head of Household</option></select></div></div>
+  </div>
+
+  <div class="results-row">
+    <div class="r-card primary">
+      <div class="r-label">SE Tax (15.3%)</div>
+      <div class="r-value" id="r-se">—</div>
+      <div class="r-sub">Social Security + Medicare</div>
+    </div>
+    <div class="r-card amber">
+      <div class="r-label">Federal Income Tax</div>
+      <div class="r-value" id="r-fed">—</div>
+      <div class="r-sub">estimated</div>
+    </div>
+    <div class="r-card">
+      <div class="r-label">Total Tax Burden</div>
+      <div class="r-value" id="r-total">—</div>
+      <div class="r-sub">SE + federal income tax</div>
+    </div>
+  </div>
+
+  <div class="big-row">
+    <div class="r-card green">
+      <div class="r-label">Set aside per $1,000 earned</div>
+      <div class="r-value" id="r-per1k">—</div>
+      <div class="r-sub">recommended tax reserve</div>
+    </div>
+    <div class="r-card">
+      <div class="r-label">Effective Tax Rate</div>
+      <div class="r-value" id="r-effective">—</div>
+      <div class="r-sub">of gross income</div>
+    </div>
+  </div>
+
+  <div class="breakdown-panel">
+    <div class="panel-title">Tax Breakdown</div>
+    <div class="bd-row"><span class="bd-label">Gross income</span><span class="bd-value" id="bd-gross">—</span></div>
+    <div class="bd-row"><span class="bd-label">Business expenses</span><span class="bd-value" id="bd-exp">—</span></div>
+    <div class="bd-row"><span class="bd-label">Net self-employment income</span><span class="bd-value" id="bd-net">—</span></div>
+    <div class="bd-row"><span class="bd-label">× 92.35% (SE tax base)</span><span class="bd-value" id="bd-base">—</span></div>
+    <div class="bd-row"><span class="bd-label">SE Tax (15.3%)</span><span class="bd-value" id="bd-se">—</span></div>
+    <div class="bd-row"><span class="bd-label">SE Tax deduction (½ SE Tax)</span><span class="bd-value" id="bd-ded">—</span></div>
+    <div class="bd-row"><span class="bd-label">Adjusted Gross Income (AGI)</span><span class="bd-value" id="bd-agi">—</span></div>
+    <div class="bd-row"><span class="bd-label">Standard deduction</span><span class="bd-value" id="bd-std">—</span></div>
+    <div class="bd-row"><span class="bd-label">Taxable income</span><span class="bd-value" id="bd-taxable">—</span></div>
+    <div class="bd-row"><span class="bd-label" style="font-weight:600;">Total estimated tax owed</span><span class="bd-value" id="bd-total">—</span></div>
+  </div>
+
+  <div class="panel-title" style="margin-top:4px;">2026 Quarterly Payment Due Dates</div>
+  <div class="quarterly-grid">
+    <div class="q-card"><div class="q-label">Q1</div><div class="q-date">Due Apr 15</div><div class="q-value" id="q1">—</div></div>
+    <div class="q-card"><div class="q-label">Q2</div><div class="q-date">Due Jun 16</div><div class="q-value" id="q2">—</div></div>
+    <div class="q-card"><div class="q-label">Q3</div><div class="q-date">Due Sep 15</div><div class="q-value" id="q3">—</div></div>
+    <div class="q-card"><div class="q-label">Q4</div><div class="q-date">Due Jan 15</div><div class="q-value" id="q4">—</div></div>
+  </div>
+
+  <div class="warn-box">
+    <strong>⚠️ Disclaimer:</strong> This calculator provides estimates based on 2026 tax rates and standard deductions. It does not account for state taxes, additional deductions, credits, or complex tax situations. Always consult a CPA or tax professional for accurate tax advice.
+  </div>
+</main>
+<footer>
+  <div class="flogo">Rate<span>Kit</span></div>
+  <span class="fcopy">© 2026 RateKit · Free · No data stored</span>
+  <ul class="flinks">
+    <li><a href="/freelance-rate.html">Freelance Rate</a></li>
+    <li><a href="/stripe-fee.html">Stripe Fee</a></li>
+    <li><a href="/vat-calculator.html">VAT/GST</a></li>
+    <li><a href="/roi-calculator.html">ROI</a></li>
+  </ul>
+</footer>
+<script>
+function fmt(n){return '$'+Math.round(n).toLocaleString('en-US');}
+function calcFedTax(taxable, filing){
+  // 2026 estimated brackets (single)
+  let brackets;
+  if(filing==='married'){
+    brackets=[[0,0.10,23200],[23200,0.12,94300],[94300,0.22,201050],[201050,0.24,383900],[383900,0.32,487450],[487450,0.35,731200],[731200,0.37,Infinity]];
+  } else {
+    brackets=[[0,0.10,11600],[11600,0.12,47150],[47150,0.22,100525],[100525,0.24,191950],[191950,0.32,243725],[243725,0.35,609350],[609350,0.37,Infinity]];
+  }
+  let tax=0;
+  for(let i=0;i<brackets.length;i++){
+    const [min,rate,max]=brackets[i];
+    if(taxable<=min) break;
+    tax+=Math.min(taxable,max)*rate - min*rate;
+    if(taxable<=max) break;
+  }
+  return Math.max(0,tax);
+}
+function calc(){
+  const income=+document.getElementById('income').value||0;
+  const expenses=+document.getElementById('expenses').value||0;
+  const filing=document.getElementById('filing').value;
+  const stdDed=filing==='married'?29200:14600;
+
+  const netIncome=income-expenses;
+  const seBase=netIncome*0.9235;
+  const seTax=seBase*0.153;
+  const seDed=seTax/2;
+  const agi=netIncome-seDed;
+  const taxable=Math.max(0,agi-stdDed);
+  const fedTax=calcFedTax(taxable,filing);
+  const totalTax=seTax+fedTax;
+  const effective=income>0?totalTax/income*100:0;
+  const per1k=income>0?totalTax/income*1000:0;
+  const quarterly=totalTax/4;
+
+  document.getElementById('r-se').textContent=fmt(seTax);
+  document.getElementById('r-fed').textContent=fmt(fedTax);
+  document.getElementById('r-total').textContent=fmt(totalTax);
+  document.getElementById('r-per1k').textContent=fmt(per1k);
+  document.getElementById('r-effective').textContent=effective.toFixed(1)+'%';
+
+  document.getElementById('bd-gross').textContent=fmt(income);
+  document.getElementById('bd-exp').textContent='−'+fmt(expenses);
+  document.getElementById('bd-net').textContent=fmt(netIncome);
+  document.getElementById('bd-base').textContent=fmt(seBase);
+  document.getElementById('bd-se').textContent=fmt(seTax);
+  document.getElementById('bd-ded').textContent='−'+fmt(seDed);
+  document.getElementById('bd-agi').textContent=fmt(agi);
+  document.getElementById('bd-std').textContent='−'+fmt(stdDed);
+  document.getElementById('bd-taxable').textContent=fmt(taxable);
+  document.getElementById('bd-total').textContent=fmt(totalTax);
+
+  ['q1','q2','q3','q4'].forEach(q=>document.getElementById(q).textContent=fmt(quarterly));
+}
+function toggleNav(){document.getElementById('nl').classList.toggle('open');}
+calc();
+</script>
+</body>
+</html>

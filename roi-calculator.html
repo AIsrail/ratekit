@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROI Calculator — Return on Investment — RateKit</title>
+<meta name="description" content="Calculate Return on Investment (ROI), annualized ROI, and payback period. Free ROI calculator for marketing, business investments, and projects.">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon-180x180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F8F9FC;--white:#FFFFFF;--border:#E2E8F0;--ink:#0F172A;--mid:#475569;--muted:#94A3B8;--blue:#2563EB;--bluebg:#EFF6FF;--green:#059669;--greenbg:#ECFDF5;--amber:#D97706;--red:#DC2626;--redbg:#FEF2F2;--font:'Plus Jakarta Sans',sans-serif;--mono:'JetBrains Mono',monospace;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh;}
+a{text-decoration:none;color:inherit;}
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 48px;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.logo{font-size:18px;font-weight:700;color:var(--ink);letter-spacing:-.02em;}.logo span{color:var(--blue);}
+.nl{display:flex;align-items:center;gap:2px;list-style:none;flex-wrap:wrap;}
+.nl a{font-size:12px;font-weight:500;color:var(--mid);padding:5px 10px;border-radius:6px;transition:background .15s,color .15s;}
+.nl a:hover{background:var(--bluebg);color:var(--blue);}
+.nl a.active{color:var(--blue);background:var(--bluebg);}
+.burger{display:none;background:none;border:none;font-size:20px;cursor:pointer;padding:4px 8px;}
+.page-header{background:var(--white);border-bottom:1px solid var(--border);padding:48px 48px 40px;}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:16px;}
+.breadcrumb a{color:var(--blue);}
+.page-tag{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:10px;}
+h1{font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:700;letter-spacing:-.02em;line-height:1.15;margin-bottom:10px;}
+.page-sub{font-size:15px;color:var(--mid);max-width:520px;}
+main{padding:40px 48px 64px;max-width:900px;}
+.panel{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:20px;}
+.panel-title{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
+.field{margin-bottom:16px;}
+.lbl{display:block;font-size:12px;font-weight:600;color:var(--mid);margin-bottom:6px;}
+.hint{font-weight:400;color:var(--muted);}
+.input-wrap{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:8px;background:var(--white);overflow:hidden;transition:border-color .15s;}
+.input-wrap:focus-within{border-color:var(--blue);}
+.ifix{font-family:var(--mono);font-size:13px;color:var(--muted);padding:10px 12px;background:var(--bg);border-right:1px solid var(--border);white-space:nowrap;}
+.ifix-r{border-right:none;border-left:1px solid var(--border);}
+input[type="number"]{flex:1;background:transparent;border:none;outline:none;color:var(--ink);font-family:var(--mono);font-size:14px;padding:10px 12px;width:100%;-moz-appearance:textfield;}
+input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;}
+.results-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.r-card{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:22px;}
+.r-card.primary{background:var(--blue);border-color:var(--blue);}
+.r-card.green{background:var(--greenbg);border-color:#6EE7B7;}
+.r-card.red{background:var(--redbg);border-color:#FECACA;}
+.r-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.r-card.primary .r-label{color:rgba(255,255,255,.6);}
+.r-card.green .r-label{color:var(--green);}
+.r-card.red .r-label{color:var(--red);}
+.r-value{font-family:var(--mono);font-size:clamp(1.3rem,2.5vw,1.9rem);font-weight:600;color:var(--ink);line-height:1;}
+.r-card.primary .r-value{color:white;}
+.r-card.green .r-value{color:var(--green);}
+.r-card.red .r-value{color:var(--red);}
+.r-sub{font-size:11px;color:var(--muted);margin-top:6px;}
+.r-card.primary .r-sub{color:rgba(255,255,255,.5);}
+.verdict{padding:16px 20px;border-radius:10px;font-size:14px;font-weight:500;margin-bottom:20px;line-height:1.6;}
+.info-box{background:var(--bluebg);border:1px solid #BFDBFE;border-radius:10px;padding:16px 20px;font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:20px;}
+.info-box strong{color:var(--blue);}
+footer{background:var(--ink);padding:28px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;}
+.flogo{font-size:16px;font-weight:700;color:white;}.flogo span{color:var(--blue);}
+.fcopy{font-size:12px;color:rgba(255,255,255,.3);}
+.flinks{display:flex;gap:14px;list-style:none;flex-wrap:wrap;}
+.flinks a{font-size:12px;color:rgba(255,255,255,.4);transition:color .2s;}
+.flinks a:hover{color:white;}
+@media(max-width:768px){nav{padding:0 16px;}.nl{display:none;position:fixed;top:60px;left:0;right:0;background:white;border-bottom:1px solid var(--border);flex-direction:column;padding:12px;gap:2px;z-index:99;}.nl.open{display:flex;}.burger{display:block;}.page-header,main{padding-left:16px;padding-right:16px;}.results-row{grid-template-columns:1fr 1fr;}.grid-2{grid-template-columns:1fr;}footer{padding:20px 16px;flex-direction:column;align-items:flex-start;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo">Rate<span>Kit</span></a>
+  <button class="burger" onclick="toggleNav()">☰</button>
+  <ul class="nl" id="nl">
+    <li><a href="/freelance-rate.html">Freelance Rate</a></li>
+    <li><a href="/stripe-fee.html">Stripe/PayPal Fee</a></li>
+    <li><a href="/vat-calculator.html">VAT/GST</a></li>
+    <li><a href="/roi-calculator.html" class="active">ROI</a></li>
+    <li><a href="/profit-margin.html">Profit Margin</a></li>
+    <li><a href="/self-employment-tax.html">SE Tax</a></li>
+    <li><a href="/loan-calculator.html">Loan</a></li>
+    <li><a href="/safe-calculator.html">SAFE</a></li>
+    <li><a href="/burn-rate.html">Burn Rate</a></li>
+    <li><a href="/ltv-cac.html">LTV:CAC</a></li>
+    <li><a href="/break-even.html">Break-even</a></li>
+  </ul>
+</nav>
+<div class="page-header">
+  <div class="breadcrumb"><a href="/">RateKit</a> › ROI Calculator</div>
+  <div class="page-tag">📈 Investment Tool</div>
+  <h1>ROI Calculator</h1>
+  <p class="page-sub">Calculate return on investment, annualized ROI, and payback period for any business investment, campaign, or project.</p>
+</div>
+<main>
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-title">Investment</div>
+      <div class="field"><label class="lbl">Initial Investment</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="invest" value="10000" min="0" oninput="calc()"></div></div>
+      <div class="field"><label class="lbl">Total Return (revenue generated)</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="returns" value="15000" min="0" oninput="calc()"></div></div>
+      <div class="field"><label class="lbl">Time Period <span class="hint">(optional, for annualized ROI)</span></label>
+        <div class="input-wrap"><input type="number" id="months" value="12" min="1" oninput="calc()"><span class="ifix ifix-r">months</span></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Optional: Ongoing Costs</div>
+      <div class="field"><label class="lbl">Monthly Operating Cost <span class="hint">(optional)</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="opcost" value="0" min="0" oninput="calc()"></div></div>
+      <div class="field"><label class="lbl">Monthly Revenue Generated <span class="hint">(optional)</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="monthly-rev" value="0" min="0" oninput="calc()"></div></div>
+    </div>
+  </div>
+
+  <div class="results-row">
+    <div class="r-card primary">
+      <div class="r-label">ROI</div>
+      <div class="r-value" id="r-roi">—</div>
+      <div class="r-sub">return on investment</div>
+    </div>
+    <div class="r-card">
+      <div class="r-label">Net Profit</div>
+      <div class="r-value" id="r-profit">—</div>
+      <div class="r-sub">total gain</div>
+    </div>
+    <div class="r-card">
+      <div class="r-label">Annualized ROI</div>
+      <div class="r-value" id="r-annual">—</div>
+      <div class="r-sub">per year</div>
+    </div>
+    <div class="r-card">
+      <div class="r-label">Payback Period</div>
+      <div class="r-value" id="r-payback">—</div>
+      <div class="r-sub">to break even</div>
+    </div>
+  </div>
+
+  <div class="verdict" id="verdict"></div>
+
+  <div class="info-box">
+    <strong>📐 Formula:</strong> ROI = (Net Profit / Investment) × 100 &nbsp;·&nbsp; Annualized ROI = (1 + ROI/100)^(12/months) − 1 &nbsp;·&nbsp; Industry benchmark: marketing campaigns 200–400% ROI, real estate 8–12% annual ROI.
+  </div>
+</main>
+<footer>
+  <div class="flogo">Rate<span>Kit</span></div>
+  <span class="fcopy">© 2026 RateKit · Free · No data stored</span>
+  <ul class="flinks">
+    <li><a href="/stripe-fee.html">Stripe Fee</a></li>
+    <li><a href="/vat-calculator.html">VAT/GST</a></li>
+    <li><a href="/profit-margin.html">Profit Margin</a></li>
+    <li><a href="/break-even.html">Break-even</a></li>
+  </ul>
+</footer>
+<script>
+function fmt(n){return '$'+Math.round(Math.abs(n)).toLocaleString('en-US');}
+function calc(){
+  const invest=+document.getElementById('invest').value||1;
+  const returns=+document.getElementById('returns').value||0;
+  const months=+document.getElementById('months').value||12;
+  const net=returns-invest;
+  const roi=net/invest*100;
+  const annualized=(Math.pow(1+roi/100,12/months)-1)*100;
+  const payback=net>0?invest/(net/months):Infinity;
+
+  const rc=document.getElementById('r-roi');
+  rc.textContent=roi.toFixed(1)+'%';
+  rc.style.color=roi>=0?'white':'#FECACA';
+
+  document.getElementById('r-profit').textContent=(net>=0?'+':'-')+fmt(net);
+  document.getElementById('r-profit').style.color=net>=0?'var(--ink)':'var(--red)';
+  document.getElementById('r-annual').textContent=annualized.toFixed(1)+'%';
+  document.getElementById('r-payback').textContent=payback===Infinity?'Never':payback.toFixed(1)+' mo';
+
+  const v=document.getElementById('verdict');
+  if(roi<0){v.style.cssText='background:var(--redbg);color:var(--red);';v.textContent='🚨 Negative ROI — this investment lost money. Review your cost structure or revenue assumptions.';}
+  else if(roi<50){v.style.cssText='background:#FFFBEB;color:var(--amber);';v.textContent='⚠️ Low ROI ('+roi.toFixed(1)+'%). Consider whether this investment is worth the risk vs simpler alternatives.';}
+  else if(roi<200){v.style.cssText='background:var(--greenbg);color:var(--green);';v.textContent='✅ Good ROI ('+roi.toFixed(1)+'%). This investment is delivering solid returns.';}
+  else{v.style.cssText='background:var(--bluebg);color:var(--blue);';v.textContent='🚀 Excellent ROI ('+roi.toFixed(1)+'%). Strong returns — consider scaling this investment.';}
+}
+function toggleNav(){document.getElementById('nl').classList.toggle('open');}
+calc();
+</script>
+</body>
+</html>
