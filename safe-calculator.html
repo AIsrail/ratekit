@@ -109,6 +109,71 @@ footer{background:var(--ink);padding:28px 48px;display:flex;justify-content:spac
   .results-row{grid-template-columns:1fr 1fr;}
   footer{padding:20px 16px;flex-direction:column;align-items:flex-start;}
 }
+
+/* ═══ SHARE + PDF BAR ═══ */
+.share-bar {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.share-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.share-btns {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid var(--border);
+  background: var(--white);
+  color: var(--mid);
+  transition: all .15s;
+  text-decoration: none;
+}
+.share-btn:hover { border-color: var(--blue); color: var(--blue); background: var(--bluebg); }
+.share-btn.pdf-btn { background: var(--blue); color: white; border-color: var(--blue); }
+.share-btn.pdf-btn:hover { background: var(--blue2); }
+.share-btn.copied { background: var(--greenbg); color: var(--green); border-color: #6EE7B7; }
+
+/* PDF watermark overlay */
+@media print {
+  nav, .share-bar, .burger, footer { display: none !important; }
+  body { background: white !important; }
+  .page-header { border: none; padding: 20px 0; }
+  main { padding: 20px 0; }
+  .watermark-footer {
+    display: block !important;
+    position: fixed;
+    bottom: 10px;
+    right: 20px;
+    font-size: 11px;
+    color: #94A3B8;
+    font-family: sans-serif;
+  }
+}
+.watermark-footer { display: none; }
+
 </style>
 <!-- Open Graph / Social sharing -->
 <meta property="og:type" content="article">
@@ -161,9 +226,15 @@ footer{background:var(--ink);padding:28px 48px;display:flex;justify-content:spac
   <button class="burger" onclick="toggleNav()">☰</button>
   <ul class="nl" id="nl">
     <li><a href="/freelance-rate.html">Freelance Rate</a></li>
-    <li><a href="/safe-calculator.html" class="active">SAFE Calculator</a></li>
+    <li><a href="/stripe-fee.html">Stripe/PayPal Fee</a></li>
+    <li><a href="/vat-calculator.html">VAT/GST</a></li>
+    <li><a href="/roi-calculator.html">ROI</a></li>
+    <li><a href="/profit-margin.html">Profit Margin</a></li>
+    <li><a href="/self-employment-tax.html">SE Tax</a></li>
+    <li><a href="/loan-calculator.html">Loan</a></li>
+    <li><a href="/safe-calculator.html" class="active">SAFE</a></li>
     <li><a href="/burn-rate.html">Burn Rate</a></li>
-    <li><a href="/ltv-cac.html">LTV : CAC</a></li>
+    <li><a href="/ltv-cac.html">LTV:CAC</a></li>
     <li><a href="/break-even.html">Break-even</a></li>
   </ul>
 </nav>
@@ -273,16 +344,37 @@ footer{background:var(--ink);padding:28px 48px;display:flex;justify-content:spac
   <div class="warn-box">
     <strong>⚠️ Disclaimer:</strong> This calculator is for illustrative purposes only and uses simplified assumptions. Real SAFE conversions may involve pro-rata rights, MFN clauses, side letters, and other terms. Always consult a startup lawyer before signing any legal documents.
   </div>
+
+  <!-- SHARE + PDF BAR -->
+  <div class="share-bar" id="share-bar">
+    <span class="share-label">Share or Export</span>
+    <div class="share-btns">
+      <button class="share-btn" onclick="copyLink(this)" title="Copy link">🔗 Copy link</button>
+      <a class="share-btn" id="tw-btn" href="#" target="_blank" rel="noopener">𝕏 Twitter</a>
+      <a class="share-btn" id="li-btn" href="#" target="_blank" rel="noopener">in LinkedIn</a>
+      <a class="share-btn" id="tg-btn" href="#" target="_blank" rel="noopener">✈️ Telegram</a>
+      <a class="share-btn" id="wa-btn" href="#" target="_blank" rel="noopener">💬 WhatsApp</a>
+      <button class="share-btn pdf-btn" onclick="printPDF()">⬇ Save as PDF</button>
+    </div>
+  </div>
+  <div class="watermark-footer">Generated with RateKit · ratekit.org · Free business calculators</div>
+
 </main>
 
 <footer>
   <div class="flogo">Rate<span>Kit</span></div>
   <span class="fcopy">© 2026 RateKit · Free · No data stored</span>
   <ul class="flinks">
-    <li><a href="/freelance-rate.html">Freelance Rate</a></li>
+    <li><a href="/stripe-fee.html">Stripe Fee</a></li>
+    <li><a href="/vat-calculator.html">VAT/GST</a></li>
+    <li><a href="/roi-calculator.html">ROI</a></li>
+    <li><a href="/profit-margin.html">Profit Margin</a></li>
+    <li><a href="/safe-calculator.html">SAFE</a></li>
     <li><a href="/burn-rate.html">Burn Rate</a></li>
     <li><a href="/ltv-cac.html">LTV:CAC</a></li>
     <li><a href="/break-even.html">Break-even</a></li>
+    <li><a href="/self-employment-tax.html">SE Tax</a></li>
+    <li><a href="/loan-calculator.html">Loan</a></li>
   </ul>
 </footer>
 
@@ -364,6 +456,43 @@ function calc() {
 }
 function toggleNav() { document.getElementById('nl').classList.toggle('open'); }
 calc();
+
+// ═══ SHARE + PDF FUNCTIONS ═══
+function getShareText() {
+  const title = document.title.replace(' — RateKit', '');
+  return `${title} — calculated with RateKit (free) 👉 ${window.location.href}`;
+}
+
+function copyLink(btn) {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    btn.textContent = '✅ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '🔗 Copy link';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+function printPDF() {
+  window.print();
+}
+
+function initShare() {
+  const url = encodeURIComponent(window.location.href);
+  const text = encodeURIComponent(getShareText());
+  const tw = document.getElementById('tw-btn');
+  const li = document.getElementById('li-btn');
+  const tg = document.getElementById('tg-btn');
+  const wa = document.getElementById('wa-btn');
+  if (tw) tw.href = `https://twitter.com/intent/tweet?text=${text}`;
+  if (li) li.href = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+  if (tg) tg.href = `https://t.me/share/url?url=${url}&text=${text}`;
+  if (wa) wa.href = `https://wa.me/?text=${text}`;
+}
+
+window.addEventListener('load', initShare);
+
 </script>
 </body>
 </html>
