@@ -178,12 +178,30 @@ footer{background:var(--ink);padding:24px 48px;display:flex;justify-content:spac
 
     <!-- API KEY -->
     <div class="api-section">
-      <div style="font-size:12px;font-weight:600;color:var(--mid);margin-bottom:10px;letter-spacing:.04em;">CLAUDE API KEY <span style="color:var(--muted);font-weight:400;">(required — your key, never stored)</span></div>
+      <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:12px;">🔑 Connect to AI (one-time setup)</div>
+
+      <div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:14px 16px;margin-bottom:16px;font-size:13px;color:var(--mid);line-height:1.7;">
+        <strong style="color:var(--amber);">Why do I need an API key?</strong><br>
+        Deal Coach uses Claude AI to generate your negotiation brief. To keep this tool free for everyone, each user connects their own Anthropic account. New accounts get <strong>$5 free credits</strong> — enough for hundreds of conversations.
+        <br><br>
+        <strong>🔒 Privacy guarantee:</strong> Your API key is stored <strong>only in your browser</strong> (localStorage). It is never sent to our servers, never logged, and never shared with anyone. You can delete it anytime by clearing your browser data. We have no access to it whatsoever.
+      </div>
+
+      <div style="font-size:12px;font-weight:600;color:var(--mid);margin-bottom:8px;letter-spacing:.04em;">HOW TO GET YOUR FREE KEY (2 minutes):</div>
+      <ol style="font-size:12px;color:var(--mid);line-height:2;padding-left:18px;margin-bottom:14px;">
+        <li>Go to <a href="https://console.anthropic.com" target="_blank" rel="noopener" style="color:var(--blue);">console.anthropic.com</a> → Sign up free</li>
+        <li>Click <strong>API Keys</strong> → <strong>Create Key</strong></li>
+        <li>Copy the key (starts with <code style="background:var(--bg);padding:1px 5px;border-radius:4px;font-family:var(--mono);">sk-ant-</code>)</li>
+        <li>Paste it below and click Save</li>
+      </ol>
+
       <div class="api-row">
         <input type="password" class="api-input" id="api-key" placeholder="sk-ant-api03-...">
-        <button class="api-btn" onclick="saveKey()">Save</button>
+        <button class="api-btn" onclick="saveKey()">Save key</button>
       </div>
-      <div class="api-hint">Get your key at <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a>. It stays in your browser only.</div>
+      <div class="api-hint" style="margin-top:10px;display:flex;align-items:center;gap:6px;">
+        <span>🔒</span> Key stored in your browser only · Never sent to RateKit servers · <a href="/privacy.html" style="color:var(--blue);">Privacy Policy</a>
+      </div>
     </div>
 
     <button class="start-btn" id="start-btn" onclick="startCoach()" disabled>Choose a mode to continue →</button>
