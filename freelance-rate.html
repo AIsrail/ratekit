@@ -373,6 +373,48 @@ footer { background: var(--ink); padding: 28px 48px; display: flex; justify-cont
 
   <div class="tip-box" id="tip"></div>
 
+  <!-- ═══ RATE CARD ═══ -->
+  <div class="panel" style="margin-top:20px;" id="rate-card-section">
+    <div class="panel-title">📇 Your Shareable Rate Card</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+      <div class="field"><label class="lbl">Your Name (optional)</label><div class="input-wrap"><input type="text" id="card-name" placeholder="Jane Smith" oninput="renderCard()"></div></div>
+      <div class="field"><label class="lbl">Specialty / Role</label><div class="input-wrap"><input type="text" id="card-role" placeholder="UX Designer" oninput="renderCard()"></div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+      <div class="field"><label class="lbl">Country</label><div class="input-wrap"><input type="text" id="card-country" placeholder="United States" oninput="renderCard()"></div></div>
+      <div class="field"><label class="lbl">Years of Experience</label><div class="input-wrap"><input type="number" id="card-years" placeholder="5" min="0" oninput="renderCard()"></div></div>
+    </div>
+    <div style="background:var(--ink);border-radius:12px;padding:28px;margin-bottom:16px;position:relative;overflow:hidden;" id="rate-card-preview">
+      <div style="position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(circle,rgba(37,99,235,0.3),transparent 70%);pointer-events:none;"></div>
+      <div style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:16px;">FREELANCE RATE CARD · 2026</div>
+      <div style="font-size:clamp(1.8rem,4vw,2.8rem);font-family:var(--mono);font-weight:700;color:white;line-height:1;" id="card-rate-display">$—/hr</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.5);margin-top:6px;margin-bottom:20px;" id="card-daily-display">— /day</div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;">
+        <div><div style="font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.1em;text-transform:uppercase;">Name</div><div style="font-size:14px;font-weight:600;color:white;" id="card-name-display">—</div></div>
+        <div><div style="font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.1em;text-transform:uppercase;">Specialty</div><div style="font-size:14px;font-weight:600;color:white;" id="card-role-display">—</div></div>
+        <div><div style="font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.1em;text-transform:uppercase;">Location</div><div style="font-size:14px;font-weight:600;color:white;" id="card-country-display">—</div></div>
+        <div><div style="font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.1em;text-transform:uppercase;">Experience</div><div style="font-size:14px;font-weight:600;color:white;" id="card-years-display">—</div></div>
+      </div>
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,.1);font-size:10px;color:rgba(255,255,255,.2);">Calculated with RateKit · ratekit.org</div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button style="padding:10px 18px;background:#0077B5;color:white;border:none;border-radius:8px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;" onclick="shareLinkedIn()">in Share on LinkedIn</button>
+      <button style="padding:10px 18px;background:var(--white);color:var(--mid);border:1.5px solid var(--border);border-radius:8px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;" onclick="copyCardLink(this)">🔗 Copy link</button>
+      <a href="/deal-coach.html" style="padding:10px 18px;background:var(--white);color:var(--mid);border:1.5px solid var(--border);border-radius:8px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;">🤖 Negotiate this rate →</a>
+    </div>
+  </div>
+
+  <!-- ═══ SCENARIO PLANNER ═══ -->
+  <div class="panel" style="margin-top:20px;">
+    <div class="panel-title">🎯 "What If" Scenario Planner</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:20px;">See how much more you earn by raising your rate — and how many clients you can afford to lose.</p>
+    <div style="margin-bottom:16px;">
+      <label class="lbl">Custom increase: <span id="scenario-pct-label" style="color:var(--blue);font-weight:700;">+20%</span></label>
+      <input type="range" id="scenario-slider" min="5" max="100" step="5" value="20" oninput="updateScenario()" style="width:100%;margin-top:8px;accent-color:var(--blue);">
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;" id="scenario-grid"></div>
+  </div>
+
   <!-- SHARE + PDF BAR -->
   <div class="share-bar" id="share-bar">
     <span class="share-label">Share or Export</span>
@@ -447,6 +489,7 @@ function calc() {
   if (hourly < 15) { tip.className = 'tip-box tip-warn'; tip.innerHTML = '<strong>⚠️ Low rate:</strong> Your calculated rate is very low. Consider reducing non-billable time, cutting expenses, or adjusting your income target.'; }
   else if (hourly > 250) { tip.className = 'tip-box'; tip.innerHTML = '<strong>🎯 Senior territory:</strong> Rates above $250/hr are achievable for specialized skills (AI, legal, finance, strategy). Ensure your portfolio justifies it.'; }
   else { tip.className = 'tip-box'; tip.innerHTML = '<strong>💡 Pro tip:</strong> Add <strong>20–30%</strong> on top of this minimum for your actual quote — this is your break-even rate. Experienced freelancers often charge 2–3× their minimum.'; }
+  currentHourly = hourly; currentDaily = daily; renderCard(); renderScenarios(+document.getElementById('scenario-slider').value);
 }
 function toggleNav() { document.getElementById('nl').classList.toggle('open'); }
 calc();
@@ -516,6 +559,80 @@ function restoreInputs() {
 document.addEventListener('input', saveInputs);
 document.addEventListener('change', saveInputs);
 window.addEventListener('load', () => { restoreInputs(); });
+
+
+// ═══ RATE CARD ═══
+let currentHourly = 0;
+let currentDaily = 0;
+
+function renderCard() {
+  const name = document.getElementById('card-name').value || 'Your Name';
+  const role = document.getElementById('card-role').value || 'Freelancer';
+  const country = document.getElementById('card-country').value || '—';
+  const years = document.getElementById('card-years').value;
+  document.getElementById('card-name-display').textContent = name;
+  document.getElementById('card-role-display').textContent = role;
+  document.getElementById('card-country-display').textContent = country;
+  document.getElementById('card-years-display').textContent = years ? years + ' yrs' : '—';
+  document.getElementById('card-rate-display').textContent = currentHourly > 0 ? sym + Math.round(currentHourly) + '/hr' : sym + '—/hr';
+  document.getElementById('card-daily-display').textContent = currentDaily > 0 ? sym + Math.round(currentDaily) + '/day' : '— /day';
+}
+
+function shareLinkedIn() {
+  const rate = currentHourly > 0 ? sym + Math.round(currentHourly) + '/hr' : 'my rate';
+  const role = document.getElementById('card-role').value || 'freelancer';
+  const text = encodeURIComponent('Just calculated my minimum freelance rate as a ' + role + ': ' + rate + '. Used this free tool to figure out what I actually need to charge to hit my income goals. ratekit.org/freelance-rate.html');
+  window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent('https://ratekit.org/freelance-rate.html') + '&summary=' + text, '_blank');
+}
+
+function copyCardLink(btn) {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    btn.textContent = '✅ Copied!';
+    setTimeout(() => btn.textContent = '🔗 Copy link', 2000);
+  });
+}
+
+// ═══ SCENARIO PLANNER ═══
+function updateScenario() {
+  const pct = +document.getElementById('scenario-slider').value;
+  document.getElementById('scenario-pct-label').textContent = '+' + pct + '%';
+  renderScenarios(pct);
+}
+
+function renderScenarios(customPct) {
+  if (currentHourly <= 0) return;
+  const scenarios = [
+    {label: 'Current Rate', mult: 1, color: 'var(--border)', textColor: 'var(--ink)'},
+    {label: '+20%', mult: 1.2, color: '#BFDBFE', textColor: 'var(--blue)'},
+    {label: '+' + (customPct||20) + '%', mult: 1 + (customPct||20)/100, color: '#6EE7B7', textColor: 'var(--green)'},
+  ];
+
+  // calc gross needed from current rate
+  const income = +document.getElementById('income').value||0;
+  const expenses = +document.getElementById('expenses').value||0;
+  const tax = +document.getElementById('tax').value||0;
+  const hrs = +document.getElementById('hours').value||6;
+  const days = +document.getElementById('days').value||5;
+  const vac = +document.getElementById('vacation').value||0;
+  const workWeeks = 52 - vac;
+  const grossNeeded = (income + expenses) / (1 - tax/100);
+
+  const grid = document.getElementById('scenario-grid');
+  grid.innerHTML = scenarios.map(s => {
+    const rate = currentHourly * s.mult;
+    const daily = rate * hrs;
+    const annualGross = rate * (workWeeks * days * hrs);
+    const annualNet = annualGross * (1 - tax/100) - expenses;
+    const clientsNeeded = grossNeeded > 0 ? Math.ceil(grossNeeded / (rate * hrs * days * (workWeeks/12))) : 0;
+    return '<div style="background:var(--white);border:1.5px solid ' + s.color + ';border-radius:12px;padding:18px;text-align:center;">' +
+      '<div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">' + s.label + '</div>' +
+      '<div style="font-family:var(--mono);font-size:1.5rem;font-weight:700;color:' + s.textColor + ';">' + sym + Math.round(rate) + '/hr</div>' +
+      '<div style="font-size:11px;color:var(--muted);margin-top:4px;">' + sym + Math.round(daily) + '/day</div>' +
+      '<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:11px;color:var(--mid);">Annual gross: <strong>' + sym + Math.round(annualGross/1000) + 'K</strong></div>' +
+      '<div style="font-size:11px;color:var(--mid);">Take-home: <strong>' + sym + Math.round(Math.max(0,annualNet)/1000) + 'K</strong></div>' +
+      '</div>';
+  }).join('');
+}
 
 </script>
 </body>

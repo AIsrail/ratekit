@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deal Coach — AI Negotiation Assistant — RateKit</title>
+<meta name="description" content="AI-powered negotiation coach for freelancers and founders. Get structured arguments for rate negotiation and equity/SAFE discussions. Free tool by RateKit.">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="canonical" href="https://ratekit.org/deal-coach.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7303101907130018" crossorigin="anonymous"></script>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-JZZPXY8N1E"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-JZZPXY8N1E');</script>
+<style>
+:root{--bg:#F8F9FC;--white:#FFFFFF;--border:#E2E8F0;--ink:#0F172A;--mid:#475569;--muted:#94A3B8;--blue:#2563EB;--blue2:#1D4ED8;--bluebg:#EFF6FF;--green:#059669;--greenbg:#ECFDF5;--amber:#D97706;--red:#DC2626;--font:'Plus Jakarta Sans',sans-serif;--mono:'JetBrains Mono',monospace;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh;}
+a{text-decoration:none;color:inherit;}
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 48px;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.logo{font-size:18px;font-weight:700;color:var(--ink);letter-spacing:-.02em;}.logo span{color:var(--blue);}
+.nl{display:flex;align-items:center;gap:2px;list-style:none;flex-wrap:wrap;}
+.nl a{font-size:12px;font-weight:500;color:var(--mid);padding:5px 10px;border-radius:6px;transition:background .15s,color .15s;}
+.nl a:hover,.nl a.active{background:var(--bluebg);color:var(--blue);}
+.burger{display:none;background:none;border:none;font-size:20px;cursor:pointer;padding:4px 8px;}
+.translate-btn{background:var(--white);border:1.5px solid var(--border);border-radius:6px;padding:5px 12px;font-family:var(--font);font-size:12px;font-weight:500;color:var(--mid);cursor:pointer;margin-left:8px;}
+.translate-btn:hover{border-color:var(--blue);color:var(--blue);}
+
+.page-header{background:var(--white);border-bottom:1px solid var(--border);padding:40px 48px 32px;}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:12px;}
+.breadcrumb a{color:var(--blue);}
+.page-tag{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:8px;}
+h1{font-size:clamp(1.6rem,3.5vw,2.2rem);font-weight:700;letter-spacing:-.02em;margin-bottom:8px;}
+.page-sub{font-size:14px;color:var(--mid);max-width:560px;}
+
+main{padding:32px 48px 64px;max-width:800px;margin:0 auto;}
+
+/* MODE SELECT */
+.mode-select{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px;}
+.mode-card{background:var(--white);border:2px solid var(--border);border-radius:12px;padding:24px;cursor:pointer;transition:all .2s;text-align:center;}
+.mode-card:hover{border-color:var(--blue);box-shadow:0 4px 20px rgba(37,99,235,.08);}
+.mode-card.selected{border-color:var(--blue);background:var(--bluebg);}
+.mode-icon{font-size:32px;margin-bottom:12px;}
+.mode-title{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:6px;}
+.mode-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+
+/* API KEY */
+.api-section{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:24px;}
+.api-row{display:flex;gap:10px;align-items:center;}
+.api-input{flex:1;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;font-family:var(--mono);font-size:13px;color:var(--ink);outline:none;transition:border-color .15s;}
+.api-input:focus{border-color:var(--blue);}
+.api-btn{padding:10px 18px;background:var(--blue);color:white;border:none;border-radius:8px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;}
+.api-btn:hover{background:var(--blue2);}
+.api-hint{font-size:11px;color:var(--muted);margin-top:8px;}
+.api-hint a{color:var(--blue);}
+
+/* CHAT */
+.chat-container{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:20px;}
+.chat-header{background:var(--ink);color:white;padding:16px 20px;display:flex;align-items:center;gap:12px;}
+.chat-avatar{width:36px;height:36px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.chat-title{font-size:14px;font-weight:600;}
+.chat-subtitle{font-size:11px;color:rgba(255,255,255,.5);margin-top:2px;}
+.chat-messages{padding:20px;min-height:300px;max-height:500px;overflow-y:auto;display:flex;flex-direction:column;gap:16px;}
+.msg{display:flex;gap:12px;align-items:flex-start;}
+.msg.user{flex-direction:row-reverse;}
+.msg-avatar{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.msg.ai .msg-avatar{background:var(--blue);color:white;}
+.msg.user .msg-avatar{background:var(--ink);color:white;}
+.msg-bubble{max-width:80%;padding:12px 16px;border-radius:12px;font-size:14px;line-height:1.65;}
+.msg.ai .msg-bubble{background:var(--bg);color:var(--ink);border:1px solid var(--border);}
+.msg.user .msg-bubble{background:var(--blue);color:white;}
+.msg-bubble p{margin-bottom:8px;}
+.msg-bubble p:last-child{margin-bottom:0;}
+.msg-bubble strong{font-weight:600;}
+.typing{display:flex;gap:4px;padding:8px 0;align-items:center;}
+.typing span{width:6px;height:6px;background:var(--muted);border-radius:50%;animation:bounce .8s infinite;}
+.typing span:nth-child(2){animation-delay:.15s;}
+.typing span:nth-child(3){animation-delay:.3s;}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+
+.chat-input-area{padding:16px 20px;border-top:1px solid var(--border);display:flex;gap:10px;}
+.chat-input{flex:1;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;font-family:var(--font);font-size:14px;color:var(--ink);outline:none;resize:none;min-height:44px;max-height:120px;transition:border-color .15s;}
+.chat-input:focus{border-color:var(--blue);}
+.send-btn{padding:10px 18px;background:var(--blue);color:white;border:none;border-radius:8px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;flex-shrink:0;transition:background .15s;}
+.send-btn:hover{background:var(--blue2);}
+.send-btn:disabled{background:var(--muted);cursor:not-allowed;}
+
+/* QUICK REPLIES */
+.quick-replies{padding:0 20px 16px;display:flex;flex-wrap:wrap;gap:8px;}
+.qr-btn{padding:7px 14px;background:var(--white);border:1.5px solid var(--border);border-radius:99px;font-family:var(--font);font-size:12px;font-weight:500;color:var(--mid);cursor:pointer;transition:all .15s;}
+.qr-btn:hover{border-color:var(--blue);color:var(--blue);}
+
+/* RESULT PANEL */
+.result-panel{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:20px;display:none;}
+.result-header{background:var(--ink);color:white;padding:20px 28px;}
+.result-title{font-size:18px;font-weight:700;margin-bottom:4px;}
+.result-subtitle{font-size:12px;color:rgba(255,255,255,.5);}
+.result-body{padding:28px;}
+.result-section{margin-bottom:24px;}
+.result-section-title{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.result-arg{background:var(--bg);border-left:3px solid var(--blue);border-radius:0 8px 8px 0;padding:12px 16px;margin-bottom:10px;font-size:13px;color:var(--mid);line-height:1.65;}
+.result-arg strong{color:var(--ink);display:block;margin-bottom:4px;font-size:14px;}
+.result-highlight{background:var(--greenbg);border:1px solid #6EE7B7;border-radius:10px;padding:16px 20px;margin-bottom:16px;font-size:14px;color:var(--ink);font-weight:500;}
+.result-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;padding-top:20px;border-top:1px solid var(--border);}
+.result-btn{padding:10px 20px;border-radius:8px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s;}
+.result-btn.primary{background:var(--blue);color:white;}
+.result-btn.secondary{background:var(--white);color:var(--mid);border:1.5px solid var(--border);}
+.result-btn.secondary:hover{border-color:var(--blue);color:var(--blue);}
+.result-disclaimer{font-size:11px;color:var(--muted);line-height:1.6;margin-top:16px;padding-top:16px;border-top:1px solid var(--border);}
+
+.start-btn{width:100%;padding:14px;background:var(--blue);color:white;border:none;border-radius:10px;font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;transition:background .15s;margin-top:8px;}
+.start-btn:hover{background:var(--blue2);}
+.start-btn:disabled{background:var(--muted);cursor:not-allowed;}
+
+.info-box{background:var(--bluebg);border:1px solid #BFDBFE;border-radius:10px;padding:14px 18px;font-size:13px;color:var(--mid);line-height:1.6;margin-bottom:20px;}
+.info-box strong{color:var(--blue);}
+
+footer{background:var(--ink);padding:24px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;}
+.flogo{font-size:16px;font-weight:700;color:white;}.flogo span{color:var(--blue);}
+.fcopy{font-size:12px;color:rgba(255,255,255,.3);}
+.flinks{display:flex;gap:14px;list-style:none;flex-wrap:wrap;}
+.flinks a{font-size:12px;color:rgba(255,255,255,.4);transition:color .2s;}
+.flinks a:hover{color:white;}
+
+@media print{nav,footer,.chat-input-area,.quick-replies,.result-actions,.api-section,.mode-select,.start-btn,.info-box,.page-header{display:none!important;}main{padding:0;max-width:100%;}body{background:white;}.result-panel{display:block!important;border:none;}}
+@media(max-width:768px){nav{padding:0 16px;}.nl{display:none;position:fixed;top:60px;left:0;right:0;background:white;border-bottom:1px solid var(--border);flex-direction:column;padding:12px;z-index:99;}.nl.open{display:flex;}.burger{display:block;}.page-header,main{padding-left:16px;padding-right:16px;}.mode-select{grid-template-columns:1fr;}footer{padding:20px 16px;flex-direction:column;align-items:flex-start;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo">Rate<span>Kit</span></a>
+  <button class="translate-btn" onclick="document.getElementById('google_translate_element').style.display='block';this.style.display='none';">🌐 Translate</button>
+  <button class="burger" onclick="document.getElementById('nl').classList.toggle('open')">☰</button>
+  <ul class="nl" id="nl">
+    <li><a href="/freelance-rate.html">Freelance Rate</a></li>
+    <li><a href="/stripe-fee.html">Stripe/PayPal</a></li>
+    <li><a href="/invoice-generator.html">Invoice</a></li>
+    <li><a href="/deal-coach.html" class="active">Deal Coach</a></li>
+    <li><a href="/roi-calculator.html">ROI</a></li>
+    <li><a href="/safe-calculator.html">SAFE</a></li>
+    <li><a href="/burn-rate.html">Burn Rate</a></li>
+    <li><a href="/pl-statement.html">P&L</a></li>
+    <li><a href="/form-2555.html">Form 2555</a></li>
+    <li><a href="/break-even.html">Break-even</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <div class="breadcrumb"><a href="/">RateKit</a> › Deal Coach</div>
+  <div class="page-tag">🤖 AI-Powered</div>
+  <h1>Deal Coach</h1>
+  <p class="page-sub">AI negotiation assistant. Get structured arguments for your rate negotiation or equity discussion — in minutes.</p>
+</div>
+
+<main>
+  <!-- STEP 1: MODE -->
+  <div id="step-mode">
+    <div class="info-box">
+      <strong>How it works:</strong> Answer a few quick questions about your situation. The AI builds a structured negotiation brief with your key arguments, market data, and talking points. Takes 2-3 minutes.
+    </div>
+
+    <h2 style="font-size:15px;font-weight:700;color:var(--ink);margin-bottom:16px;">What do you need help negotiating?</h2>
+    <div class="mode-select">
+      <div class="mode-card" id="mode-rate" onclick="selectMode('rate')">
+        <div class="mode-icon">💰</div>
+        <div class="mode-title">Rate Negotiation</div>
+        <div class="mode-desc">Help me justify my freelance or consulting rate to a client</div>
+      </div>
+      <div class="mode-card" id="mode-equity" onclick="selectMode('equity')">
+        <div class="mode-icon">📊</div>
+        <div class="mode-title">Equity / SAFE</div>
+        <div class="mode-desc">Help me negotiate equity, valuation, or SAFE terms as a founder or investor</div>
+      </div>
+    </div>
+
+    <!-- API KEY -->
+    <div class="api-section">
+      <div style="font-size:12px;font-weight:600;color:var(--mid);margin-bottom:10px;letter-spacing:.04em;">CLAUDE API KEY <span style="color:var(--muted);font-weight:400;">(required — your key, never stored)</span></div>
+      <div class="api-row">
+        <input type="password" class="api-input" id="api-key" placeholder="sk-ant-api03-...">
+        <button class="api-btn" onclick="saveKey()">Save</button>
+      </div>
+      <div class="api-hint">Get your key at <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a>. It stays in your browser only.</div>
+    </div>
+
+    <button class="start-btn" id="start-btn" onclick="startCoach()" disabled>Choose a mode to continue →</button>
+  </div>
+
+  <!-- STEP 2: CHAT -->
+  <div id="step-chat" style="display:none;">
+    <div class="chat-container">
+      <div class="chat-header">
+        <div class="chat-avatar">🤖</div>
+        <div>
+          <div class="chat-title" id="chat-title">Deal Coach</div>
+          <div class="chat-subtitle" id="chat-subtitle">AI negotiation assistant</div>
+        </div>
+      </div>
+      <div class="chat-messages" id="chat-messages"></div>
+      <div class="quick-replies" id="quick-replies"></div>
+      <div class="chat-input-area">
+        <textarea class="chat-input" id="chat-input" placeholder="Type your answer..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button class="send-btn" id="send-btn" onclick="sendMessage()">Send →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: RESULT -->
+  <div class="result-panel" id="result-panel">
+    <div class="result-header">
+      <div class="result-title" id="result-title">Your Negotiation Brief</div>
+      <div class="result-subtitle" id="result-subtitle">Generated by RateKit Deal Coach</div>
+    </div>
+    <div class="result-body" id="result-body"></div>
+  </div>
+</main>
+
+<footer>
+  <a href="/" class="flogo">Rate<span>Kit</span></a>
+  <span class="fcopy">© 2026 RateKit · Free business calculators</span>
+  <ul class="flinks">
+    <li><a href="/about.html">About</a></li>
+    <li><a href="/privacy.html">Privacy</a></li>
+    <li><a href="/terms.html">Terms</a></li>
+  </ul>
+</footer>
+
+<div id="google_translate_element" style="display:none;"></div>
+<script>
+function googleTranslateElementInit(){new google.translate.TranslateElement({pageLanguage:'en',includedLanguages:'ru,es,fr,de,zh-CN,ar,pt,ja,ko,tr,uk,kk',autoDisplay:false},'google_translate_element');}
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<script>
+let selectedMode = null;
+let apiKey = localStorage.getItem('rk_claude_key') || '';
+let conversationHistory = [];
+let questionCount = 0;
+let context = {};
+
+// Restore API key
+if (apiKey) {
+  document.getElementById('api-key').value = apiKey;
+  updateStartBtn();
+}
+
+function saveKey() {
+  const key = document.getElementById('api-key').value.trim();
+  if (!key.startsWith('sk-ant')) {
+    alert('Please enter a valid Anthropic API key (starts with sk-ant-)');
+    return;
+  }
+  apiKey = key;
+  localStorage.setItem('rk_claude_key', key);
+  updateStartBtn();
+  document.getElementById('api-key').placeholder = '✅ Key saved';
+}
+
+function selectMode(mode) {
+  selectedMode = mode;
+  document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('mode-' + mode).classList.add('selected');
+  updateStartBtn();
+}
+
+function updateStartBtn() {
+  const btn = document.getElementById('start-btn');
+  if (selectedMode && apiKey) {
+    btn.disabled = false;
+    btn.textContent = 'Start Deal Coach →';
+  } else if (!selectedMode) {
+    btn.textContent = 'Choose a mode to continue →';
+    btn.disabled = true;
+  } else {
+    btn.textContent = 'Enter API key to continue →';
+    btn.disabled = true;
+  }
+}
+
+function startCoach() {
+  document.getElementById('step-mode').style.display = 'none';
+  document.getElementById('step-chat').style.display = 'block';
+
+  if (selectedMode === 'rate') {
+    document.getElementById('chat-title').textContent = 'Rate Negotiation Coach';
+    document.getElementById('chat-subtitle').textContent = 'Helping you justify your freelance rate';
+  } else {
+    document.getElementById('chat-title').textContent = 'Equity Negotiation Coach';
+    document.getElementById('chat-subtitle').textContent = 'Helping you negotiate equity and SAFE terms';
+  }
+
+  const systemPrompt = selectedMode === 'rate' ? getRateSystemPrompt() : getEquitySystemPrompt();
+  conversationHistory = [];
+
+  const firstMessage = selectedMode === 'rate'
+    ? "Hi! I'm your Deal Coach. I'll help you build a strong case for your rate negotiation.\n\nFirst — **what is your current or target hourly rate**, and what's the client's pushback? (e.g. \"I charge $120/hr but the client says it's too high\")"
+    : "Hi! I'm your Deal Coach. I'll help you prepare for your equity or SAFE negotiation.\n\nLet's start — **what's your situation?** Are you a founder negotiating with an investor, or an investor evaluating a startup's terms?";
+
+  addMessage('ai', firstMessage);
+  setQuickReplies(selectedMode === 'rate'
+    ? ["Client says I'm too expensive", "Negotiating a raise with existing client", "Setting rate for a new client"]
+    : ["Founder negotiating SAFE terms", "Investor evaluating a deal", "Co-founder equity split"]);
+}
+
+function getRateSystemPrompt() {
+  return `You are Deal Coach, an expert negotiation assistant for freelancers and consultants on RateKit (ratekit.org).
+
+Your job: through a SHORT conversational interview (4-6 questions max), gather key information, then generate a structured negotiation brief.
+
+Ask about:
+1. Their rate and client's objection
+2. Their experience/expertise level and years
+3. Their specialty/niche
+4. The client's industry and company size
+5. The value/ROI they deliver (optional)
+
+After 4-6 exchanges, say "I have enough to build your brief" and call the function generate_brief with all context.
+
+Style: friendly, direct, professional. Short questions. One question at a time. Never ask more than one question per message.
+
+When generating the brief, format it as JSON with this structure:
+{
+  "summary": "One sentence summary of their situation",
+  "opening_position": "How to open the negotiation",
+  "key_arguments": [
+    {"title": "...", "argument": "...", "how_to_say": "..."},
+    ...3-5 arguments...
+  ],
+  "handle_objections": [
+    {"objection": "...", "response": "..."},
+    ...2-3 objections...
+  ],
+  "bottom_line": "Your absolute minimum and when to walk away",
+  "closing_line": "A specific closing statement to use"
+}
+
+When you have enough info, respond with exactly: GENERATE_BRIEF followed by the JSON on the next line.`;
+}
+
+function getEquitySystemPrompt() {
+  return `You are Deal Coach, an expert negotiation assistant for startup founders and investors on RateKit (ratekit.org).
+
+Your job: through a SHORT conversational interview (4-6 questions max), gather key information about their equity or SAFE negotiation, then generate a structured brief.
+
+For founders, ask about:
+1. Their role (founder/investor/co-founder)
+2. Stage of company (idea/MVP/revenue)
+3. SAFE or priced round, valuation cap they're considering
+4. What the investor is offering vs what they want
+5. Key traction metrics if any
+
+After 4-6 exchanges, generate the brief.
+
+When generating the brief, format it as JSON:
+{
+  "summary": "One sentence summary",
+  "opening_position": "How to open",
+  "key_arguments": [
+    {"title": "...", "argument": "...", "how_to_say": "..."},
+    ...3-5 arguments...
+  ],
+  "handle_objections": [
+    {"objection": "...", "response": "..."},
+    ...2-3 objections...
+  ],
+  "bottom_line": "Your walk-away terms",
+  "closing_line": "A specific closing statement"
+}
+
+When you have enough info, respond with exactly: GENERATE_BRIEF followed by the JSON on the next line.`;
+}
+
+function addMessage(role, text) {
+  const container = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+  const avatar = role === 'ai' ? '🤖' : '👤';
+  const formatted = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+  div.innerHTML = `<div class="msg-avatar">${avatar}</div><div class="msg-bubble">${formatted}</div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function addTyping() {
+  const container = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'msg ai';
+  div.id = 'typing-indicator';
+  div.innerHTML = `<div class="msg-avatar">🤖</div><div class="msg-bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function removeTyping() {
+  const el = document.getElementById('typing-indicator');
+  if (el) el.remove();
+}
+
+function setQuickReplies(options) {
+  const container = document.getElementById('quick-replies');
+  container.innerHTML = options.map(o =>
+    `<button class="qr-btn" onclick="useQuickReply('${o}')">${o}</button>`
+  ).join('');
+}
+
+function useQuickReply(text) {
+  document.getElementById('chat-input').value = text;
+  sendMessage();
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+
+  input.value = '';
+  input.style.height = 'auto';
+  document.getElementById('send-btn').disabled = true;
+  document.getElementById('quick-replies').innerHTML = '';
+
+  addMessage('user', text);
+  conversationHistory.push({role: 'user', content: text});
+
+  addTyping();
+
+  try {
+    const systemPrompt = selectedMode === 'rate' ? getRateSystemPrompt() : getEquitySystemPrompt();
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1500,
+        system: systemPrompt,
+        messages: conversationHistory
+      })
+    });
+
+    const data = await response.json();
+    removeTyping();
+
+    if (data.error) {
+      addMessage('ai', `❌ API Error: ${data.error.message}. Please check your API key.`);
+      document.getElementById('send-btn').disabled = false;
+      return;
+    }
+
+    const aiText = data.content[0].text;
+    conversationHistory.push({role: 'assistant', content: aiText});
+
+    if (aiText.includes('GENERATE_BRIEF')) {
+      // Extract JSON
+      const jsonStart = aiText.indexOf('{');
+      const jsonEnd = aiText.lastIndexOf('}') + 1;
+      const jsonStr = aiText.substring(jsonStart, jsonEnd);
+      try {
+        const brief = JSON.parse(jsonStr);
+        addMessage('ai', '✅ I have everything I need. Your negotiation brief is ready below!');
+        setTimeout(() => renderBrief(brief), 500);
+      } catch(e) {
+        addMessage('ai', aiText.replace('GENERATE_BRIEF', '').trim());
+      }
+    } else {
+      addMessage('ai', aiText);
+      questionCount++;
+    }
+
+  } catch(err) {
+    removeTyping();
+    addMessage('ai', '❌ Connection error. Please check your API key and try again.');
+  }
+
+  document.getElementById('send-btn').disabled = false;
+}
+
+function renderBrief(brief) {
+  const panel = document.getElementById('result-panel');
+  const body = document.getElementById('result-body');
+  const title = selectedMode === 'rate' ? 'Rate Negotiation Brief' : 'Equity Negotiation Brief';
+  document.getElementById('result-title').textContent = title;
+
+  const argsHtml = (brief.key_arguments || []).map(a => `
+    <div class="result-arg">
+      <strong>${a.title}</strong>
+      ${a.argument}<br>
+      <span style="font-style:italic;color:var(--blue);font-size:12px;margin-top:6px;display:block;">💬 How to say it: "${a.how_to_say}"</span>
+    </div>`).join('');
+
+  const objHtml = (brief.handle_objections || []).map(o => `
+    <div class="result-arg" style="border-color:var(--amber);">
+      <strong>If they say: "${o.objection}"</strong>
+      ${o.response}
+    </div>`).join('');
+
+  body.innerHTML = `
+    <div class="result-highlight">📋 ${brief.summary || ''}</div>
+
+    <div class="result-section">
+      <div class="result-section-title">Opening Position</div>
+      <div class="result-arg" style="border-color:var(--green);">${brief.opening_position || ''}</div>
+    </div>
+
+    <div class="result-section">
+      <div class="result-section-title">Your Key Arguments (${(brief.key_arguments||[]).length})</div>
+      ${argsHtml}
+    </div>
+
+    <div class="result-section">
+      <div class="result-section-title">Handling Objections</div>
+      ${objHtml}
+    </div>
+
+    <div class="result-section">
+      <div class="result-section-title">Your Bottom Line</div>
+      <div class="result-arg" style="border-color:var(--red);">${brief.bottom_line || ''}</div>
+    </div>
+
+    <div class="result-section">
+      <div class="result-section-title">Closing Statement</div>
+      <div class="result-arg" style="border-color:var(--blue);background:var(--bluebg);">💬 "${brief.closing_line || ''}"</div>
+    </div>
+
+    <div class="result-actions">
+      <button class="result-btn primary" onclick="window.print()">⬇ Print / Save PDF</button>
+      <button class="result-btn secondary" onclick="copyBrief()">📋 Copy to clipboard</button>
+      <button class="result-btn secondary" onclick="location.reload()">↺ Start over</button>
+    </div>
+
+    <div class="result-disclaimer">
+      ⚠️ This brief is AI-generated based on information you provided. It is for preparation purposes only and does not constitute legal or financial advice. Always use your own judgment in negotiations.
+      <br><br>Generated with <strong>RateKit Deal Coach</strong> · <a href="https://ratekit.org" style="color:var(--blue);">ratekit.org</a>
+    </div>
+  `;
+
+  panel.style.display = 'block';
+  panel.scrollIntoView({behavior: 'smooth'});
+}
+
+function copyBrief() {
+  const text = document.getElementById('result-body').innerText;
+  navigator.clipboard.writeText(text).then(() => alert('Brief copied to clipboard!'));
+}
+</script>
+</body>
+</html>
