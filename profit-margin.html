@@ -153,6 +153,41 @@ footer{background:var(--ink);padding:28px 48px;display:flex;justify-content:spac
 .translate-btn:hover { border-color: var(--blue); color: var(--blue); }
 #google_translate_element { margin-left: 8px; }
 
+
+/* ═══ DROPDOWN NAV ═══ */
+.nav-r { display: flex; align-items: center; gap: 8px; }
+.dropdown { position: relative; }
+.dropdown-btn {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 500; color: var(--mid);
+  padding: 6px 14px; border-radius: 6px;
+  background: none; border: none; cursor: pointer;
+  font-family: var(--font); transition: background .15s, color .15s;
+}
+.dropdown-btn:hover { background: var(--bluebg); color: var(--blue); }
+.dropdown-btn .arrow { font-size: 10px; transition: transform .2s; }
+.dropdown.open .dropdown-btn { background: var(--bluebg); color: var(--blue); }
+.dropdown.open .arrow { transform: rotate(180deg); }
+.dropdown-menu {
+  display: none; position: absolute; top: calc(100% + 8px); right: 0;
+  background: white; border: 1px solid var(--border);
+  border-radius: 12px; padding: 8px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.1);
+  min-width: 220px; z-index: 200;
+}
+.dropdown.open .dropdown-menu { display: block; }
+.dropdown-section { font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); padding: 8px 12px 4px; }
+.dropdown-item {
+  display: block; padding: 8px 12px; border-radius: 8px;
+  font-size: 13px; font-weight: 500; color: var(--mid);
+  text-decoration: none; transition: background .12s, color .12s;
+  white-space: nowrap;
+}
+.dropdown-item:hover { background: var(--bluebg); color: var(--blue); }
+.dropdown-item.active { color: var(--blue); background: var(--bluebg); }
+.dropdown-item .item-icon { margin-right: 8px; }
+.dropdown-divider { height: 1px; background: var(--border); margin: 6px 8px; }
+
 </style>
 <!-- Open Graph / Social sharing -->
 <meta property="og:type" content="article">
@@ -201,22 +236,38 @@ footer{background:var(--ink);padding:28px 48px;display:flex;justify-content:spac
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7303101907130018" crossorigin="anonymous"></script>
 </head>
 <body>
-<nav>
+<nav id="nav">
   <a href="/" class="logo">Rate<span>Kit</span></a>
-  <button class="burger" onclick="toggleNav()">☰</button>
-  <ul class="nl" id="nl">
-    <li><a href="/freelance-rate.html">Freelance Rate</a></li>
-    <li><a href="/stripe-fee.html">Stripe/PayPal Fee</a></li>
-    <li><a href="/vat-calculator.html">VAT/GST</a></li>
-    <li><a href="/roi-calculator.html">ROI</a></li>
-    <li><a href="/profit-margin.html" class="active">Profit Margin</a></li>
-    <li><a href="/self-employment-tax.html">SE Tax</a></li>
-    <li><a href="/loan-calculator.html">Loan</a></li>
-    <li><a href="/safe-calculator.html">SAFE</a></li>
-    <li><a href="/burn-rate.html">Burn Rate</a></li>
-    <li><a href="/ltv-cac.html">LTV:CAC</a></li>
-    <li><a href="/break-even.html">Break-even</a></li>
-  </ul>
+  <div class="nav-r">
+    <div class="dropdown" id="tools-dropdown">
+      <button class="dropdown-btn" onclick="toggleDropdown()">
+        🧮 All Tools <span class="arrow">▾</span>
+      </button>
+      <div class="dropdown-menu">
+        <div class="dropdown-section">Freelancers</div>
+        <a href="/freelance-rate.html" class="dropdown-item "><span class="item-icon">💰</span>Freelance Rate</a>
+        <a href="/stripe-fee.html" class="dropdown-item "><span class="item-icon">💳</span>Stripe / PayPal Fee</a>
+        <a href="/vat-calculator.html" class="dropdown-item "><span class="item-icon">🌍</span>VAT / GST Calculator</a>
+        <a href="/invoice-generator.html" class="dropdown-item "><span class="item-icon">🧾</span>Invoice Generator</a>
+        <a href="/self-employment-tax.html" class="dropdown-item "><span class="item-icon">🇺🇸</span>Self-Employment Tax</a>
+        <a href="/form-2555.html" class="dropdown-item "><span class="item-icon">📋</span>Form 2555 (Expat)</a>
+        <a href="/deal-coach.html" class="dropdown-item "><span class="item-icon">🤖</span>Deal Coach AI</a>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-section">Business & Startups</div>
+        <a href="/roi-calculator.html" class="dropdown-item "><span class="item-icon">📈</span>ROI Calculator</a>
+        <a href="/profit-margin.html" class="dropdown-item active"><span class="item-icon">🛒</span>Profit Margin</a>
+        <a href="/break-even.html" class="dropdown-item "><span class="item-icon">⚖️</span>Break-even</a>
+        <a href="/loan-calculator.html" class="dropdown-item "><span class="item-icon">🏦</span>Business Loan</a>
+        <a href="/pl-statement.html" class="dropdown-item "><span class="item-icon">📊</span>P&L Statement</a>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-section">Startups</div>
+        <a href="/safe-calculator.html" class="dropdown-item "><span class="item-icon">🚀</span>SAFE Equity</a>
+        <a href="/burn-rate.html" class="dropdown-item "><span class="item-icon">🔥</span>Burn Rate & Runway</a>
+        <a href="/ltv-cac.html" class="dropdown-item "><span class="item-icon">📉</span>LTV : CAC</a>
+      </div>
+    </div>
+    <button class="burger" onclick="document.getElementById('tools-dropdown').classList.toggle('open')">☰</button>
+  </div>
 </nav>
 <div class="page-header">
   <div class="breadcrumb"><a href="/">RateKit</a> › Profit Margin Calculator</div>
