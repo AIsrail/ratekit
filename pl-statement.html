@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P&L Statement (Profit & Loss) — RateKit</title>
+<meta name="description" content="Build your Profit & Loss statement online. Auto-calculates gross profit, EBITDA, and net profit. Free P&L tool for businesses and startups.">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="canonical" href="https://ratekit.org/pl-statement.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-JZZPXY8N1E"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-JZZPXY8N1E');</script>
+<style>
+:root{--bg:#F8F9FC;--white:#FFFFFF;--border:#E2E8F0;--ink:#0F172A;--mid:#475569;--muted:#94A3B8;--blue:#2563EB;--bluebg:#EFF6FF;--green:#059669;--greenbg:#ECFDF5;--amber:#D97706;--red:#DC2626;--redbg:#FEF2F2;--font:'Plus Jakarta Sans',sans-serif;--mono:'JetBrains Mono',monospace;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh;}
+a{text-decoration:none;color:inherit;}
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 48px;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.logo{font-size:18px;font-weight:700;color:var(--ink);letter-spacing:-.02em;}.logo span{color:var(--blue);}
+.nl{display:flex;align-items:center;gap:2px;list-style:none;flex-wrap:wrap;}
+.nl a{font-size:12px;font-weight:500;color:var(--mid);padding:5px 10px;border-radius:6px;transition:background .15s,color .15s;}
+.nl a:hover,.nl a.active{background:var(--bluebg);color:var(--blue);}
+.burger{display:none;background:none;border:none;font-size:20px;cursor:pointer;padding:4px 8px;}
+.translate-btn{background:var(--white);border:1.5px solid var(--border);border-radius:6px;padding:5px 12px;font-family:var(--font);font-size:12px;font-weight:500;color:var(--mid);cursor:pointer;margin-left:8px;}
+.page-header{background:var(--white);border-bottom:1px solid var(--border);padding:40px 48px 32px;}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:12px;}
+.breadcrumb a{color:var(--blue);}
+.page-tag{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:8px;}
+h1{font-size:clamp(1.6rem,3.5vw,2.2rem);font-weight:700;letter-spacing:-.02em;margin-bottom:8px;}
+.page-sub{font-size:14px;color:var(--mid);}
+main{padding:32px 48px 64px;max-width:1100px;}
+
+/* CONTROLS */
+.controls{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;align-items:center;}
+.ctrl-btn{padding:8px 16px;border-radius:8px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--mid);transition:all .15s;}
+.ctrl-btn:hover{border-color:var(--blue);color:var(--blue);}
+.ctrl-btn.primary{background:var(--blue);color:white;border-color:var(--blue);}
+.ctrl-btn.primary:hover{background:#1D4ED8;}
+.period-select{padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--font);font-size:13px;color:var(--ink);background:var(--white);cursor:pointer;}
+
+/* P&L TABLE */
+.pl-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:20px;}
+.pl-header{background:var(--ink);color:white;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;}
+.pl-header-title{font-size:14px;font-weight:700;}
+.pl-header-period{font-size:12px;color:rgba(255,255,255,.5);}
+
+.pl-table{width:100%;border-collapse:collapse;}
+.pl-table td{padding:10px 24px;border-bottom:1px solid var(--border);font-size:13px;}
+.pl-table td:last-child{text-align:right;font-family:var(--mono);}
+.pl-table td input{width:100%;background:transparent;border:none;outline:none;font-family:var(--mono);font-size:13px;color:var(--ink);text-align:right;padding:0;}
+.pl-table td input:focus{background:var(--bluebg);border-radius:4px;padding:2px 4px;}
+.pl-table .section-head td{background:var(--bg);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:8px 24px;}
+.pl-table .subtotal td{background:#F8FAFF;font-weight:700;color:var(--blue);border-top:2px solid var(--border);}
+.pl-table .subtotal td:first-child{color:var(--mid);}
+.pl-table .grand-total td{background:var(--ink);color:white;font-weight:700;font-size:14px;border-top:none;}
+.pl-table .grand-total.profit td{background:var(--green);}
+.pl-table .grand-total.loss td{background:var(--red);}
+.pl-table .indent td:first-child{padding-left:40px;color:var(--mid);}
+.pl-table .editable td:first-child{color:var(--ink);}
+.item-name-input{width:100%;background:transparent;border:none;outline:none;font-family:var(--font);font-size:13px;color:var(--ink);padding:0;}
+
+/* SUMMARY CARDS */
+.summary-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.s-card{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:18px 20px;}
+.s-card.green{background:var(--greenbg);border-color:#6EE7B7;}
+.s-card.red{background:var(--redbg);border-color:#FECACA;}
+.s-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.s-card.green .s-label{color:var(--green);}
+.s-card.red .s-label{color:var(--red);}
+.s-value{font-family:var(--mono);font-size:1.4rem;font-weight:600;color:var(--ink);}
+.s-card.green .s-value{color:var(--green);}
+.s-card.red .s-value{color:var(--red);}
+.s-sub{font-size:11px;color:var(--muted);margin-top:4px;}
+
+.info-box{background:var(--bluebg);border:1px solid #BFDBFE;border-radius:10px;padding:14px 18px;font-size:13px;color:var(--mid);line-height:1.6;margin-bottom:20px;}
+.info-box strong{color:var(--blue);}
+
+footer{background:var(--ink);padding:24px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;}
+.flogo{font-size:16px;font-weight:700;color:white;}.flogo span{color:var(--blue);}
+.fcopy{font-size:12px;color:rgba(255,255,255,.3);}
+.flinks{display:flex;gap:14px;list-style:none;flex-wrap:wrap;}
+.flinks a{font-size:12px;color:rgba(255,255,255,.4);transition:color .2s;}
+.flinks a:hover{color:white;}
+
+@media print{nav,.controls,footer,.info-box,.page-header{display:none!important;}main{padding:0;}body{background:white;}}
+@media(max-width:768px){nav{padding:0 16px;}.nl{display:none;position:fixed;top:60px;left:0;right:0;background:white;border-bottom:1px solid var(--border);flex-direction:column;padding:12px;z-index:99;}.nl.open{display:flex;}.burger{display:block;}.page-header,main{padding-left:16px;padding-right:16px;}.summary-row{grid-template-columns:1fr 1fr;}footer{padding:20px 16px;flex-direction:column;align-items:flex-start;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo">Rate<span>Kit</span></a>
+  <button class="translate-btn" onclick="document.getElementById('google_translate_element').style.display='block';this.style.display='none';">🌐 Translate</button>
+  <button class="burger" onclick="document.getElementById('nl').classList.toggle('open')">☰</button>
+  <ul class="nl" id="nl">
+    <li><a href="/freelance-rate.html">Freelance Rate</a></li>
+    <li><a href="/stripe-fee.html">Stripe/PayPal</a></li>
+    <li><a href="/invoice-generator.html">Invoice</a></li>
+    <li><a href="/roi-calculator.html">ROI</a></li>
+    <li><a href="/profit-margin.html">Profit Margin</a></li>
+    <li><a href="/pl-statement.html" class="active">P&L</a></li>
+    <li><a href="/safe-calculator.html">SAFE</a></li>
+    <li><a href="/burn-rate.html">Burn Rate</a></li>
+    <li><a href="/ltv-cac.html">LTV:CAC</a></li>
+    <li><a href="/break-even.html">Break-even</a></li>
+    <li><a href="/form-2555.html">Form 2555</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <div class="breadcrumb"><a href="/">RateKit</a> › P&L Statement</div>
+  <div class="page-tag">📊 Business Tool</div>
+  <h1>Profit & Loss Statement</h1>
+  <p class="page-sub">Build your P&L online. Enter your numbers — gross profit, EBITDA, and net profit calculate automatically.</p>
+</div>
+
+<main>
+  <div class="controls">
+    <select class="period-select" id="period-select">
+      <option>Q1 2026</option><option>Q2 2026</option><option>Q3 2026</option><option>Q4 2026</option>
+      <option>FY 2026</option><option>FY 2025</option><option>Monthly</option>
+    </select>
+    <select class="period-select" id="currency-select" onchange="calc()">
+      <option value="$">USD ($)</option><option value="€">EUR (€)</option><option value="£">GBP (£)</option>
+    </select>
+    <button class="ctrl-btn primary" onclick="window.print()">⬇ Export PDF</button>
+    <button class="ctrl-btn" onclick="resetAll()">↺ Reset</button>
+  </div>
+
+  <div class="summary-row">
+    <div class="s-card"><div class="s-label">Total Revenue</div><div class="s-value" id="s-rev">$0</div><div class="s-sub">top line</div></div>
+    <div class="s-card" id="s-gross-card"><div class="s-label">Gross Profit</div><div class="s-value" id="s-gross">$0</div><div class="s-sub" id="s-gross-margin">0% margin</div></div>
+    <div class="s-card" id="s-ebitda-card"><div class="s-label">EBITDA</div><div class="s-value" id="s-ebitda">$0</div><div class="s-sub">before D&A + tax</div></div>
+    <div class="s-card" id="s-net-card"><div class="s-label">Net Profit</div><div class="s-value" id="s-net">$0</div><div class="s-sub" id="s-net-margin">0% margin</div></div>
+  </div>
+
+  <div class="pl-wrap">
+    <div class="pl-header">
+      <span class="pl-header-title" id="company-name-display">Profit & Loss Statement</span>
+      <span class="pl-header-period" id="period-display">Q1 2026</span>
+    </div>
+    <table class="pl-table">
+      <!-- REVENUE -->
+      <tr class="section-head"><td colspan="2">Revenue</td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Product / Service Revenue" oninput="calc()"></td><td><input type="number" id="rev1" value="0" oninput="calc()"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Recurring Revenue (MRR × months)" oninput="calc()"></td><td><input type="number" id="rev2" value="0" oninput="calc()"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Other Revenue" oninput="calc()"></td><td><input type="number" id="rev3" value="0" oninput="calc()"></td></tr>
+      <tr class="subtotal"><td>Total Revenue</td><td id="t-rev">$0</td></tr>
+
+      <!-- COGS -->
+      <tr class="section-head"><td colspan="2">Cost of Goods Sold (COGS)</td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Direct Materials / Hosting" oninput="calc()"></td><td><input type="number" id="cogs1" value="0" oninput="calc()"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Direct Labor / Contractors" oninput="calc()"></td><td><input type="number" id="cogs2" value="0" oninput="calc()"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Other COGS" oninput="calc()"></td><td><input type="number" id="cogs3" value="0" oninput="calc()"></td></tr>
+      <tr class="subtotal"><td>Total COGS</td><td id="t-cogs">$0</td></tr>
+      <tr class="subtotal" style="background:#F0FDF4;"><td style="color:var(--green);">Gross Profit</td><td id="t-gross" style="color:var(--green);">$0</td></tr>
+
+      <!-- OPEX -->
+      <tr class="section-head"><td colspan="2">Operating Expenses (OpEx)</td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Salaries & Payroll" oninput="calc()"></td><td><input type="number" id="op1" value="0" oninput="calc()"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Marketing & Advertising" oninput="calc()"></td><td><input type="number" id="op2" value="0" oninput="calc()"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Rent & Utilities" oninput="calc()"></td><td><input type="number" id="op3" value="0" oninput="calc()"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Software & Subscriptions" oninput="calc()"></td><td><input type="number" id="op4" value="0" oninput="calc()"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Legal & Professional" oninput="calc()"></td><td><input type="number" id="op5" value="0" oninput="calc()"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Other Operating Expenses" oninput="calc()"></td><td><input type="number" id="op6" value="0" oninput="calc()"></td></tr>
+      <tr class="subtotal"><td>Total OpEx</td><td id="t-opex">$0</td></tr>
+      <tr class="subtotal" style="background:#EFF6FF;"><td style="color:var(--blue);">EBITDA</td><td id="t-ebitda" style="color:var(--blue);">$0</td></tr>
+
+      <!-- BELOW EBITDA -->
+      <tr class="section-head"><td colspan="2">Below EBITDA</td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Depreciation & Amortization" oninput="calc()"></td><td><input type="number" id="da1" value="0" oninput="calc()"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Interest Expense" oninput="calc()"></td><td><input type="number" id="da2" value="0" oninput="calc()"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Income Tax" oninput="calc()"></td><td><input type="number" id="da3" value="0" oninput="calc()"></td></tr>
+
+      <!-- NET -->
+      <tr class="grand-total" id="net-row"><td>Net Profit / (Loss)</td><td id="t-net">$0</td></tr>
+    </table>
+  </div>
+
+  <div class="info-box">
+    <strong>💡 How to use:</strong> Enter your numbers in each row. Click on row labels to rename them. All totals calculate automatically. Use "Export PDF" to download a clean printable version. Your data is saved automatically in your browser.
+  </div>
+</main>
+
+<footer>
+  <a href="/" class="flogo">Rate<span>Kit</span></a>
+  <span class="fcopy">© 2026 RateKit · Free business calculators</span>
+  <ul class="flinks">
+    <li><a href="/about.html">About</a></li>
+    <li><a href="/privacy.html">Privacy</a></li>
+    <li><a href="/terms.html">Terms</a></li>
+  </ul>
+</footer>
+
+<div id="google_translate_element" style="display:none;"></div>
+<script>
+function googleTranslateElementInit(){new google.translate.TranslateElement({pageLanguage:'en',includedLanguages:'ru,es,fr,de,zh-CN,ar,pt,ja,ko,tr,uk,kk',autoDisplay:false},'google_translate_element');}
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<script>
+const sym = () => document.getElementById('currency-select').value;
+function fmt(n){return sym()+Math.round(Math.abs(n)).toLocaleString('en-US');}
+function fmtSigned(n){return (n>=0?'':'-')+fmt(n);}
+function v(id){return +document.getElementById(id).value||0;}
+
+function calc(){
+  const rev = v('rev1')+v('rev2')+v('rev3');
+  const cogs = v('cogs1')+v('cogs2')+v('cogs3');
+  const gross = rev - cogs;
+  const opex = v('op1')+v('op2')+v('op3')+v('op4')+v('op5')+v('op6');
+  const ebitda = gross - opex;
+  const da = v('da1')+v('da2')+v('da3');
+  const net = ebitda - da;
+  const grossMargin = rev>0?gross/rev*100:0;
+  const netMargin = rev>0?net/rev*100:0;
+
+  document.getElementById('t-rev').textContent=fmt(rev);
+  document.getElementById('t-cogs').textContent=fmt(cogs);
+  document.getElementById('t-gross').textContent=fmtSigned(gross);
+  document.getElementById('t-opex').textContent=fmt(opex);
+  document.getElementById('t-ebitda').textContent=fmtSigned(ebitda);
+  document.getElementById('t-net').textContent=fmtSigned(net);
+
+  // Summary cards
+  document.getElementById('s-rev').textContent=fmt(rev);
+  document.getElementById('s-gross').textContent=fmtSigned(gross);
+  document.getElementById('s-gross-margin').textContent=grossMargin.toFixed(1)+'% margin';
+  document.getElementById('s-ebitda').textContent=fmtSigned(ebitda);
+  document.getElementById('s-net').textContent=fmtSigned(net);
+  document.getElementById('s-net-margin').textContent=netMargin.toFixed(1)+'% margin';
+
+  // Color net card
+  const nc=document.getElementById('s-net-card');
+  nc.className='s-card '+(net>=0?'green':'red');
+  const ec=document.getElementById('s-ebitda-card');
+  ec.className='s-card '+(ebitda>=0?'green':'red');
+  const gc=document.getElementById('s-gross-card');
+  gc.className='s-card '+(gross>=0?'green':'red');
+
+  // Net row color
+  const nr=document.getElementById('net-row');
+  nr.className='grand-total '+(net>=0?'profit':'loss');
+
+  // Period display
+  document.getElementById('period-display').textContent=document.getElementById('period-select').value;
+
+  save();
+}
+
+function save(){
+  const ids=['rev1','rev2','rev3','cogs1','cogs2','cogs3','op1','op2','op3','op4','op5','op6','da1','da2','da3'];
+  const data={};
+  ids.forEach(id=>data[id]=document.getElementById(id).value);
+  localStorage.setItem('rk_pl',JSON.stringify(data));
+}
+
+function load(){
+  const saved=localStorage.getItem('rk_pl');
+  if(!saved)return;
+  try{
+    const data=JSON.parse(saved);
+    Object.keys(data).forEach(id=>{
+      const el=document.getElementById(id);
+      if(el)el.value=data[id];
+    });
+    calc();
+  }catch(e){}
+}
+
+function resetAll(){
+  if(!confirm('Reset all values?'))return;
+  ['rev1','rev2','rev3','cogs1','cogs2','cogs3','op1','op2','op3','op4','op5','op6','da1','da2','da3'].forEach(id=>{
+    document.getElementById(id).value=0;
+  });
+  localStorage.removeItem('rk_pl');
+  calc();
+}
+
+document.getElementById('period-select').addEventListener('change',calc);
+load();
+calc();
+</script>
+</body>
+</html>

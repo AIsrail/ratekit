@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Invoice Generator — RateKit</title>
+<meta name="description" content="Create professional invoices instantly. Download as PDF. Free invoice generator for freelancers and small businesses. No signup required.">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon-180x180.png">
+<link rel="canonical" href="https://ratekit.org/invoice-generator.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-JZZPXY8N1E"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-JZZPXY8N1E');</script>
+<style>
+:root{--bg:#F8F9FC;--white:#FFFFFF;--border:#E2E8F0;--ink:#0F172A;--mid:#475569;--muted:#94A3B8;--blue:#2563EB;--blue2:#1D4ED8;--bluebg:#EFF6FF;--green:#059669;--greenbg:#ECFDF5;--font:'Plus Jakarta Sans',sans-serif;--mono:'JetBrains Mono',monospace;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh;}
+a{text-decoration:none;color:inherit;}
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 48px;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.logo{font-size:18px;font-weight:700;color:var(--ink);letter-spacing:-.02em;}.logo span{color:var(--blue);}
+.nl{display:flex;align-items:center;gap:2px;list-style:none;flex-wrap:wrap;}
+.nl a{font-size:12px;font-weight:500;color:var(--mid);padding:5px 10px;border-radius:6px;transition:background .15s,color .15s;}
+.nl a:hover,.nl a.active{background:var(--bluebg);color:var(--blue);}
+.burger{display:none;background:none;border:none;font-size:20px;cursor:pointer;padding:4px 8px;}
+.translate-btn{background:var(--white);border:1.5px solid var(--border);border-radius:6px;padding:5px 12px;font-family:var(--font);font-size:12px;font-weight:500;color:var(--mid);cursor:pointer;margin-left:8px;}
+.translate-btn:hover{border-color:var(--blue);color:var(--blue);}
+#google_translate_element{margin-left:8px;}
+.page-header{background:var(--white);border-bottom:1px solid var(--border);padding:40px 48px 32px;}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:12px;}
+.breadcrumb a{color:var(--blue);}
+.page-tag{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:8px;}
+h1{font-size:clamp(1.6rem,3.5vw,2.2rem);font-weight:700;letter-spacing:-.02em;margin-bottom:8px;}
+.page-sub{font-size:14px;color:var(--mid);}
+.app-wrap{display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:32px 48px 64px;max-width:1400px;}
+
+/* FORM PANEL */
+.form-panel{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;}
+.section-title{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.field{margin-bottom:12px;}
+.lbl{display:block;font-size:11px;font-weight:600;color:var(--mid);margin-bottom:4px;letter-spacing:.04em;}
+input[type="text"],input[type="number"],input[type="date"],textarea,select{width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:6px;padding:8px 12px;font-family:var(--font);font-size:13px;color:var(--ink);outline:none;transition:border-color .15s;}
+input:focus,textarea:focus,select:focus{border-color:var(--blue);}
+textarea{resize:vertical;min-height:60px;}
+.row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+
+/* ITEMS TABLE */
+.items-table{width:100%;border-collapse:collapse;margin-bottom:12px;font-size:13px;}
+.items-table th{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--border);text-align:left;}
+.items-table td{padding:6px 4px;}
+.items-table input{padding:6px 8px;}
+.del-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:4px;}
+.del-btn:hover{color:var(--red,#DC2626);}
+.add-btn{font-size:12px;font-weight:600;color:var(--blue);background:var(--bluebg);border:1.5px solid #BFDBFE;border-radius:6px;padding:7px 14px;cursor:pointer;transition:all .15s;}
+.add-btn:hover{background:#DBEAFE;}
+
+/* PDF PREVIEW */
+.preview-panel{position:sticky;top:80px;}
+.preview-actions{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.action-btn{padding:9px 18px;border-radius:8px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s;}
+.action-btn.primary{background:var(--blue);color:white;}
+.action-btn.primary:hover{background:var(--blue2);}
+.action-btn.secondary{background:var(--white);color:var(--mid);border:1.5px solid var(--border);}
+.action-btn.secondary:hover{border-color:var(--blue);color:var(--blue);}
+
+/* INVOICE PREVIEW */
+.invoice-preview{background:white;border:1px solid var(--border);border-radius:12px;padding:40px;font-family:'Plus Jakarta Sans',sans-serif;min-height:600px;box-shadow:0 4px 24px rgba(0,0,0,.06);}
+.inv-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:36px;}
+.inv-company{font-size:22px;font-weight:700;color:var(--ink);}
+.inv-title{font-size:28px;font-weight:700;color:var(--blue);text-align:right;}
+.inv-number{font-size:12px;color:var(--muted);text-align:right;margin-top:4px;}
+.inv-dates{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px;}
+.inv-block-label{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.inv-block-val{font-size:13px;color:var(--ink);line-height:1.5;}
+.inv-table{width:100%;border-collapse:collapse;margin-bottom:24px;}
+.inv-table th{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:8px 10px;border-bottom:2px solid var(--border);text-align:left;}
+.inv-table th:last-child,.inv-table td:last-child{text-align:right;}
+.inv-table td{padding:10px;border-bottom:1px solid var(--border);font-size:13px;color:var(--mid);}
+.inv-table td:first-child{color:var(--ink);font-weight:500;}
+.inv-totals{margin-left:auto;width:240px;}
+.inv-total-row{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;color:var(--mid);}
+.inv-total-row.grand{border-top:2px solid var(--ink);margin-top:8px;padding-top:10px;font-size:16px;font-weight:700;color:var(--ink);}
+.inv-notes{margin-top:24px;padding-top:20px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);line-height:1.6;}
+.inv-watermark{margin-top:32px;text-align:center;font-size:10px;color:#CBD5E1;}
+
+footer{background:var(--ink);padding:24px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;}
+.flogo{font-size:16px;font-weight:700;color:white;}.flogo span{color:var(--blue);}
+.fcopy{font-size:12px;color:rgba(255,255,255,.3);}
+.flinks{display:flex;gap:14px;list-style:none;flex-wrap:wrap;}
+.flinks a{font-size:12px;color:rgba(255,255,255,.4);transition:color .2s;}
+.flinks a:hover{color:white;}
+
+@media print{
+  nav,.form-panel,.preview-actions,footer,.page-header{display:none!important;}
+  .app-wrap{display:block;padding:0;}
+  .preview-panel{position:static;}
+  .invoice-preview{border:none;box-shadow:none;border-radius:0;padding:20px;}
+}
+@media(max-width:1024px){.app-wrap{grid-template-columns:1fr;padding:20px;}.preview-panel{position:static;}}
+@media(max-width:600px){nav{padding:0 16px;}.nl{display:none;position:fixed;top:60px;left:0;right:0;background:white;border-bottom:1px solid var(--border);flex-direction:column;padding:12px;z-index:99;}.nl.open{display:flex;}.burger{display:block;}.page-header{padding:24px 16px;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo">Rate<span>Kit</span></a>
+  <button class="translate-btn" onclick="document.getElementById('google_translate_element').style.display='block';this.style.display='none';">🌐 Translate</button>
+  <button class="burger" onclick="document.getElementById('nl').classList.toggle('open')">☰</button>
+  <ul class="nl" id="nl">
+    <li><a href="/freelance-rate.html">Freelance Rate</a></li>
+    <li><a href="/stripe-fee.html">Stripe/PayPal Fee</a></li>
+    <li><a href="/vat-calculator.html">VAT/GST</a></li>
+    <li><a href="/invoice-generator.html" class="active">Invoice</a></li>
+    <li><a href="/roi-calculator.html">ROI</a></li>
+    <li><a href="/profit-margin.html">Profit Margin</a></li>
+    <li><a href="/self-employment-tax.html">SE Tax</a></li>
+    <li><a href="/loan-calculator.html">Loan</a></li>
+    <li><a href="/safe-calculator.html">SAFE</a></li>
+    <li><a href="/burn-rate.html">Burn Rate</a></li>
+    <li><a href="/ltv-cac.html">LTV:CAC</a></li>
+    <li><a href="/break-even.html">Break-even</a></li>
+    <li><a href="/pl-statement.html">P&L</a></li>
+    <li><a href="/form-2555.html">Form 2555</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <div class="breadcrumb"><a href="/">RateKit</a> › Invoice Generator</div>
+  <div class="page-tag">🧾 Free Tool</div>
+  <h1>Invoice Generator</h1>
+  <p class="page-sub">Create a professional invoice in seconds. Download as PDF. No signup, no watermark on paid plans.</p>
+</div>
+
+<div class="app-wrap">
+  <!-- FORM -->
+  <div class="form-panel">
+    <div class="section-title">Your Business</div>
+    <div class="field"><label class="lbl">Company / Your Name</label><input type="text" id="from-name" placeholder="Acme Inc." oninput="render()"></div>
+    <div class="field"><label class="lbl">Address</label><textarea id="from-addr" rows="2" placeholder="123 Main St, City, Country" oninput="render()"></textarea></div>
+    <div class="row-2">
+      <div class="field"><label class="lbl">Email</label><input type="text" id="from-email" placeholder="you@company.com" oninput="render()"></div>
+      <div class="field"><label class="lbl">Phone</label><input type="text" id="from-phone" placeholder="+1 555 000 0000" oninput="render()"></div>
+    </div>
+
+    <div class="section-title" style="margin-top:20px;">Bill To</div>
+    <div class="field"><label class="lbl">Client Name / Company</label><input type="text" id="to-name" placeholder="Client Ltd." oninput="render()"></div>
+    <div class="field"><label class="lbl">Client Address</label><textarea id="to-addr" rows="2" placeholder="456 Client Ave, City" oninput="render()"></textarea></div>
+
+    <div class="section-title" style="margin-top:20px;">Invoice Details</div>
+    <div class="row-3">
+      <div class="field"><label class="lbl">Invoice #</label><input type="text" id="inv-num" value="INV-001" oninput="render()"></div>
+      <div class="field"><label class="lbl">Issue Date</label><input type="date" id="inv-date" oninput="render()"></div>
+      <div class="field"><label class="lbl">Due Date</label><input type="date" id="due-date" oninput="render()"></div>
+    </div>
+    <div class="row-2">
+      <div class="field"><label class="lbl">Currency</label>
+        <select id="currency" onchange="render()">
+          <option value="$">USD ($)</option>
+          <option value="€">EUR (€)</option>
+          <option value="£">GBP (£)</option>
+          <option value="A$">AUD (A$)</option>
+          <option value="C$">CAD (C$)</option>
+        </select>
+      </div>
+      <div class="field"><label class="lbl">Tax Rate</label>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <input type="number" id="tax-rate" value="0" min="0" max="100" style="width:80px;" oninput="render()">
+          <span style="font-size:13px;color:var(--muted);">%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top:20px;">Line Items</div>
+    <table class="items-table">
+      <thead><tr><th>Description</th><th>Qty</th><th>Rate</th><th>Amount</th><th></th></tr></thead>
+      <tbody id="items-body"></tbody>
+    </table>
+    <button class="add-btn" onclick="addItem()">+ Add Line Item</button>
+
+    <div class="section-title" style="margin-top:20px;">Notes</div>
+    <div class="field"><textarea id="notes" rows="3" placeholder="Payment terms, bank details, thank you message..." oninput="render()"></textarea></div>
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="preview-panel">
+    <div class="preview-actions">
+      <button class="action-btn primary" onclick="window.print()">⬇ Download PDF</button>
+      <button class="action-btn secondary" onclick="copyLink(this)">🔗 Copy link</button>
+    </div>
+    <div class="invoice-preview" id="invoice-preview">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+</div>
+
+<footer>
+  <a href="/" class="flogo">Rate<span>Kit</span></a>
+  <span class="fcopy">© 2026 RateKit · Free business calculators</span>
+  <ul class="flinks">
+    <li><a href="/about.html">About</a></li>
+    <li><a href="/privacy.html">Privacy</a></li>
+    <li><a href="/terms.html">Terms</a></li>
+  </ul>
+</footer>
+
+<div id="google_translate_element" style="display:none;"></div>
+<script>
+function googleTranslateElementInit(){new google.translate.TranslateElement({pageLanguage:'en',includedLanguages:'ru,es,fr,de,zh-CN,ar,pt,ja,ko,tr,uk,kk',autoDisplay:false},'google_translate_element');}
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<script>
+let items = [{desc:'',qty:1,rate:0}];
+
+function addItem(){
+  items.push({desc:'',qty:1,rate:0});
+  renderForm();
+  render();
+}
+function removeItem(i){
+  items.splice(i,1);
+  if(items.length===0) items.push({desc:'',qty:1,rate:0});
+  renderForm();
+  render();
+}
+
+function renderForm(){
+  document.getElementById('items-body').innerHTML = items.map((item,i)=>`
+    <tr>
+      <td><input type="text" value="${item.desc}" placeholder="Service description" oninput="items[${i}].desc=this.value;render()"></td>
+      <td><input type="number" value="${item.qty}" min="0" style="width:60px;" oninput="items[${i}].qty=+this.value;render()"></td>
+      <td><input type="number" value="${item.rate}" min="0" step="0.01" style="width:90px;" oninput="items[${i}].rate=+this.value;render()"></td>
+      <td style="font-family:var(--mono);font-size:12px;padding:6px 10px;">${(item.qty*item.rate).toFixed(2)}</td>
+      <td><button class="del-btn" onclick="removeItem(${i})">×</button></td>
+    </tr>`).join('');
+}
+
+function fmt(n,sym){return sym+n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');}
+
+function render(){
+  const sym = document.getElementById('currency').value;
+  const taxRate = +document.getElementById('tax-rate').value||0;
+  const subtotal = items.reduce((s,i)=>s+i.qty*i.rate,0);
+  const tax = subtotal*taxRate/100;
+  const total = subtotal+tax;
+
+  const invNum = document.getElementById('inv-num').value||'INV-001';
+  const invDate = document.getElementById('inv-date').value;
+  const dueDate = document.getElementById('due-date').value;
+  const fromName = document.getElementById('from-name').value||'Your Company';
+  const fromAddr = (document.getElementById('from-addr').value||'').replace(/\n/g,'<br>');
+  const fromEmail = document.getElementById('from-email').value;
+  const fromPhone = document.getElementById('from-phone').value;
+  const toName = document.getElementById('to-name').value||'Client Name';
+  const toAddr = (document.getElementById('to-addr').value||'').replace(/\n/g,'<br>');
+  const notes = (document.getElementById('notes').value||'').replace(/\n/g,'<br>');
+
+  const rows = items.map(i=>`
+    <tr>
+      <td>${i.desc||'—'}</td>
+      <td>${i.qty}</td>
+      <td>${fmt(i.rate,sym)}</td>
+      <td>${fmt(i.qty*i.rate,sym)}</td>
+    </tr>`).join('');
+
+  document.getElementById('invoice-preview').innerHTML = `
+    <div class="inv-header">
+      <div>
+        <div class="inv-company">${fromName}</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px;">${fromAddr}<br>${fromEmail}${fromPhone?' · '+fromPhone:''}</div>
+      </div>
+      <div>
+        <div class="inv-title">INVOICE</div>
+        <div class="inv-number"># ${invNum}</div>
+      </div>
+    </div>
+
+    <div class="inv-dates">
+      <div>
+        <div class="inv-block-label">Bill To</div>
+        <div class="inv-block-val"><strong>${toName}</strong><br>${toAddr}</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="inv-block-label">Issue Date</div>
+        <div class="inv-block-val">${invDate||'—'}</div>
+        <div class="inv-block-label" style="margin-top:10px;">Due Date</div>
+        <div class="inv-block-val">${dueDate||'—'}</div>
+      </div>
+    </div>
+
+    <table class="inv-table">
+      <thead><tr><th>Description</th><th>Qty</th><th>Rate</th><th>Amount</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+
+    <div class="inv-totals">
+      <div class="inv-total-row"><span>Subtotal</span><span>${fmt(subtotal,sym)}</span></div>
+      ${taxRate>0?`<div class="inv-total-row"><span>Tax (${taxRate}%)</span><span>${fmt(tax,sym)}</span></div>`:''}
+      <div class="inv-total-row grand"><span>Total Due</span><span>${fmt(total,sym)}</span></div>
+    </div>
+
+    ${notes?`<div class="inv-notes"><strong>Notes:</strong><br>${notes}</div>`:''}
+    <div class="inv-watermark">Generated with RateKit · ratekit.org · Free business calculators</div>
+  `;
+  save();
+}
+
+function save(){
+  const data={
+    fromName:document.getElementById('from-name').value,
+    fromAddr:document.getElementById('from-addr').value,
+    fromEmail:document.getElementById('from-email').value,
+    fromPhone:document.getElementById('from-phone').value,
+    toName:document.getElementById('to-name').value,
+    toAddr:document.getElementById('to-addr').value,
+    invNum:document.getElementById('inv-num').value,
+    invDate:document.getElementById('inv-date').value,
+    dueDate:document.getElementById('due-date').value,
+    currency:document.getElementById('currency').value,
+    taxRate:document.getElementById('tax-rate').value,
+    notes:document.getElementById('notes').value,
+    items
+  };
+  localStorage.setItem('rk_invoice',JSON.stringify(data));
+}
+
+function load(){
+  const saved=localStorage.getItem('rk_invoice');
+  if(!saved)return;
+  try{
+    const d=JSON.parse(saved);
+    document.getElementById('from-name').value=d.fromName||'';
+    document.getElementById('from-addr').value=d.fromAddr||'';
+    document.getElementById('from-email').value=d.fromEmail||'';
+    document.getElementById('from-phone').value=d.fromPhone||'';
+    document.getElementById('to-name').value=d.toName||'';
+    document.getElementById('to-addr').value=d.toAddr||'';
+    document.getElementById('inv-num').value=d.invNum||'INV-001';
+    document.getElementById('inv-date').value=d.invDate||'';
+    document.getElementById('due-date').value=d.dueDate||'';
+    document.getElementById('currency').value=d.currency||'$';
+    document.getElementById('tax-rate').value=d.taxRate||0;
+    document.getElementById('notes').value=d.notes||'';
+    if(d.items&&d.items.length) items=d.items;
+  }catch(e){}
+}
+
+function copyLink(btn){
+  navigator.clipboard.writeText(window.location.href).then(()=>{
+    btn.textContent='✅ Copied!';setTimeout(()=>btn.textContent='🔗 Copy link',2000);
+  });
+}
+
+function toggleNav(){document.getElementById('nl').classList.toggle('open');}
+
+// Set default dates
+const today=new Date().toISOString().split('T')[0];
+document.getElementById('inv-date').value=today;
+const due=new Date();due.setDate(due.getDate()+30);
+document.getElementById('due-date').value=due.toISOString().split('T')[0];
+
+load();
+renderForm();
+render();
+</script>
+</body>
+</html>

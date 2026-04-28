@@ -162,6 +162,23 @@ footer {
   .tools-section { padding: 40px 20px; }
   footer { padding: 24px 20px; flex-direction: column; align-items: flex-start; }
 }
+
+.translate-btn {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--mid);
+  cursor: pointer;
+  transition: all .15s;
+  margin-left: 8px;
+}
+.translate-btn:hover { border-color: var(--blue); color: var(--blue); }
+#google_translate_element { margin-left: 8px; }
+
 </style>
 <!-- Open Graph / Social sharing -->
 <meta property="og:type" content="website">
@@ -209,6 +226,9 @@ footer {
     <li><a href="/profit-margin.html">Profit Margin</a></li>
     <li><a href="/self-employment-tax.html">SE Tax</a></li>
     <li><a href="/loan-calculator.html">Loan</a></li>
+    <li><a href="/invoice-generator.html">Invoice</a></li>
+    <li><a href="/pl-statement.html">P&L</a></li>
+    <li><a href="/form-2555.html">Form 2555</a></li>
     <li><a href="/safe-calculator.html">SAFE</a></li>
     <li><a href="/burn-rate.html">Burn Rate</a></li>
     <li><a href="/ltv-cac.html">LTV:CAC</a></li>
@@ -229,7 +249,7 @@ footer {
 </div>
 
 <section class="tools-section">
-  <div class="section-label">All tools — 11 calculators</div>
+  <div class="section-label">All tools — 14 calculators</div>
   <div class="tools-grid">
 
     <a href="/freelance-rate.html" class="tool-card">
@@ -363,6 +383,38 @@ footer {
       <div class="card-title">Business Loan Calculator</div>
       <p class="card-desc">Calculate monthly payments, total interest, and true APR for any business loan. Includes full amortization schedule.</p>
       <div class="card-tags"><span class="tag">Finance</span><span class="tag">Loans</span><span class="tag">APR</span></div>
+      <span class="card-link">Open calculator →</span>
+    </a>
+
+
+    <a href="/invoice-generator.html" class="tool-card">
+      <div class="card-header">
+        <div class="card-icon" style="background:#F0FDF4;">🧾</div>
+        <span class="popular-badge">⭐ Popular</span>
+      </div>
+      <div class="card-title">Invoice Generator</div>
+      <p class="card-desc">Create professional invoices in seconds. Add line items, tax, and download as PDF. Your data is saved automatically.</p>
+      <div class="card-tags"><span class="tag">Freelancers</span><span class="tag">Small Business</span><span class="tag">PDF</span></div>
+      <span class="card-link">Open tool →</span>
+    </a>
+
+    <a href="/pl-statement.html" class="tool-card">
+      <div class="card-header">
+        <div class="card-icon" style="background:#EFF6FF;">📊</div>
+      </div>
+      <div class="card-title">P&L Statement</div>
+      <p class="card-desc">Build your Profit & Loss statement online. Auto-calculates gross profit, EBITDA, and net profit. Export as PDF.</p>
+      <div class="card-tags"><span class="tag">Business</span><span class="tag">Finance</span><span class="tag">Reporting</span></div>
+      <span class="card-link">Open tool →</span>
+    </a>
+
+    <a href="/form-2555.html" class="tool-card">
+      <div class="card-header">
+        <div class="card-icon" style="background:#FEF2F2;">🇺🇸</div>
+      </div>
+      <div class="card-title">Form 2555 — FEIE Calculator</div>
+      <p class="card-desc">US expats: calculate your Foreign Earned Income Exclusion for 2026. Supports Bona Fide Residence and Physical Presence tests.</p>
+      <div class="card-tags"><span class="tag">US Expats</span><span class="tag">Tax 2026</span><span class="tag">FEIE</span></div>
       <span class="card-link">Open calculator →</span>
     </a>
 

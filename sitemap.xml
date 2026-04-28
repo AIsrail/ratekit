@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://ratekit.org/</loc><priority>1.0</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://ratekit.org/</loc><priority>1.0</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://ratekit.org/freelance-rate.html</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://ratekit.org/stripe-fee.html</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://ratekit.org/vat-calculator.html</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://ratekit.org/roi-calculator.html</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://ratekit.org/profit-margin.html</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://ratekit.org/safe-calculator.html</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://ratekit.org/burn-rate.html</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://ratekit.org/ltv-cac.html</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://ratekit.org/break-even.html</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://ratekit.org/self-employment-tax.html</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://ratekit.org/loan-calculator.html</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://ratekit.org/invoice-generator.html</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://ratekit.org/pl-statement.html</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://ratekit.org/form-2555.html</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://ratekit.org/about.html</loc><priority>0.5</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://ratekit.org/contact.html</loc><priority>0.5</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://ratekit.org/privacy.html</loc><priority>0.3</priority><changefreq>yearly</changefreq></url>
+  <url><loc>https://ratekit.org/terms.html</loc><priority>0.3</priority><changefreq>yearly</changefreq></url>
+  <url><loc>https://ratekit.org/cookies.html</loc><priority>0.3</priority><changefreq>yearly</changefreq></url>
 </urlset>
