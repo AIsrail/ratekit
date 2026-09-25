@@ -8,7 +8,7 @@
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/favicon-180x180.png">
-<link rel="canonical" href="https://ratekit.org/invoice-generator.html">
+<link rel="canonical" href="https://ratekit.org/invoice-generator">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <!-- Google Analytics -->
@@ -140,6 +140,33 @@ footer{background:var(--ink);padding:24px 48px;display:flex;justify-content:spac
 </style>
 <!-- Google AdSense -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7303101907130018" crossorigin="anonymous"></script>
+<style>
+.rk-guide{margin-top:48px;padding-top:32px;border-top:1px solid rgba(0,0,0,.1);max-width:780px}
+.rk-guide h2{font-size:1.45rem;font-weight:700;letter-spacing:-.01em;margin:0 0 12px}
+.rk-guide h3{font-size:1.05rem;font-weight:700;margin:28px 0 10px}
+.rk-guide p{margin:0 0 12px;opacity:.9}
+.rk-guide pre{white-space:pre-wrap;background:rgba(0,0,0,.04);border-radius:8px;padding:14px 16px;font-size:.92rem;line-height:1.55;margin:0 0 12px;font-family:inherit}
+.rk-guide details{border-bottom:1px solid rgba(0,0,0,.1);padding:12px 0}
+.rk-guide summary{cursor:pointer;font-weight:600}
+.rk-guide details p{margin:10px 0 0}
+.rk-related{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:0}
+.rk-related a{display:inline-block;padding:6px 12px;border:1px solid rgba(0,0,0,.15);border-radius:999px;text-decoration:none;color:inherit;font-size:.9rem}
+@media print{.rk-guide{display:none}}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What are standard invoice payment terms?", "acceptedAnswer": {"@type": "Answer", "text": "Net 30 (payment within 30 days) is the most common; freelancers increasingly use Net 7 or Net 15. A clear due date reduces late payments."}}, {"@type": "Question", "name": "Do I need to add VAT to my invoice?", "acceptedAnswer": {"@type": "Answer", "text": "Only if you are VAT or GST registered, or otherwise required to charge it. Show the rate and tax amount separately."}}, {"@type": "Question", "name": "Is this invoice generator free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. It is free and requires no signup."}}]}</script>
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="RateKit">
+  <meta property="og:title" content="Free Invoice Generator — RateKit">
+  <meta property="og:description" content="Create professional invoices instantly. Download as PDF. Free invoice generator for freelancers and small businesses. No signup required.">
+  <meta property="og:url" content="https://ratekit.org/invoice-generator">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image" content="https://ratekit.org/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://ratekit.org/og-image.png">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Invoice Generator", "description": "Create professional invoices instantly. Download as PDF. Free invoice generator for freelancers and small businesses. No signup required.", "url": "https://ratekit.org/invoice-generator", "applicationCategory": "BusinessApplication", "operatingSystem": "Web", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "provider": {"@type": "Organization", "name": "RateKit", "url": "https://ratekit.org"}}</script>
 </head>
 <body>
 <nav id="nav">
@@ -152,27 +179,27 @@ footer{background:var(--ink);padding:24px 48px;display:flex;justify-content:spac
       </button>
       <div class="dropdown-menu">
         <div class="dropdown-section">Freelancers</div>
-        <a href="/freelance-rate.html" class="dropdown-item "><span class="item-icon">💰</span>Freelance Rate</a>
-        <a href="/salary-hourly.html" class="dropdown-item"><span class="item-icon">🔄</span>Salary ↔ Hourly</a>
-        <a href="/1099-vs-w2.html" class="dropdown-item"><span class="item-icon">📋</span>1099 vs W2</a>
-        <a href="/stripe-fee.html" class="dropdown-item "><span class="item-icon">💳</span>Stripe / PayPal Fee</a>
-        <a href="/vat-calculator.html" class="dropdown-item "><span class="item-icon">🌍</span>VAT / GST Calculator</a>
-        <a href="/invoice-generator.html" class="dropdown-item active"><span class="item-icon">🧾</span>Invoice Generator</a>
-        <a href="/self-employment-tax.html" class="dropdown-item "><span class="item-icon">🇺🇸</span>Self-Employment Tax</a>
-        <a href="/form-2555.html" class="dropdown-item "><span class="item-icon">📋</span>Form 2555 (Expat)</a>
-        <a href="/deal-coach.html" class="dropdown-item "><span class="item-icon">🤖</span>Deal Coach AI</a>
+        <a href="/freelance-rate" class="dropdown-item "><span class="item-icon">💰</span>Freelance Rate</a>
+        <a href="/salary-hourly" class="dropdown-item"><span class="item-icon">🔄</span>Salary ↔ Hourly</a>
+        <a href="/1099-vs-w2" class="dropdown-item"><span class="item-icon">📋</span>1099 vs W2</a>
+        <a href="/stripe-fee" class="dropdown-item "><span class="item-icon">💳</span>Stripe / PayPal Fee</a>
+        <a href="/vat-calculator" class="dropdown-item "><span class="item-icon">🌍</span>VAT / GST Calculator</a>
+        <a href="/invoice-generator" class="dropdown-item active"><span class="item-icon">🧾</span>Invoice Generator</a>
+        <a href="/self-employment-tax" class="dropdown-item "><span class="item-icon">🇺🇸</span>Self-Employment Tax</a>
+        <a href="/form-2555" class="dropdown-item "><span class="item-icon">📋</span>Form 2555 (Expat)</a>
+        <a href="/deal-coach" class="dropdown-item "><span class="item-icon">🤖</span>Deal Coach AI</a>
         <div class="dropdown-divider"></div>
         <div class="dropdown-section">Business & Startups</div>
-        <a href="/roi-calculator.html" class="dropdown-item "><span class="item-icon">📈</span>ROI Calculator</a>
-        <a href="/profit-margin.html" class="dropdown-item "><span class="item-icon">🛒</span>Profit Margin</a>
-        <a href="/break-even.html" class="dropdown-item "><span class="item-icon">⚖️</span>Break-even</a>
-        <a href="/loan-calculator.html" class="dropdown-item "><span class="item-icon">🏦</span>Business Loan</a>
-        <a href="/pl-statement.html" class="dropdown-item "><span class="item-icon">📊</span>P&L Statement</a>
+        <a href="/roi-calculator" class="dropdown-item "><span class="item-icon">📈</span>ROI Calculator</a>
+        <a href="/profit-margin" class="dropdown-item "><span class="item-icon">🛒</span>Profit Margin</a>
+        <a href="/break-even" class="dropdown-item "><span class="item-icon">⚖️</span>Break-even</a>
+        <a href="/loan-calculator" class="dropdown-item "><span class="item-icon">🏦</span>Business Loan</a>
+        <a href="/pl-statement" class="dropdown-item "><span class="item-icon">📊</span>P&L Statement</a>
         <div class="dropdown-divider"></div>
         <div class="dropdown-section">Startups</div>
-        <a href="/safe-calculator.html" class="dropdown-item "><span class="item-icon">🚀</span>SAFE Equity</a>
-        <a href="/burn-rate.html" class="dropdown-item "><span class="item-icon">🔥</span>Burn Rate & Runway</a>
-        <a href="/ltv-cac.html" class="dropdown-item "><span class="item-icon">📉</span>LTV : CAC</a>
+        <a href="/safe-calculator" class="dropdown-item "><span class="item-icon">🚀</span>SAFE Equity</a>
+        <a href="/burn-rate" class="dropdown-item "><span class="item-icon">🔥</span>Burn Rate & Runway</a>
+        <a href="/ltv-cac" class="dropdown-item "><span class="item-icon">📉</span>LTV : CAC</a>
       </div>
     </div>
     <button class="burger" onclick="document.getElementById('tools-dropdown').classList.toggle('open')">☰</button>
@@ -248,13 +275,36 @@ footer{background:var(--ink);padding:24px 48px;display:flex;justify-content:spac
   </div>
 </div>
 
+<div style="padding:0 48px 48px;max-width:1100px">
+  <section class="rk-guide" aria-labelledby="rk-guide-h">
+    <h2 id="rk-guide-h">What to include on a professional invoice</h2>
+    <p>A clear invoice gets paid faster. Include who is billing whom, what was delivered, amounts and taxes, payment terms and how to pay. This generator runs in your browser and you can save the invoice as PDF.</p>
+    <h3>Formula</h3>
+    <pre>Line total = Quantity x Unit price
+Subtotal = Sum of line totals
+Total due = Subtotal - Discount + Tax</pre>
+    <h3>Example</h3>
+    <p>Include: invoice number and date, your and the client's details, itemized services, subtotal, tax (VAT or GST if registered), total due, due date (for example Net 15) and payment details.</p>
+    <h3>Frequently asked questions</h3>
+    <details><summary>What are standard invoice payment terms?</summary><p>Net 30 (payment within 30 days) is the most common; freelancers increasingly use Net 7 or Net 15. A clear due date reduces late payments.</p></details>
+    <details><summary>Do I need to add VAT to my invoice?</summary><p>Only if you are VAT or GST registered, or otherwise required to charge it. Show the rate and tax amount separately.</p></details>
+    <details><summary>Is this invoice generator free?</summary><p>Yes. It is free and requires no signup.</p></details>
+    <h3>Related calculators</h3>
+    <ul class="rk-related">
+      <li><a href="/stripe-fee">Stripe &amp; PayPal Fee Calculator</a></li>
+      <li><a href="/vat-calculator">VAT &amp; GST Calculator</a></li>
+      <li><a href="/freelance-rate">Freelance Rate Calculator</a></li>
+      <li><a href="/pl-statement">Profit &amp; Loss Statement</a></li>
+    </ul>
+  </section>
+</div>
 <footer>
   <a href="/" class="flogo">Rate<span>Kit</span></a>
   <span class="fcopy">© 2026 RateKit · Free business calculators</span>
   <ul class="flinks">
-    <li><a href="/about.html">About</a></li>
-    <li><a href="/privacy.html">Privacy</a></li>
-    <li><a href="/terms.html">Terms</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/privacy">Privacy</a></li>
+    <li><a href="/terms">Terms</a></li>
   </ul>
 </footer>
 
