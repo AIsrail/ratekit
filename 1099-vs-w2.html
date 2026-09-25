@@ -322,8 +322,8 @@ function fmtSigned(n){return (n>=0?'+':'-')+'$'+Math.round(Math.abs(n)).toLocale
 
 function calcFedTax(taxable, filing) {
   const brackets = filing === 'married'
-    ? [[0,.10,23200],[23200,.12,94300],[94300,.22,201050],[201050,.24,383900],[383900,.32,487450],[487450,.35,731200],[731200,.37,Infinity]]
-    : [[0,.10,11600],[11600,.12,47150],[47150,.22,100525],[100525,.24,191950],[191950,.32,243725],[243725,.35,609350],[609350,.37,Infinity]];
+    ? [[0,.10,24800],[24800,.12,100800],[100800,.22,211400],[211400,.24,403550],[403550,.32,512450],[512450,.35,768700],[768700,.37,Infinity]]
+    : [[0,.10,12400],[12400,.12,50400],[50400,.22,105700],[105700,.24,201775],[201775,.32,256225],[256225,.35,640600],[640600,.37,Infinity]];
   let tax = 0;
   for (let i = 0; i < brackets.length; i++) {
     const [min, rate, max] = brackets[i];
@@ -337,7 +337,7 @@ function calcFedTax(taxable, filing) {
 function calc() {
   const filing   = document.getElementById('filing').value;
   const stateTax = +document.getElementById('state-tax').value / 100;
-  const stdDed   = filing === 'married' ? 29200 : 14600;
+  const stdDed   = filing === 'married' ? 32200 : 16100; // 2026 (IRS)
 
   // ── W2 ──
   const w2Salary  = +document.getElementById('w2-salary').value   || 0;
@@ -347,7 +347,7 @@ function calc() {
   const w2YourK   = +document.getElementById('w2-yourk').value    || 0;
 
   // W2 taxes
-  const w2FICA    = Math.min(w2Salary, 168600) * 0.0765; // employee share SS+Med
+  const w2FICA    = Math.min(w2Salary, 184500) * 0.062 + w2Salary * 0.0145; // employee SS (2026 wage base $184,500) + Medicare (no cap)
   const w2Taxable = Math.max(0, w2Salary - w2YourK - stdDed);
   const w2Fed     = calcFedTax(w2Taxable, filing);
   const w2State   = w2Salary * stateTax;
@@ -364,7 +364,7 @@ function calc() {
 
   const cNet      = Math.max(0, cIncome - cExpenses);
   const cSEBase   = cNet * 0.9235;
-  const cSETax    = cSEBase * 0.153;
+  const cSETax    = Math.min(cSEBase, 184500) * 0.124 + cSEBase * 0.029; // SS capped at 2026 wage base, Medicare uncapped
   const cSEDed    = cSETax / 2;
   const cAGI      = cNet - cSEDed - cHealth - cRetire;
   const cTaxable  = Math.max(0, cAGI - stdDed);

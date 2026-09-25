@@ -415,12 +415,12 @@ Income-tax deduction = SE tax / 2</pre>
 <script>
 function fmt(n){return '$'+Math.round(n).toLocaleString('en-US');}
 function calcFedTax(taxable, filing){
-  // 2026 estimated brackets (single)
+  // 2026 brackets (IRS, tax year 2026)
   let brackets;
   if(filing==='married'){
-    brackets=[[0,0.10,23200],[23200,0.12,94300],[94300,0.22,201050],[201050,0.24,383900],[383900,0.32,487450],[487450,0.35,731200],[731200,0.37,Infinity]];
+    brackets=[[0,0.10,24800],[24800,0.12,100800],[100800,0.22,211400],[211400,0.24,403550],[403550,0.32,512450],[512450,0.35,768700],[768700,0.37,Infinity]];
   } else {
-    brackets=[[0,0.10,11600],[11600,0.12,47150],[47150,0.22,100525],[100525,0.24,191950],[191950,0.32,243725],[243725,0.35,609350],[609350,0.37,Infinity]];
+    brackets=[[0,0.10,12400],[12400,0.12,50400],[50400,0.22,105700],[105700,0.24,201775],[201775,0.32,256225],[256225,0.35,640600],[640600,0.37,Infinity]];
   }
   let tax=0;
   for(let i=0;i<brackets.length;i++){
@@ -435,11 +435,11 @@ function calc(){
   const income=+document.getElementById('income').value||0;
   const expenses=+document.getElementById('expenses').value||0;
   const filing=document.getElementById('filing').value;
-  const stdDed=filing==='married'?29200:14600;
+  const stdDed=filing==='married'?32200:16100; // 2026 (IRS)
 
   const netIncome=income-expenses;
   const seBase=netIncome*0.9235;
-  const seTax=seBase*0.153;
+  const seTax=Math.min(seBase,184500)*0.124+seBase*0.029; // SS capped at 2026 wage base $184,500
   const seDed=seTax/2;
   const agi=netIncome-seDed;
   const taxable=Math.max(0,agi-stdDed);
