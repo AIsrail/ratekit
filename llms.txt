@@ -1,0 +1,23 @@
+# RateKit
+
+> RateKit (ratekit.org) is a set of free, no-signup business calculators for founders, startups and freelancers: freelance rate, Stripe/PayPal fees, VAT/GST, ROI, profit margin, break-even, burn rate and runway, LTV:CAC, SAFE equity, business loans, salary-to-hourly, US self-employment tax, 1099 vs W-2, Form 2555 (FEIE), invoice generator and P&L statement. All calculations run in the browser. Each tool page explains the formula, a worked example and FAQs.
+
+## Tools
+- [1099 vs W2 Calculator 2026 — Should You Be a Contractor?](https://ratekit.org/1099-vs-w2): Compare 1099 contractor vs W2 employee compensation. Calculate take-home pay, taxes, and benefits to decide which is better for you. Free 2026 calculator.
+- [About RateKit](https://ratekit.org/about): RateKit is a collection of free business calculators for founders, freelancers and entrepreneurs. No signup, no data stored.
+- [Break-even Calculator](https://ratekit.org/break-even): Calculate your break-even point in units and revenue. Find out how many sales you need to cover fixed and variable costs. Free tool for businesses and startups.
+- [Burn Rate & Runway Calculator](https://ratekit.org/burn-rate): Calculate your startup's gross and net burn rate, cash runway in months, and zero-cash date. Free tool for founders and CFOs.
+- [Deal Coach — AI Negotiation Assistant](https://ratekit.org/deal-coach): AI-powered negotiation coach for freelancers and founders. Get structured arguments for rate negotiation and equity/SAFE discussions. Free tool by RateKit.
+- [Form 2555 Calculator — Foreign Earned Income Exclusion 2026](https://ratekit.org/form-2555): Calculate your IRS Form 2555 Foreign Earned Income Exclusion (FEIE) for 2026. Find out how much US expats can exclude from taxable income. Free calculator.
+- [Freelance Rate Calculator](https://ratekit.org/freelance-rate): Calculate your minimum freelance hourly rate based on income goals, expenses, tax rate, and working schedule. Free, instant, no signup.
+- [Free Invoice Generator](https://ratekit.org/invoice-generator): Create professional invoices instantly. Download as PDF. Free invoice generator for freelancers and small businesses. No signup required.
+- [Business Loan & APR Calculator](https://ratekit.org/loan-calculator): Calculate monthly payments, total interest, and true APR for business loans. Compare loan options side by side. Free loan calculator for entrepreneurs.
+- [LTV:CAC Calculator](https://ratekit.org/ltv-cac): Calculate Customer Lifetime Value (LTV) and Customer Acquisition Cost (CAC). Find out if your unit economics are healthy. Free tool for SaaS and startups.
+- [P&L Statement (Profit & Loss)](https://ratekit.org/pl-statement): Build your Profit & Loss statement online. Auto-calculates gross profit, EBITDA, and net profit. Free P&L tool for businesses and startups.
+- [Profit Margin Calculator](https://ratekit.org/profit-margin): Calculate gross profit margin, net profit margin, and markup. Free profit margin calculator for e-commerce, retail, and business pricing.
+- [ROI Calculator — Return on Investment](https://ratekit.org/roi-calculator): Calculate Return on Investment (ROI), annualized ROI, and payback period. Free ROI calculator for marketing, business investments, and projects.
+- [SAFE Note Equity Calculator](https://ratekit.org/safe-calculator): Calculate your SAFE note conversion, ownership percentage, and dilution. Supports valuation cap, discount rate. Free tool for founders and investors.
+- [Salary to Hourly Calculator — Convert Annual Salary](https://ratekit.org/salary-hourly): Convert annual salary to hourly rate or hourly rate to annual salary. Accounts for work hours, paid time off, and holidays. Free salary converter.
+- [Self-Employment Tax Calculator 2026](https://ratekit.org/self-employment-tax): Calculate US self-employment tax (15.3%), quarterly estimated payments, and how much to set aside from each paycheck. Free SE tax calculator for freelancers.
+- [Stripe & PayPal Fee Calculator](https://ratekit.org/stripe-fee): Calculate exact Stripe and PayPal fees. Find out how much to charge your client to receive your desired amount after processing fees. Free, instant.
+- [VAT & GST Calculator](https://ratekit.org/vat-calculator): Add or remove VAT and GST from any price. Supports all countries and custom rates. Free VAT calculator for invoicing and business.

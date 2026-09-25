@@ -191,7 +191,7 @@ footer{background:var(--ink);padding:28px 48px;display:flex;justify-content:spac
 </style>
 <!-- Open Graph / Social sharing -->
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://ratekit.org/vat-calculator.html">
+<meta property="og:url" content="https://ratekit.org/vat-calculator">
 <meta property="og:title" content="VAT & GST Calculator — Add or Remove Tax — RateKit">
 <meta property="og:description" content="Add or remove VAT and GST from any price. Supports UK, EU, Australia, Canada and 10+ countries. Free VAT calculator for invoicing.">
 <meta property="og:image" content="https://ratekit.org/og-image.png">
@@ -202,14 +202,14 @@ footer{background:var(--ink);padding:28px 48px;display:flex;justify-content:spac
 <meta name="twitter:description" content="Add or remove VAT and GST from any price. Supports UK, EU, Australia, Canada and 10+ countries. Free VAT calculator for invoicing.">
 <meta name="twitter:image" content="https://ratekit.org/og-image.png">
 <!-- Canonical -->
-<link rel="canonical" href="https://ratekit.org/vat-calculator.html">
+<link rel="canonical" href="https://ratekit.org/vat-calculator">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "VAT & GST Calculator — Add or Remove Tax",
   "description": "Add or remove VAT and GST from any price. Supports UK, EU, Australia, Canada and 10+ countries. Free VAT calculator for invoicing.",
-  "url": "https://ratekit.org/vat-calculator.html",
+  "url": "https://ratekit.org/vat-calculator",
   "applicationCategory": "BusinessApplication",
   "operatingSystem": "Web",
   "offers": {
@@ -234,6 +234,22 @@ footer{background:var(--ink);padding:28px 48px;display:flex;justify-content:spac
 </script>
 <!-- Google AdSense -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7303101907130018" crossorigin="anonymous"></script>
+<style>
+.rk-guide{margin-top:48px;padding-top:32px;border-top:1px solid rgba(0,0,0,.1);max-width:780px}
+.rk-guide h2{font-size:1.45rem;font-weight:700;letter-spacing:-.01em;margin:0 0 12px}
+.rk-guide h3{font-size:1.05rem;font-weight:700;margin:28px 0 10px}
+.rk-guide p{margin:0 0 12px;opacity:.9}
+.rk-guide pre{white-space:pre-wrap;background:rgba(0,0,0,.04);border-radius:8px;padding:14px 16px;font-size:.92rem;line-height:1.55;margin:0 0 12px;font-family:inherit}
+.rk-guide details{border-bottom:1px solid rgba(0,0,0,.1);padding:12px 0}
+.rk-guide summary{cursor:pointer;font-weight:600}
+.rk-guide details p{margin:10px 0 0}
+.rk-related{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:0}
+.rk-related a{display:inline-block;padding:6px 12px;border:1px solid rgba(0,0,0,.15);border-radius:999px;text-decoration:none;color:inherit;font-size:.9rem}
+@media print{.rk-guide{display:none}}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I calculate VAT from a gross amount?", "acceptedAnswer": {"@type": "Answer", "text": "Divide the gross amount by (1 + VAT rate) to get the net price; the difference is the VAT. For 20% VAT: 120 / 1.2 = 100 net and 20 VAT."}}, {"@type": "Question", "name": "What is the difference between VAT and GST?", "acceptedAnswer": {"@type": "Answer", "text": "Both are value-added consumption taxes; the name depends on the country (VAT in the EU and UK, GST in Australia, Canada, India, Singapore). The calculation is the same."}}, {"@type": "Question", "name": "Why can't I just subtract 20% to remove VAT?", "acceptedAnswer": {"@type": "Answer", "text": "Because VAT is calculated on the net price, not the gross. Subtracting 20% from 120 gives 96, but the correct net is 100."}}]}</script>
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta property="og:locale" content="en_US">
 </head>
 <body>
 <nav id="nav">
@@ -246,27 +262,27 @@ footer{background:var(--ink);padding:28px 48px;display:flex;justify-content:spac
       </button>
       <div class="dropdown-menu">
         <div class="dropdown-section">Freelancers</div>
-        <a href="/freelance-rate.html" class="dropdown-item "><span class="item-icon">💰</span>Freelance Rate</a>
-        <a href="/salary-hourly.html" class="dropdown-item"><span class="item-icon">🔄</span>Salary ↔ Hourly</a>
-        <a href="/1099-vs-w2.html" class="dropdown-item"><span class="item-icon">📋</span>1099 vs W2</a>
-        <a href="/stripe-fee.html" class="dropdown-item "><span class="item-icon">💳</span>Stripe / PayPal Fee</a>
-        <a href="/vat-calculator.html" class="dropdown-item active"><span class="item-icon">🌍</span>VAT / GST Calculator</a>
-        <a href="/invoice-generator.html" class="dropdown-item "><span class="item-icon">🧾</span>Invoice Generator</a>
-        <a href="/self-employment-tax.html" class="dropdown-item "><span class="item-icon">🇺🇸</span>Self-Employment Tax</a>
-        <a href="/form-2555.html" class="dropdown-item "><span class="item-icon">📋</span>Form 2555 (Expat)</a>
-        <a href="/deal-coach.html" class="dropdown-item "><span class="item-icon">🤖</span>Deal Coach AI</a>
+        <a href="/freelance-rate" class="dropdown-item "><span class="item-icon">💰</span>Freelance Rate</a>
+        <a href="/salary-hourly" class="dropdown-item"><span class="item-icon">🔄</span>Salary ↔ Hourly</a>
+        <a href="/1099-vs-w2" class="dropdown-item"><span class="item-icon">📋</span>1099 vs W2</a>
+        <a href="/stripe-fee" class="dropdown-item "><span class="item-icon">💳</span>Stripe / PayPal Fee</a>
+        <a href="/vat-calculator" class="dropdown-item active"><span class="item-icon">🌍</span>VAT / GST Calculator</a>
+        <a href="/invoice-generator" class="dropdown-item "><span class="item-icon">🧾</span>Invoice Generator</a>
+        <a href="/self-employment-tax" class="dropdown-item "><span class="item-icon">🇺🇸</span>Self-Employment Tax</a>
+        <a href="/form-2555" class="dropdown-item "><span class="item-icon">📋</span>Form 2555 (Expat)</a>
+        <a href="/deal-coach" class="dropdown-item "><span class="item-icon">🤖</span>Deal Coach AI</a>
         <div class="dropdown-divider"></div>
         <div class="dropdown-section">Business & Startups</div>
-        <a href="/roi-calculator.html" class="dropdown-item "><span class="item-icon">📈</span>ROI Calculator</a>
-        <a href="/profit-margin.html" class="dropdown-item "><span class="item-icon">🛒</span>Profit Margin</a>
-        <a href="/break-even.html" class="dropdown-item "><span class="item-icon">⚖️</span>Break-even</a>
-        <a href="/loan-calculator.html" class="dropdown-item "><span class="item-icon">🏦</span>Business Loan</a>
-        <a href="/pl-statement.html" class="dropdown-item "><span class="item-icon">📊</span>P&L Statement</a>
+        <a href="/roi-calculator" class="dropdown-item "><span class="item-icon">📈</span>ROI Calculator</a>
+        <a href="/profit-margin" class="dropdown-item "><span class="item-icon">🛒</span>Profit Margin</a>
+        <a href="/break-even" class="dropdown-item "><span class="item-icon">⚖️</span>Break-even</a>
+        <a href="/loan-calculator" class="dropdown-item "><span class="item-icon">🏦</span>Business Loan</a>
+        <a href="/pl-statement" class="dropdown-item "><span class="item-icon">📊</span>P&L Statement</a>
         <div class="dropdown-divider"></div>
         <div class="dropdown-section">Startups</div>
-        <a href="/safe-calculator.html" class="dropdown-item "><span class="item-icon">🚀</span>SAFE Equity</a>
-        <a href="/burn-rate.html" class="dropdown-item "><span class="item-icon">🔥</span>Burn Rate & Runway</a>
-        <a href="/ltv-cac.html" class="dropdown-item "><span class="item-icon">📉</span>LTV : CAC</a>
+        <a href="/safe-calculator" class="dropdown-item "><span class="item-icon">🚀</span>SAFE Equity</a>
+        <a href="/burn-rate" class="dropdown-item "><span class="item-icon">🔥</span>Burn Rate & Runway</a>
+        <a href="/ltv-cac" class="dropdown-item "><span class="item-icon">📉</span>LTV : CAC</a>
       </div>
     </div>
     <button class="burger" onclick="document.getElementById('tools-dropdown').classList.toggle('open')">☰</button>
@@ -335,17 +351,39 @@ footer{background:var(--ink);padding:28px 48px;display:flex;justify-content:spac
   </div>
   <div class="watermark-footer">Generated with RateKit · ratekit.org · Free business calculators</div>
 
+
+  <section class="rk-guide" aria-labelledby="rk-guide-h">
+    <h2 id="rk-guide-h">How to add or remove VAT and GST</h2>
+    <p>VAT and GST are consumption taxes added on top of the net price. Adding tax multiplies the net price by (1 + rate); removing tax from a gross price divides by (1 + rate). Simply subtracting the rate is the most common mistake.</p>
+    <h3>Formula</h3>
+    <pre>Add VAT: Gross = Net x (1 + Rate)
+Remove VAT: Net = Gross / (1 + Rate)
+VAT amount = Gross - Net</pre>
+    <h3>Example</h3>
+    <p>Net price 100 EUR at 20% VAT: gross = 120 EUR, VAT = 20 EUR. Gross price 120 EUR including 20% VAT: net = 120 / 1.2 = 100 EUR (not 96 EUR).</p>
+    <h3>Frequently asked questions</h3>
+    <details><summary>How do I calculate VAT from a gross amount?</summary><p>Divide the gross amount by (1 + VAT rate) to get the net price; the difference is the VAT. For 20% VAT: 120 / 1.2 = 100 net and 20 VAT.</p></details>
+    <details><summary>What is the difference between VAT and GST?</summary><p>Both are value-added consumption taxes; the name depends on the country (VAT in the EU and UK, GST in Australia, Canada, India, Singapore). The calculation is the same.</p></details>
+    <details><summary>Why can't I just subtract 20% to remove VAT?</summary><p>Because VAT is calculated on the net price, not the gross. Subtracting 20% from 120 gives 96, but the correct net is 100.</p></details>
+    <h3>Related calculators</h3>
+    <ul class="rk-related">
+      <li><a href="/profit-margin">Profit Margin Calculator</a></li>
+      <li><a href="/invoice-generator">Invoice Generator</a></li>
+      <li><a href="/stripe-fee">Stripe &amp; PayPal Fee Calculator</a></li>
+      <li><a href="/pl-statement">Profit &amp; Loss Statement</a></li>
+    </ul>
+  </section>
 </main>
 
 <footer>
   <a href="/" class="flogo">Rate<span>Kit</span></a>
   <span class="fcopy">© 2026 RateKit · Free business calculators</span>
   <ul class="flinks">
-    <li><a href="/about.html">About</a></li>
-    <li><a href="/contact.html">Contact</a></li>
-    <li><a href="/privacy.html">Privacy</a></li>
-    <li><a href="/terms.html">Terms</a></li>
-    <li><a href="/cookies.html">Cookies</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/contact">Contact</a></li>
+    <li><a href="/privacy">Privacy</a></li>
+    <li><a href="/terms">Terms</a></li>
+    <li><a href="/cookies">Cookies</a></li>
   </ul>
 </footer>
 

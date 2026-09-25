@@ -7,7 +7,7 @@
 <meta name="description" content="AI-powered negotiation coach for freelancers and founders. Get structured arguments for rate negotiation and equity/SAFE discussions. Free tool by RateKit.">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="canonical" href="https://ratekit.org/deal-coach.html">
+<link rel="canonical" href="https://ratekit.org/deal-coach">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <!-- Google AdSense -->
@@ -164,6 +164,33 @@ footer{background:var(--ink);padding:24px 48px;display:flex;justify-content:spac
 .dropdown-divider { height: 1px; background: var(--border); margin: 6px 8px; }
 
 </style>
+<style>
+.rk-guide{margin-top:48px;padding-top:32px;border-top:1px solid rgba(0,0,0,.1);max-width:780px}
+.rk-guide h2{font-size:1.45rem;font-weight:700;letter-spacing:-.01em;margin:0 0 12px}
+.rk-guide h3{font-size:1.05rem;font-weight:700;margin:28px 0 10px}
+.rk-guide p{margin:0 0 12px;opacity:.9}
+.rk-guide pre{white-space:pre-wrap;background:rgba(0,0,0,.04);border-radius:8px;padding:14px 16px;font-size:.92rem;line-height:1.55;margin:0 0 12px;font-family:inherit}
+.rk-guide details{border-bottom:1px solid rgba(0,0,0,.1);padding:12px 0}
+.rk-guide summary{cursor:pointer;font-weight:600}
+.rk-guide details p{margin:10px 0 0}
+.rk-related{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:0}
+.rk-related a{display:inline-block;padding:6px 12px;border:1px solid rgba(0,0,0,.15);border-radius:999px;text-decoration:none;color:inherit;font-size:.9rem}
+@media print{.rk-guide{display:none}}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is BATNA?", "acceptedAnswer": {"@type": "Answer", "text": "Best Alternative To a Negotiated Agreement: what you will do if this deal fails. A strong BATNA gives you leverage and sets your walk-away point."}}, {"@type": "Question", "name": "Should I make the first offer?", "acceptedAnswer": {"@type": "Answer", "text": "Often yes, if you have done your research: the first number anchors the negotiation. Open ambitiously but justifiably."}}, {"@type": "Question", "name": "How do I negotiate without lowering my price?", "acceptedAnswer": {"@type": "Answer", "text": "Trade variables instead of discounts: scope, timeline, payment terms, volume or contract length."}}]}</script>
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="RateKit">
+  <meta property="og:title" content="Deal Coach — AI Negotiation Assistant — RateKit">
+  <meta property="og:description" content="AI-powered negotiation coach for freelancers and founders. Get structured arguments for rate negotiation and equity/SAFE discussions. Free tool by RateKit.">
+  <meta property="og:url" content="https://ratekit.org/deal-coach">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image" content="https://ratekit.org/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://ratekit.org/og-image.png">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Deal Coach", "description": "AI-powered negotiation coach for freelancers and founders. Get structured arguments for rate negotiation and equity/SAFE discussions. Free tool by RateKit.", "url": "https://ratekit.org/deal-coach", "applicationCategory": "BusinessApplication", "operatingSystem": "Web", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "provider": {"@type": "Organization", "name": "RateKit", "url": "https://ratekit.org"}}</script>
 </head>
 <body>
 <nav id="nav">
@@ -176,27 +203,27 @@ footer{background:var(--ink);padding:24px 48px;display:flex;justify-content:spac
       </button>
       <div class="dropdown-menu">
         <div class="dropdown-section">Freelancers</div>
-        <a href="/freelance-rate.html" class="dropdown-item "><span class="item-icon">💰</span>Freelance Rate</a>
-        <a href="/salary-hourly.html" class="dropdown-item"><span class="item-icon">🔄</span>Salary ↔ Hourly</a>
-        <a href="/1099-vs-w2.html" class="dropdown-item"><span class="item-icon">📋</span>1099 vs W2</a>
-        <a href="/stripe-fee.html" class="dropdown-item "><span class="item-icon">💳</span>Stripe / PayPal Fee</a>
-        <a href="/vat-calculator.html" class="dropdown-item "><span class="item-icon">🌍</span>VAT / GST Calculator</a>
-        <a href="/invoice-generator.html" class="dropdown-item "><span class="item-icon">🧾</span>Invoice Generator</a>
-        <a href="/self-employment-tax.html" class="dropdown-item "><span class="item-icon">🇺🇸</span>Self-Employment Tax</a>
-        <a href="/form-2555.html" class="dropdown-item "><span class="item-icon">📋</span>Form 2555 (Expat)</a>
-        <a href="/deal-coach.html" class="dropdown-item active"><span class="item-icon">🤖</span>Deal Coach AI</a>
+        <a href="/freelance-rate" class="dropdown-item "><span class="item-icon">💰</span>Freelance Rate</a>
+        <a href="/salary-hourly" class="dropdown-item"><span class="item-icon">🔄</span>Salary ↔ Hourly</a>
+        <a href="/1099-vs-w2" class="dropdown-item"><span class="item-icon">📋</span>1099 vs W2</a>
+        <a href="/stripe-fee" class="dropdown-item "><span class="item-icon">💳</span>Stripe / PayPal Fee</a>
+        <a href="/vat-calculator" class="dropdown-item "><span class="item-icon">🌍</span>VAT / GST Calculator</a>
+        <a href="/invoice-generator" class="dropdown-item "><span class="item-icon">🧾</span>Invoice Generator</a>
+        <a href="/self-employment-tax" class="dropdown-item "><span class="item-icon">🇺🇸</span>Self-Employment Tax</a>
+        <a href="/form-2555" class="dropdown-item "><span class="item-icon">📋</span>Form 2555 (Expat)</a>
+        <a href="/deal-coach" class="dropdown-item active"><span class="item-icon">🤖</span>Deal Coach AI</a>
         <div class="dropdown-divider"></div>
         <div class="dropdown-section">Business & Startups</div>
-        <a href="/roi-calculator.html" class="dropdown-item "><span class="item-icon">📈</span>ROI Calculator</a>
-        <a href="/profit-margin.html" class="dropdown-item "><span class="item-icon">🛒</span>Profit Margin</a>
-        <a href="/break-even.html" class="dropdown-item "><span class="item-icon">⚖️</span>Break-even</a>
-        <a href="/loan-calculator.html" class="dropdown-item "><span class="item-icon">🏦</span>Business Loan</a>
-        <a href="/pl-statement.html" class="dropdown-item "><span class="item-icon">📊</span>P&L Statement</a>
+        <a href="/roi-calculator" class="dropdown-item "><span class="item-icon">📈</span>ROI Calculator</a>
+        <a href="/profit-margin" class="dropdown-item "><span class="item-icon">🛒</span>Profit Margin</a>
+        <a href="/break-even" class="dropdown-item "><span class="item-icon">⚖️</span>Break-even</a>
+        <a href="/loan-calculator" class="dropdown-item "><span class="item-icon">🏦</span>Business Loan</a>
+        <a href="/pl-statement" class="dropdown-item "><span class="item-icon">📊</span>P&L Statement</a>
         <div class="dropdown-divider"></div>
         <div class="dropdown-section">Startups</div>
-        <a href="/safe-calculator.html" class="dropdown-item "><span class="item-icon">🚀</span>SAFE Equity</a>
-        <a href="/burn-rate.html" class="dropdown-item "><span class="item-icon">🔥</span>Burn Rate & Runway</a>
-        <a href="/ltv-cac.html" class="dropdown-item "><span class="item-icon">📉</span>LTV : CAC</a>
+        <a href="/safe-calculator" class="dropdown-item "><span class="item-icon">🚀</span>SAFE Equity</a>
+        <a href="/burn-rate" class="dropdown-item "><span class="item-icon">🔥</span>Burn Rate & Runway</a>
+        <a href="/ltv-cac" class="dropdown-item "><span class="item-icon">📉</span>LTV : CAC</a>
       </div>
     </div>
     <button class="burger" onclick="document.getElementById('tools-dropdown').classList.toggle('open')">☰</button>
@@ -255,7 +282,7 @@ footer{background:var(--ink);padding:24px 48px;display:flex;justify-content:spac
         <button class="api-btn" onclick="saveKey()">Save key</button>
       </div>
       <div class="api-hint" style="margin-top:10px;display:flex;align-items:center;gap:6px;">
-        <span>🔒</span> Key stored in your browser only · Never sent to RateKit servers · <a href="/privacy.html" style="color:var(--blue);">Privacy Policy</a>
+        <span>🔒</span> Key stored in your browser only · Never sent to RateKit servers · <a href="/privacy" style="color:var(--blue);">Privacy Policy</a>
       </div>
     </div>
 
@@ -289,15 +316,36 @@ footer{background:var(--ink);padding:24px 48px;display:flex;justify-content:spac
     </div>
     <div class="result-body" id="result-body"></div>
   </div>
+
+  <section class="rk-guide" aria-labelledby="rk-guide-h">
+    <h2 id="rk-guide-h">How to prepare for a business negotiation</h2>
+    <p>Good negotiations are prepared, not improvised. Know your walk-away point, the other side's likely priorities and at least two alternatives before you start. Deal Coach helps you structure that preparation and rehearse your arguments.</p>
+    <h3>Formula</h3>
+    <pre>Prepare: BATNA (best alternative) -&gt; Walk-away point -&gt; Target -&gt; Opening offer
+ZOPA = overlap between your walk-away point and theirs</pre>
+    <h3>Example</h3>
+    <p>Selling a $20,000 project: your BATNA is another client at $15,000, so your walk-away is $15,000. Target $22,000 and open at $25,000 with a clear scope; trade concessions (timeline, payment terms) rather than cutting price.</p>
+    <h3>Frequently asked questions</h3>
+    <details><summary>What is BATNA?</summary><p>Best Alternative To a Negotiated Agreement: what you will do if this deal fails. A strong BATNA gives you leverage and sets your walk-away point.</p></details>
+    <details><summary>Should I make the first offer?</summary><p>Often yes, if you have done your research: the first number anchors the negotiation. Open ambitiously but justifiably.</p></details>
+    <details><summary>How do I negotiate without lowering my price?</summary><p>Trade variables instead of discounts: scope, timeline, payment terms, volume or contract length.</p></details>
+    <h3>Related calculators</h3>
+    <ul class="rk-related">
+      <li><a href="/freelance-rate">Freelance Rate Calculator</a></li>
+      <li><a href="/safe-calculator">SAFE Note Equity Calculator</a></li>
+      <li><a href="/profit-margin">Profit Margin Calculator</a></li>
+      <li><a href="/roi-calculator">ROI Calculator</a></li>
+    </ul>
+  </section>
 </main>
 
 <footer>
   <a href="/" class="flogo">Rate<span>Kit</span></a>
   <span class="fcopy">© 2026 RateKit · Free business calculators</span>
   <ul class="flinks">
-    <li><a href="/about.html">About</a></li>
-    <li><a href="/privacy.html">Privacy</a></li>
-    <li><a href="/terms.html">Terms</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/privacy">Privacy</a></li>
+    <li><a href="/terms">Terms</a></li>
   </ul>
 </footer>
 
