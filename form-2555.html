@@ -205,7 +205,7 @@ footer{background:var(--ink);padding:24px 48px;display:flex;justify-content:spac
 
 <main>
   <div class="info-box">
-    <strong>What is Form 2555?</strong> US citizens and resident aliens living abroad may exclude up to <strong>$130,000</strong> (2026 estimated) of foreign earned income from US taxable income using the Foreign Earned Income Exclusion (FEIE). You must pass either the <strong>Bona Fide Residence Test</strong> or the <strong>Physical Presence Test</strong> to qualify.
+    <strong>What is Form 2555?</strong> US citizens and resident aliens living abroad may exclude up to <strong>$132,900</strong> (tax year 2026, per IRS) of foreign earned income from US taxable income using the Foreign Earned Income Exclusion (FEIE). You must pass either the <strong>Bona Fide Residence Test</strong> or the <strong>Physical Presence Test</strong> to qualify.
   </div>
 
   <div class="grid-2">
@@ -320,7 +320,7 @@ footer{background:var(--ink);padding:24px 48px;display:flex;justify-content:spac
 
   <div class="breakdown-panel">
     <div class="panel-title">Calculation Breakdown</div>
-    <div class="bd-row"><span class="bd-label">2026 FEIE Limit</span><span class="bd-value" id="bd-limit">$130,000</span></div>
+    <div class="bd-row"><span class="bd-label">2026 FEIE Limit</span><span class="bd-value" id="bd-limit">$132,900</span></div>
     <div class="bd-row"><span class="bd-label">Pro-rata Factor (days abroad / days in year)</span><span class="bd-value" id="bd-prorate">—</span></div>
     <div class="bd-row"><span class="bd-label">Prorated FEIE Limit</span><span class="bd-value" id="bd-prorated">—</span></div>
     <div class="bd-row"><span class="bd-label">Your Foreign Earned Income</span><span class="bd-value" id="bd-income">—</span></div>
@@ -373,7 +373,7 @@ function googleTranslateElementInit(){new google.translate.TranslateElement({pag
 <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 <script>
-const FEIE_LIMIT_2026 = 130000;
+const FEIE_LIMIT_2026 = 132900; // IRS, tax year 2026
 let testType = 'bfr';
 
 function setTest(t, btn) {
@@ -434,8 +434,8 @@ function calc(){
   const prorata = Math.min(1, daysAbroad / daysYear);
   const proratedLimit = FEIE_LIMIT_2026 * prorata;
 
-  // Housing exclusion (simplified: housing costs minus base amount ~$18k)
-  const housingBase = 18000 * prorata;
+  // Housing exclusion (simplified): base amount = 16% of FEIE limit ($21,264 for 2026)
+  const housingBase = FEIE_LIMIT_2026 * 0.16 * prorata;
   const housingExcl = Math.max(0, Math.min(housing - housingBase, proratedLimit * 0.3));
 
   // FEIE
