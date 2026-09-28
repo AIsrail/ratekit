@@ -1,0 +1,179 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "RateKit Business Calculators API",
+    "description": "Free, no-auth JSON endpoints for RateKit's business calculators (ROI, break-even, freelance rate, VAT/GST, profit margin). Call these instead of re-deriving the formulas in a language model's own context — the math is simple but the edge cases (infinite payback, negative margins, tax-rate bounds) are easy to get subtly wrong.",
+    "version": "1.0.0",
+    "contact": { "url": "https://ratekit.org" }
+  },
+  "servers": [{ "url": "https://ratekit.org" }],
+  "paths": {
+    "/api/roi": {
+      "get": {
+        "summary": "Return on investment, annualized ROI, payback period",
+        "operationId": "calculateRoi",
+        "parameters": [
+          { "name": "investment", "in": "query", "required": true, "schema": { "type": "number" }, "description": "Initial investment amount." },
+          { "name": "returns", "in": "query", "required": true, "schema": { "type": "number" }, "description": "Total return / revenue generated." },
+          { "name": "months", "in": "query", "required": false, "schema": { "type": "number", "default": 12 }, "description": "Time period in months, used for annualized ROI." }
+        ],
+        "responses": {
+          "200": {
+            "description": "ROI result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "netProfit": { "type": "number" },
+                        "roiPct": { "type": "number" },
+                        "annualizedRoiPct": { "type": "number" },
+                        "paybackMonths": { "type": ["number", "null"] }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/break-even": {
+      "get": {
+        "summary": "Break-even units/revenue and contribution margin",
+        "operationId": "calculateBreakEven",
+        "parameters": [
+          { "name": "price", "in": "query", "required": true, "schema": { "type": "number" }, "description": "Price per unit." },
+          { "name": "variableCost", "in": "query", "required": true, "schema": { "type": "number" }, "description": "Variable cost per unit." },
+          { "name": "fixedCosts", "in": "query", "required": false, "schema": { "type": "number" }, "description": "Total monthly fixed costs. Alternative to rent/salaries/software/marketing/other." },
+          { "name": "units", "in": "query", "required": false, "schema": { "type": "number", "default": 0 }, "description": "Current monthly units sold." },
+          { "name": "targetProfit", "in": "query", "required": false, "schema": { "type": "number", "default": 0 }, "description": "Optional profit goal, to compute units needed to reach it." }
+        ],
+        "responses": {
+          "200": {
+            "description": "Break-even result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "contributionMargin": { "type": "number" },
+                        "contributionMarginRatioPct": { "type": "number" },
+                        "breakEvenUnits": { "type": ["number", "null"] },
+                        "breakEvenRevenue": { "type": ["number", "null"] },
+                        "currentProfit": { "type": "number" },
+                        "unitsForTargetProfit": { "type": ["number", "null"] }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/freelance-rate": {
+      "get": {
+        "summary": "Minimum freelance hourly/daily rate",
+        "operationId": "calculateFreelanceRate",
+        "parameters": [
+          { "name": "targetIncome", "in": "query", "required": true, "schema": { "type": "number" }, "description": "Desired annual take-home income (after tax)." },
+          { "name": "expenses", "in": "query", "required": false, "schema": { "type": "number", "default": 0 }, "description": "Annual business expenses." },
+          { "name": "taxRatePct", "in": "query", "required": false, "schema": { "type": "number", "default": 0 }, "description": "Effective tax rate, percent." },
+          { "name": "hoursPerDay", "in": "query", "required": false, "schema": { "type": "number", "default": 6 } },
+          { "name": "daysPerWeek", "in": "query", "required": false, "schema": { "type": "number", "default": 5 } },
+          { "name": "vacationWeeks", "in": "query", "required": false, "schema": { "type": "number", "default": 4 } },
+          { "name": "nonBillablePct", "in": "query", "required": false, "schema": { "type": "number", "default": 0 }, "description": "Share of working time that is not billable (admin, marketing, etc)." }
+        ],
+        "responses": {
+          "200": {
+            "description": "Freelance rate result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "hourlyRate": { "type": ["number", "null"] },
+                        "dailyRate": { "type": ["number", "null"] },
+                        "monthlyGrossTarget": { "type": "number" },
+                        "billableHoursPerYear": { "type": "number" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/vat": {
+      "get": {
+        "summary": "Add or remove VAT/GST from a price",
+        "operationId": "calculateVat",
+        "parameters": [
+          { "name": "amount", "in": "query", "required": true, "schema": { "type": "number" }, "description": "Price to add tax to, or price to remove tax from (see mode)." },
+          { "name": "rate", "in": "query", "required": true, "schema": { "type": "number" }, "description": "Tax rate, percent." },
+          { "name": "mode", "in": "query", "required": false, "schema": { "type": "string", "enum": ["add", "remove"], "default": "add" }, "description": "'add': amount is the net price. 'remove': amount already includes tax." }
+        ],
+        "responses": {
+          "200": {
+            "description": "VAT result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "priceExclTax": { "type": "number" },
+                        "taxAmount": { "type": "number" },
+                        "priceInclTax": { "type": "number" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/profit-margin": {
+      "get": {
+        "summary": "Gross/net margin, markup, or target-margin pricing",
+        "operationId": "calculateProfitMargin",
+        "parameters": [
+          { "name": "mode", "in": "query", "required": false, "schema": { "type": "string", "enum": ["cost", "margin"], "default": "cost" }, "description": "'cost': derive margin from revenue+cogs. 'margin': derive selling price from cost+targetMarginPct." },
+          { "name": "revenue", "in": "query", "required": false, "schema": { "type": "number" }, "description": "Required when mode=cost." },
+          { "name": "cogs", "in": "query", "required": false, "schema": { "type": "number" }, "description": "Cost of goods sold. Required when mode=cost." },
+          { "name": "opex", "in": "query", "required": false, "schema": { "type": "number", "default": 0 }, "description": "Operating expenses, for net margin (mode=cost)." },
+          { "name": "cost", "in": "query", "required": false, "schema": { "type": "number" }, "description": "Required when mode=margin." },
+          { "name": "targetMarginPct", "in": "query", "required": false, "schema": { "type": "number" }, "description": "Required when mode=margin." }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profit margin result",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -2,6 +2,14 @@
 
 > RateKit (ratekit.org) is a set of free, no-signup business calculators for founders, startups and freelancers: freelance rate, Stripe/PayPal fees, VAT/GST, ROI, profit margin, break-even, burn rate and runway, LTV:CAC, SAFE equity, business loans, salary-to-hourly, US self-employment tax, 1099 vs W-2, Form 2555 (FEIE), invoice generator and P&L statement. All calculations run in the browser. Each tool page explains the formula, a worked example and FAQs.
 
+## API for agents
+Five of these calculators are also available as free, no-auth JSON endpoints — call them directly instead of re-deriving the formulas in your own context. GET with query params or POST with a JSON body; responses are plain JSON with no wrapper needed. Full machine-readable spec: [openapi.json](https://ratekit.org/openapi.json). Directory: [GET /api](https://ratekit.org/api).
+- `GET/POST /api/roi?investment=&returns=&months=` — ROI, annualized ROI, payback period.
+- `GET/POST /api/break-even?price=&variableCost=&fixedCosts=&units=&targetProfit=` — break-even units/revenue, contribution margin.
+- `GET/POST /api/freelance-rate?targetIncome=&expenses=&taxRatePct=&hoursPerDay=&daysPerWeek=&vacationWeeks=&nonBillablePct=` — minimum hourly/daily rate.
+- `GET/POST /api/vat?amount=&rate=&mode=add|remove` — add or remove VAT/GST.
+- `GET/POST /api/profit-margin?mode=cost|margin&revenue=&cogs=&opex=&cost=&targetMarginPct=` — margin, markup, or target-margin pricing.
+
 ## Tools
 - [1099 vs W2 Calculator 2026 — Should You Be a Contractor?](https://ratekit.org/1099-vs-w2): Compare 1099 contractor vs W2 employee compensation. Calculate take-home pay, taxes, and benefits to decide which is better for you. Free 2026 calculator.
 - [About RateKit](https://ratekit.org/about): RateKit is a collection of free business calculators for founders, freelancers and entrepreneurs. No signup, no data stored.
