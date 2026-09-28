@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VAT & GST Calculator — RateKit</title>
-<meta name="description" content="Add or remove VAT and GST from any price. Supports all countries and custom rates. Free VAT calculator for invoicing and business.">
+<title>Калькулятор НДС / GST онлайн — RateKit</title>
+<meta name="description" content="Добавьте или вычтите НДС/GST из любой суммы. Поддержка ставок всех стран и произвольного процента. Бесплатный калькулятор НДС для счетов.">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/favicon-180x180.png">
@@ -71,118 +71,39 @@ footer{background:var(--ink);padding:28px 48px;display:flex;justify-content:spac
 .flinks a:hover{color:white;}
 @media(max-width:768px){nav{padding:0 16px;}.nl{display:none;position:fixed;top:60px;left:0;right:0;background:white;border-bottom:1px solid var(--border);flex-direction:column;padding:12px;gap:2px;z-index:99;}.nl.open{display:flex;}.burger{display:block;}.page-header,main{padding-left:16px;padding-right:16px;}.results-grid{grid-template-columns:1fr 1fr;}footer{padding:20px 16px;flex-direction:column;align-items:flex-start;}}
 
-/* ═══ SHARE + PDF BAR ═══ */
-.share-bar {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 20px 24px;
-  margin-top: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-.share-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--muted);
-  letter-spacing: .08em;
-  text-transform: uppercase;
-}
-.share-btns {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.share-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
-  border-radius: 8px;
-  font-family: var(--font);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  border: 1.5px solid var(--border);
-  background: var(--white);
-  color: var(--mid);
-  transition: all .15s;
-  text-decoration: none;
-}
+.share-bar { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-top: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.share-label { font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+.share-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.share-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 8px; font-family: var(--font); font-size: 12px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); background: var(--white); color: var(--mid); transition: all .15s; text-decoration: none; }
 .share-btn:hover { border-color: var(--blue); color: var(--blue); background: var(--bluebg); }
 .share-btn.pdf-btn { background: var(--blue); color: white; border-color: var(--blue); }
 .share-btn.pdf-btn:hover { background: var(--blue2); }
 .share-btn.copied { background: var(--greenbg); color: var(--green); border-color: #6EE7B7; }
 
-/* PDF watermark overlay */
 @media print {
   nav, .share-bar, .burger, footer { display: none !important; }
   body { background: white !important; }
   .page-header { border: none; padding: 20px 0; }
   main { padding: 20px 0; }
-  .watermark-footer {
-    display: block !important;
-    position: fixed;
-    bottom: 10px;
-    right: 20px;
-    font-size: 11px;
-    color: #94A3B8;
-    font-family: sans-serif;
-  }
+  .watermark-footer { display: block !important; position: fixed; bottom: 10px; right: 20px; font-size: 11px; color: #94A3B8; font-family: sans-serif; }
 }
 .watermark-footer { display: none; }
 
-
-.translate-btn {
-  background: var(--white);
-  border: 1.5px solid var(--border);
-  border-radius: 6px;
-  padding: 5px 12px;
-  font-family: var(--font);
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--mid);
-  cursor: pointer;
-  transition: all .15s;
-  margin-left: 8px;
-}
+.translate-btn { background: var(--white); border: 1.5px solid var(--border); border-radius: 6px; padding: 5px 12px; font-family: var(--font); font-size: 12px; font-weight: 500; color: var(--mid); cursor: pointer; transition: all .15s; margin-left: 8px; }
 .translate-btn:hover { border-color: var(--blue); color: var(--blue); }
-#google_translate_element { margin-left: 8px; }
+.en-flag { opacity: .55; font-size: 10px; font-weight: 600; margin-left: 4px; }
 
-
-/* ═══ DROPDOWN NAV ═══ */
 .nav-r { display: flex; align-items: center; gap: 8px; }
 .dropdown { position: relative; }
-.dropdown-btn {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 13px; font-weight: 500; color: var(--mid);
-  padding: 6px 14px; border-radius: 6px;
-  background: none; border: none; cursor: pointer;
-  font-family: var(--font); transition: background .15s, color .15s;
-}
+.dropdown-btn { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: var(--mid); padding: 6px 14px; border-radius: 6px; background: none; border: none; cursor: pointer; font-family: var(--font); transition: background .15s, color .15s; }
 .dropdown-btn:hover { background: var(--bluebg); color: var(--blue); }
 .dropdown-btn .arrow { font-size: 10px; transition: transform .2s; }
 .dropdown.open .dropdown-btn { background: var(--bluebg); color: var(--blue); }
 .dropdown.open .arrow { transform: rotate(180deg); }
-.dropdown-menu {
-  display: none; position: absolute; top: calc(100% + 8px); right: 0;
-  background: white; border: 1px solid var(--border);
-  border-radius: 12px; padding: 8px;
-  box-shadow: 0 8px 32px rgba(0,0,0,.1);
-  min-width: 220px; z-index: 200;
-  max-height: calc(100vh - 80px); overflow-y: auto;
-}
+.dropdown-menu { display: none; position: absolute; top: calc(100% + 8px); right: 0; background: white; border: 1px solid var(--border); border-radius: 12px; padding: 8px; box-shadow: 0 8px 32px rgba(0,0,0,.1); min-width: 220px; z-index: 200; max-height: calc(100vh - 80px); overflow-y: auto; }
 .dropdown.open .dropdown-menu { display: block; }
 .dropdown-section { font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); padding: 8px 12px 4px; }
-.dropdown-item {
-  display: block; padding: 8px 12px; border-radius: 8px;
-  font-size: 13px; font-weight: 500; color: var(--mid);
-  text-decoration: none; transition: background .12s, color .12s;
-  white-space: nowrap;
-}
+.dropdown-item { display: block; padding: 8px 12px; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--mid); text-decoration: none; transition: background .12s, color .12s; white-space: nowrap; }
 .dropdown-item:hover { background: var(--bluebg); color: var(--blue); }
 .dropdown-item.active { color: var(--blue); background: var(--bluebg); }
 .dropdown-item .item-icon { margin-right: 8px; }
@@ -191,18 +112,18 @@ footer{background:var(--ink);padding:28px 48px;display:flex;justify-content:spac
 </style>
 <!-- Open Graph / Social sharing -->
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://ratekit.org/vat-calculator">
-<meta property="og:title" content="VAT & GST Calculator — Add or Remove Tax — RateKit">
-<meta property="og:description" content="Add or remove VAT and GST from any price. Supports UK, EU, Australia, Canada and 10+ countries. Free VAT calculator for invoicing.">
+<meta property="og:url" content="https://ratekit.org/ru/vat-calculator">
+<meta property="og:title" content="Калькулятор НДС / GST онлайн — RateKit">
+<meta property="og:description" content="Добавьте или вычтите НДС/GST из любой суммы. Поддержка UK, ЕС, Австралии, Канады и 10+ стран. Бесплатный калькулятор НДС для счетов.">
 <meta property="og:image" content="https://ratekit.org/og-image.png">
 <meta property="og:site_name" content="RateKit — Business Calculators">
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="VAT & GST Calculator — Add or Remove Tax — RateKit">
-<meta name="twitter:description" content="Add or remove VAT and GST from any price. Supports UK, EU, Australia, Canada and 10+ countries. Free VAT calculator for invoicing.">
+<meta name="twitter:title" content="Калькулятор НДС / GST — RateKit">
+<meta name="twitter:description" content="Добавьте или вычтите НДС/GST из любой суммы. Бесплатно.">
 <meta name="twitter:image" content="https://ratekit.org/og-image.png">
 <!-- Canonical -->
-<link rel="canonical" href="https://ratekit.org/vat-calculator">
+<link rel="canonical" href="https://ratekit.org/ru/vat-calculator">
 <link rel="alternate" hreflang="en" href="https://ratekit.org/vat-calculator">
 <link rel="alternate" hreflang="ru" href="https://ratekit.org/ru/vat-calculator">
 <link rel="alternate" hreflang="x-default" href="https://ratekit.org/vat-calculator">
@@ -210,21 +131,14 @@ footer{background:var(--ink);padding:28px 48px;display:flex;justify-content:spac
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "VAT & GST Calculator — Add or Remove Tax",
-  "description": "Add or remove VAT and GST from any price. Supports UK, EU, Australia, Canada and 10+ countries. Free VAT calculator for invoicing.",
-  "url": "https://ratekit.org/vat-calculator",
+  "name": "Калькулятор НДС / GST",
+  "description": "Добавьте или вычтите НДС/GST из любой суммы. Поддержка UK, ЕС, Австралии, Канады и 10+ стран.",
+  "url": "https://ratekit.org/ru/vat-calculator",
+  "inLanguage": "ru",
   "applicationCategory": "BusinessApplication",
   "operatingSystem": "Web",
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "USD"
-  },
-  "provider": {
-    "@type": "Organization",
-    "name": "RateKit",
-    "url": "https://ratekit.org"
-  }
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "provider": { "@type": "Organization", "name": "RateKit", "url": "https://ratekit.org" }
 }
 </script>
 <!-- Google Analytics GA4 -->
@@ -250,138 +164,139 @@ footer{background:var(--ink);padding:28px 48px;display:flex;justify-content:spac
 .rk-related a{display:inline-block;padding:6px 12px;border:1px solid rgba(0,0,0,.15);border-radius:999px;text-decoration:none;color:inherit;font-size:.9rem}
 @media print{.rk-guide{display:none}}
 </style>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I calculate VAT from a gross amount?", "acceptedAnswer": {"@type": "Answer", "text": "Divide the gross amount by (1 + VAT rate) to get the net price; the difference is the VAT. For 20% VAT: 120 / 1.2 = 100 net and 20 VAT."}}, {"@type": "Question", "name": "What is the difference between VAT and GST?", "acceptedAnswer": {"@type": "Answer", "text": "Both are value-added consumption taxes; the name depends on the country (VAT in the EU and UK, GST in Australia, Canada, India, Singapore). The calculation is the same."}}, {"@type": "Question", "name": "Why can't I just subtract 20% to remove VAT?", "acceptedAnswer": {"@type": "Answer", "text": "Because VAT is calculated on the net price, not the gross. Subtracting 20% from 120 gives 96, but the correct net is 100."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "inLanguage": "ru", "mainEntity": [{"@type": "Question", "name": "Как рассчитать НДС из суммы с налогом?", "acceptedAnswer": {"@type": "Answer", "text": "Разделите сумму с налогом на (1 + ставка НДС), чтобы получить цену без налога; разница — это НДС. При ставке 20%: 120 / 1,2 = 100 без налога и 20 НДС."}}, {"@type": "Question", "name": "В чём разница между НДС и GST?", "acceptedAnswer": {"@type": "Answer", "text": "Оба — это налоги на добавленную стоимость; название зависит от страны (VAT в ЕС и Великобритании, GST в Австралии, Канаде, Индии, Сингапуре). Расчёт одинаковый."}}, {"@type": "Question", "name": "Почему нельзя просто вычесть 20%, чтобы убрать НДС?", "acceptedAnswer": {"@type": "Answer", "text": "Потому что НДС считается от суммы без налога, а не от суммы с налогом. Вычитание 20% из 120 даёт 96, но правильная сумма без налога — 100."}}]}</script>
   <meta name="robots" content="index, follow, max-image-preview:large">
-  <meta property="og:locale" content="en_US">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "RateKit", "item": "https://ratekit.org/"}, {"@type": "ListItem", "position": 2, "name": "VAT & GST Calculator", "item": "https://ratekit.org/vat-calculator"}]}</script>
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:locale:alternate" content="en_US">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "RateKit", "item": "https://ratekit.org/ru/"}, {"@type": "ListItem", "position": 2, "name": "Калькулятор НДС / GST", "item": "https://ratekit.org/ru/vat-calculator"}]}</script>
 </head>
 <body>
 <nav id="nav">
-  <a href="/" class="logo">Rate<span>Kit</span></a>
+  <a href="/ru/" class="logo">Rate<span>Kit</span></a>
   <div class="nav-r">
-    <a href="/ru/vat-calculator" class="translate-btn" title="Русская версия">RU</a>
+    <a href="/vat-calculator" class="translate-btn" title="English version">EN</a>
     <div class="dropdown" id="tools-dropdown" data-dropdown-init="1">
       <button class="dropdown-btn" onclick="(function(e){e.stopPropagation();document.getElementById('tools-dropdown').classList.toggle('open');})(event)">
-        🧮 All Tools <span class="arrow">▾</span>
+        🧮 Все инструменты <span class="arrow">▾</span>
       </button>
       <div class="dropdown-menu">
-        <div class="dropdown-section">Freelancers</div>
-        <a href="/freelance-rate" class="dropdown-item "><span class="item-icon">💰</span>Freelance Rate</a>
-        <a href="/salary-hourly" class="dropdown-item"><span class="item-icon">🔄</span>Salary ↔ Hourly</a>
-        <a href="/1099-vs-w2" class="dropdown-item"><span class="item-icon">📋</span>1099 vs W2</a>
-        <a href="/stripe-fee" class="dropdown-item "><span class="item-icon">💳</span>Stripe / PayPal Fee</a>
-        <a href="/vat-calculator" class="dropdown-item active"><span class="item-icon">🌍</span>VAT / GST Calculator</a>
-        <a href="/invoice-generator" class="dropdown-item "><span class="item-icon">🧾</span>Invoice Generator</a>
-        <a href="/self-employment-tax" class="dropdown-item "><span class="item-icon">🇺🇸</span>Self-Employment Tax</a>
-        <a href="/form-2555" class="dropdown-item "><span class="item-icon">📋</span>Form 2555 (Expat)</a>
-        <a href="/deal-coach" class="dropdown-item "><span class="item-icon">🤖</span>Deal Coach AI</a>
+        <div class="dropdown-section">Фрилансерам</div>
+        <a href="/ru/freelance-rate" class="dropdown-item "><span class="item-icon">💰</span>Ставка фрилансера</a>
+        <a href="/salary-hourly" class="dropdown-item"><span class="item-icon">🔄</span>Оклад ↔ Ставка <span class="en-flag">EN</span></a>
+        <a href="/1099-vs-w2" class="dropdown-item"><span class="item-icon">📋</span>1099 vs W2 <span class="en-flag">EN</span></a>
+        <a href="/stripe-fee" class="dropdown-item "><span class="item-icon">💳</span>Комиссия Stripe/PayPal <span class="en-flag">EN</span></a>
+        <a href="/ru/vat-calculator" class="dropdown-item active"><span class="item-icon">🌍</span>Калькулятор НДС / GST</a>
+        <a href="/ru/invoice-generator" class="dropdown-item "><span class="item-icon">🧾</span>Счёт-фактура</a>
+        <a href="/self-employment-tax" class="dropdown-item "><span class="item-icon">🇺🇸</span>Self-Employment Tax <span class="en-flag">EN</span></a>
+        <a href="/form-2555" class="dropdown-item "><span class="item-icon">📋</span>Form 2555 (Expat) <span class="en-flag">EN</span></a>
+        <a href="/deal-coach" class="dropdown-item "><span class="item-icon">🤖</span>Deal Coach AI <span class="en-flag">EN</span></a>
         <div class="dropdown-divider"></div>
-        <div class="dropdown-section">Business & Startups</div>
-        <a href="/roi-calculator" class="dropdown-item "><span class="item-icon">📈</span>ROI Calculator</a>
-        <a href="/profit-margin" class="dropdown-item "><span class="item-icon">🛒</span>Profit Margin</a>
-        <a href="/break-even" class="dropdown-item "><span class="item-icon">⚖️</span>Break-even</a>
-        <a href="/loan-calculator" class="dropdown-item "><span class="item-icon">🏦</span>Business Loan</a>
-        <a href="/pl-statement" class="dropdown-item "><span class="item-icon">📊</span>P&L Statement</a>
+        <div class="dropdown-section">Бизнес и стартапы</div>
+        <a href="/ru/roi-calculator" class="dropdown-item "><span class="item-icon">📈</span>Калькулятор ROI</a>
+        <a href="/ru/profit-margin" class="dropdown-item "><span class="item-icon">🛒</span>Маржа и наценка</a>
+        <a href="/ru/break-even" class="dropdown-item "><span class="item-icon">⚖️</span>Точка безубыточности</a>
+        <a href="/loan-calculator" class="dropdown-item "><span class="item-icon">🏦</span>Бизнес-кредит <span class="en-flag">EN</span></a>
+        <a href="/pl-statement" class="dropdown-item "><span class="item-icon">📊</span>Отчёт P&L <span class="en-flag">EN</span></a>
         <div class="dropdown-divider"></div>
-        <div class="dropdown-section">Startups</div>
-        <a href="/safe-calculator" class="dropdown-item "><span class="item-icon">🚀</span>SAFE Equity</a>
-        <a href="/burn-rate" class="dropdown-item "><span class="item-icon">🔥</span>Burn Rate & Runway</a>
-        <a href="/ltv-cac" class="dropdown-item "><span class="item-icon">📉</span>LTV : CAC</a>
+        <div class="dropdown-section">Стартапам</div>
+        <a href="/safe-calculator" class="dropdown-item "><span class="item-icon">🚀</span>SAFE Equity <span class="en-flag">EN</span></a>
+        <a href="/burn-rate" class="dropdown-item "><span class="item-icon">🔥</span>Burn Rate & Runway <span class="en-flag">EN</span></a>
+        <a href="/ltv-cac" class="dropdown-item "><span class="item-icon">📉</span>LTV : CAC <span class="en-flag">EN</span></a>
       </div>
     </div>
     <button class="burger" onclick="document.getElementById('tools-dropdown').classList.toggle('open')">☰</button>
   </div>
 </nav>
 <div class="page-header">
-  <div class="breadcrumb"><a href="/">RateKit</a> › VAT & GST Calculator</div>
-  <div class="page-tag">🌍 Global Tool</div>
-  <h1>VAT & GST Calculator</h1>
-  <p class="page-sub">Add or remove VAT/GST from any price. Supports all major countries and custom rates. Perfect for invoicing.</p>
+  <div class="breadcrumb"><a href="/ru/">RateKit</a> › Калькулятор НДС / GST</div>
+  <div class="page-tag">🌍 Глобальный инструмент</div>
+  <h1>Калькулятор НДС / GST</h1>
+  <p class="page-sub">Добавьте или вычтите НДС/GST из любой суммы. Поддержка ставок всех основных стран и произвольного процента. Идеально для выставления счетов.</p>
 </div>
 <main>
   <div class="panel">
-    <div class="panel-title">Mode</div>
+    <div class="panel-title">Режим</div>
     <div class="mode-toggle">
-      <button class="mode-btn active" onclick="setMode('add',this)">Add tax to price</button>
-      <button class="mode-btn" onclick="setMode('remove',this)">Remove tax from price</button>
+      <button class="mode-btn active" onclick="setMode('add',this)">Добавить налог к цене</button>
+      <button class="mode-btn" onclick="setMode('remove',this)">Вычесть налог из цены</button>
     </div>
     <div class="field">
-      <label class="lbl" id="amount-lbl">Price (excl. tax)</label>
+      <label class="lbl" id="amount-lbl">Цена (без налога)</label>
       <div class="input-wrap"><span class="ifix">$</span><input type="number" id="amount" value="1000" min="0" step="0.01" oninput="calc()"></div>
     </div>
     <div class="field">
-      <label class="lbl">Tax Rate</label>
+      <label class="lbl">Ставка налога</label>
       <div class="input-wrap"><input type="number" id="rate" value="20" min="0" max="100" step="0.1" oninput="calc()"><span class="ifix ifix-r">%</span></div>
     </div>
     <div class="field">
-      <label class="lbl">Quick select by country</label>
+      <label class="lbl">Быстрый выбор по стране</label>
       <div class="rates-grid" id="rate-chips"></div>
     </div>
   </div>
 
   <div class="results-grid">
     <div class="r-card">
-      <div class="r-label">Price excl. tax</div>
+      <div class="r-label">Цена без налога</div>
       <div class="r-value" id="r-excl">—</div>
-      <div class="r-sub">net amount</div>
+      <div class="r-sub">чистая сумма</div>
     </div>
     <div class="r-card primary">
-      <div class="r-label">Tax amount</div>
+      <div class="r-label">Сумма налога</div>
       <div class="r-value" id="r-tax">—</div>
-      <div class="r-sub" id="r-tax-sub">VAT/GST</div>
+      <div class="r-sub" id="r-tax-sub">НДС/GST</div>
     </div>
     <div class="r-card green">
-      <div class="r-label">Price incl. tax</div>
+      <div class="r-label">Цена с налогом</div>
       <div class="r-value" id="r-incl">—</div>
-      <div class="r-sub">gross amount</div>
+      <div class="r-sub">полная сумма</div>
     </div>
   </div>
 
   <div class="info-box">
-    <strong>💡 Note:</strong> "Add tax" means your entered price is the net (pre-tax) price. "Remove tax" means your price already includes tax and you want to find the net amount. Always check local regulations for correct invoicing.
+    <strong>💡 Примечание:</strong> «Добавить налог» — введённая цена считается суммой без налога. «Вычесть налог» — введённая цена уже включает налог, и нужно найти сумму без него. Всегда проверяйте местные правила для корректного выставления счетов.
   </div>
 
   <!-- SHARE + PDF BAR -->
   <div class="share-bar" id="share-bar">
-    <span class="share-label">Share or Export</span>
+    <span class="share-label">Поделиться или сохранить</span>
     <div class="share-btns">
-      <button class="share-btn" onclick="copyLink(this)" title="Copy link">🔗 Copy link</button>
+      <button class="share-btn" onclick="copyLink(this)" title="Скопировать ссылку">🔗 Скопировать ссылку</button>
       <a class="share-btn" id="tw-btn" href="#" target="_blank" rel="noopener">𝕏 Twitter</a>
       <a class="share-btn" id="li-btn" href="#" target="_blank" rel="noopener">in LinkedIn</a>
       <a class="share-btn" id="tg-btn" href="#" target="_blank" rel="noopener">✈️ Telegram</a>
       <a class="share-btn" id="wa-btn" href="#" target="_blank" rel="noopener">💬 WhatsApp</a>
-      <button class="share-btn pdf-btn" onclick="printPDF()">⬇ Save as PDF</button>
+      <button class="share-btn pdf-btn" onclick="printPDF()">⬇ Сохранить в PDF</button>
     </div>
   </div>
-  <div class="watermark-footer">Generated with RateKit · ratekit.org · Free business calculators</div>
+  <div class="watermark-footer">Рассчитано с RateKit · ratekit.org · Бесплатные бизнес-калькуляторы</div>
 
 
   <section class="rk-guide" aria-labelledby="rk-guide-h">
-    <h2 id="rk-guide-h">How to add or remove VAT and GST</h2>
-    <p>VAT and GST are consumption taxes added on top of the net price. Adding tax multiplies the net price by (1 + rate); removing tax from a gross price divides by (1 + rate). Simply subtracting the rate is the most common mistake.</p>
-    <h3>Formula</h3>
-    <pre>Add VAT: Gross = Net x (1 + Rate)
-Remove VAT: Net = Gross / (1 + Rate)
-VAT amount = Gross - Net</pre>
-    <h3>Example</h3>
-    <p>Net price 100 EUR at 20% VAT: gross = 120 EUR, VAT = 20 EUR. Gross price 120 EUR including 20% VAT: net = 120 / 1.2 = 100 EUR (not 96 EUR).</p>
-    <h3>Frequently asked questions</h3>
-    <details><summary>How do I calculate VAT from a gross amount?</summary><p>Divide the gross amount by (1 + VAT rate) to get the net price; the difference is the VAT. For 20% VAT: 120 / 1.2 = 100 net and 20 VAT.</p></details>
-    <details><summary>What is the difference between VAT and GST?</summary><p>Both are value-added consumption taxes; the name depends on the country (VAT in the EU and UK, GST in Australia, Canada, India, Singapore). The calculation is the same.</p></details>
-    <details><summary>Why can't I just subtract 20% to remove VAT?</summary><p>Because VAT is calculated on the net price, not the gross. Subtracting 20% from 120 gives 96, but the correct net is 100.</p></details>
-    <h3>Related calculators</h3>
+    <h2 id="rk-guide-h">Как добавить или вычесть НДС и GST</h2>
+    <p>НДС и GST — это налоги на потребление, добавляемые сверх чистой цены. Добавление налога умножает чистую цену на (1 + ставка); вычитание налога из суммы с налогом делит её на (1 + ставка). Простое вычитание процента — самая частая ошибка.</p>
+    <h3>Формула</h3>
+    <pre>Добавить НДС: Сумма с налогом = Сумма без налога × (1 + Ставка)
+Вычесть НДС: Сумма без налога = Сумма с налогом / (1 + Ставка)
+Сумма НДС = Сумма с налогом − Сумма без налога</pre>
+    <h3>Пример</h3>
+    <p>Цена без налога 100 € при ставке НДС 20%: с налогом = 120 €, НДС = 20 €. Цена с налогом 120 € при ставке 20%: без налога = 120 / 1,2 = 100 € (а не 96 €).</p>
+    <h3>Частые вопросы</h3>
+    <details><summary>Как рассчитать НДС из суммы с налогом?</summary><p>Разделите сумму с налогом на (1 + ставка НДС), чтобы получить цену без налога; разница — это НДС. При ставке 20%: 120 / 1,2 = 100 без налога и 20 НДС.</p></details>
+    <details><summary>В чём разница между НДС и GST?</summary><p>Оба — это налоги на добавленную стоимость; название зависит от страны (VAT в ЕС и Великобритании, GST в Австралии, Канаде, Индии, Сингапуре). Расчёт одинаковый.</p></details>
+    <details><summary>Почему нельзя просто вычесть 20%, чтобы убрать НДС?</summary><p>Потому что НДС считается от суммы без налога, а не от суммы с налогом. Вычитание 20% из 120 даёт 96, но правильная сумма без налога — 100.</p></details>
+    <h3>Похожие калькуляторы</h3>
     <ul class="rk-related">
-      <li><a href="/profit-margin">Profit Margin Calculator</a></li>
-      <li><a href="/invoice-generator">Invoice Generator</a></li>
-      <li><a href="/stripe-fee">Stripe &amp; PayPal Fee Calculator</a></li>
-      <li><a href="/pl-statement">Profit &amp; Loss Statement</a></li>
+      <li><a href="/ru/profit-margin">Маржа и наценка</a></li>
+      <li><a href="/ru/invoice-generator">Счёт-фактура</a></li>
+      <li><a href="/stripe-fee">Stripe & PayPal Fee Calculator (EN)</a></li>
+      <li><a href="/pl-statement">P&L Statement (EN)</a></li>
     </ul>
   </section>
 </main>
 
 <footer>
-  <a href="/" class="flogo">Rate<span>Kit</span></a>
-  <span class="fcopy">© 2026 RateKit · Free business calculators</span>
+  <a href="/ru/" class="flogo">Rate<span>Kit</span></a>
+  <span class="fcopy">© 2026 RateKit · Бесплатные бизнес-калькуляторы</span>
   <ul class="flinks">
     <li><a href="/about">About</a></li>
     <li><a href="/contact">Contact</a></li>
@@ -394,14 +309,13 @@ VAT amount = Gross - Net</pre>
 <script>
 let mode = 'add';
 const countries = [
-  {name:'🇬🇧 UK', rate:20}, {name:'🇩🇪 Germany', rate:19}, {name:'🇫🇷 France', rate:20},
-  {name:'🇳🇱 Netherlands', rate:21}, {name:'🇦🇺 Australia GST', rate:10},
-  {name:'🇨🇦 Canada HST', rate:13}, {name:'🇮🇳 India GST', rate:18},
-  {name:'🇳🇿 New Zealand', rate:15}, {name:'🇿🇦 South Africa', rate:15},
-  {name:'🇸🇬 Singapore', rate:9}, {name:'🇯🇵 Japan', rate:10}, {name:'🇸🇪 Sweden', rate:25},
+  {name:'🇬🇧 Великобритания', rate:20}, {name:'🇩🇪 Германия', rate:19}, {name:'🇫🇷 Франция', rate:20},
+  {name:'🇳🇱 Нидерланды', rate:21}, {name:'🇦🇺 Австралия GST', rate:10},
+  {name:'🇨🇦 Канада HST', rate:13}, {name:'🇮🇳 Индия GST', rate:18},
+  {name:'🇳🇿 Новая Зеландия', rate:15}, {name:'🇿🇦 ЮАР', rate:15},
+  {name:'🇸🇬 Сингапур', rate:9}, {name:'🇯🇵 Япония', rate:10}, {name:'🇸🇪 Швеция', rate:25},
 ];
 
-// Build chips
 document.getElementById('rate-chips').innerHTML = countries.map((c,i) =>
   `<div class="rate-chip${i===0?' active':''}" onclick="setRate(${c.rate},this)">
     <div class="country">${c.name}</div>
@@ -418,10 +332,10 @@ function setMode(m, btn) {
   mode = m;
   document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('amount-lbl').textContent = m === 'add' ? 'Price (excl. tax)' : 'Price (incl. tax)';
+  document.getElementById('amount-lbl').textContent = m === 'add' ? 'Цена (без налога)' : 'Цена (с налогом)';
   calc();
 }
-function fmt(n) { return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+function fmt(n) { return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
 function calc() {
   const amount = parseFloat(document.getElementById('amount').value) || 0;
   const rate = parseFloat(document.getElementById('rate').value) || 0;
@@ -434,23 +348,22 @@ function calc() {
   document.getElementById('r-excl').textContent = fmt(excl);
   document.getElementById('r-tax').textContent = fmt(tax);
   document.getElementById('r-incl').textContent = fmt(incl);
-  document.getElementById('r-tax-sub').textContent = `${rate}% rate`;
+  document.getElementById('r-tax-sub').textContent = `ставка ${rate}%`;
 }
 function toggleNav() { document.getElementById('nl').classList.toggle('open'); }
 calc();
 
-// ═══ SHARE + PDF FUNCTIONS ═══
 function getShareText() {
   const title = document.title.replace(' — RateKit', '');
-  return `${title} — calculated with RateKit (free) 👉 ${window.location.href}`;
+  return `${title} — рассчитано в RateKit (бесплатно) 👉 ${window.location.href}`;
 }
 
 function copyLink(btn) {
   navigator.clipboard.writeText(window.location.href).then(() => {
-    btn.textContent = '✅ Copied!';
+    btn.textContent = '✅ Скопировано!';
     btn.classList.add('copied');
     setTimeout(() => {
-      btn.textContent = '🔗 Copy link';
+      btn.textContent = '🔗 Скопировать ссылку';
       btn.classList.remove('copied');
     }, 2000);
   });
@@ -475,8 +388,6 @@ function initShare() {
 
 window.addEventListener('load', initShare);
 
-
-// ═══ LOCAL STORAGE — Save & Restore inputs ═══
 function saveInputs() {
   const key = 'rk_' + window.location.pathname.replace(/[^a-z0-9]/gi,'_');
   const inputs = {};
@@ -500,7 +411,6 @@ function restoreInputs() {
   } catch(e) {}
 }
 
-// Auto-save on any input change
 document.addEventListener('input', saveInputs);
 document.addEventListener('change', saveInputs);
 window.addEventListener('load', () => { restoreInputs(); });

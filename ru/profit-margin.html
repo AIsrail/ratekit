@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Калькулятор маржи и наценки онлайн — RateKit</title>
+<meta name="description" content="Рассчитайте валовую маржу, чистую маржу и наценку. Бесплатный калькулятор маржи для e-commerce, розницы и ценообразования.">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon-180x180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F8F9FC;--white:#FFFFFF;--border:#E2E8F0;--ink:#0F172A;--mid:#475569;--muted:#94A3B8;--blue:#2563EB;--bluebg:#EFF6FF;--green:#059669;--greenbg:#ECFDF5;--amber:#D97706;--red:#DC2626;--redbg:#FEF2F2;--font:'Plus Jakarta Sans',sans-serif;--mono:'JetBrains Mono',monospace;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh;}
+a{text-decoration:none;color:inherit;}
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 48px;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.logo{font-size:18px;font-weight:700;color:var(--ink);letter-spacing:-.02em;}.logo span{color:var(--blue);}
+.nl{display:flex;align-items:center;gap:2px;list-style:none;flex-wrap:wrap;}
+.nl a{font-size:12px;font-weight:500;color:var(--mid);padding:5px 10px;border-radius:6px;transition:background .15s,color .15s;}
+.nl a:hover{background:var(--bluebg);color:var(--blue);}
+.nl a.active{color:var(--blue);background:var(--bluebg);}
+.burger{display:none;background:none;border:none;font-size:20px;cursor:pointer;padding:4px 8px;}
+.page-header{background:var(--white);border-bottom:1px solid var(--border);padding:48px 48px 40px;}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:16px;}
+.breadcrumb a{color:var(--blue);}
+.page-tag{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);margin-bottom:10px;}
+h1{font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:700;letter-spacing:-.02em;line-height:1.15;margin-bottom:10px;}
+.page-sub{font-size:15px;color:var(--mid);max-width:520px;}
+main{padding:40px 48px 64px;max-width:900px;}
+.panel{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:20px;}
+.panel-title{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.field{margin-bottom:16px;}
+.lbl{display:block;font-size:12px;font-weight:600;color:var(--mid);margin-bottom:6px;}
+.hint{font-weight:400;color:var(--muted);}
+.input-wrap{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:8px;background:var(--white);overflow:hidden;transition:border-color .15s;}
+.input-wrap:focus-within{border-color:var(--blue);}
+.ifix{font-family:var(--mono);font-size:13px;color:var(--muted);padding:10px 12px;background:var(--bg);border-right:1px solid var(--border);white-space:nowrap;}
+.ifix-r{border-right:none;border-left:1px solid var(--border);}
+input[type="number"]{flex:1;background:transparent;border:none;outline:none;color:var(--ink);font-family:var(--mono);font-size:14px;padding:10px 12px;width:100%;-moz-appearance:textfield;}
+input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;}
+.mode-toggle{display:flex;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:24px;}
+.mode-btn{flex:1;padding:10px;background:transparent;border:none;font-family:var(--font);font-size:13px;font-weight:500;color:var(--mid);cursor:pointer;transition:all .15s;}
+.mode-btn.active{background:var(--blue);color:white;}
+.results-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.r-card{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:22px;}
+.r-card.primary{background:var(--blue);border-color:var(--blue);}
+.r-card.green{background:var(--greenbg);border-color:#6EE7B7;}
+.r-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.r-card.primary .r-label{color:rgba(255,255,255,.6);}
+.r-card.green .r-label{color:var(--green);}
+.r-value{font-family:var(--mono);font-size:clamp(1.3rem,2.5vw,1.9rem);font-weight:600;color:var(--ink);line-height:1;}
+.r-card.primary .r-value{color:white;}
+.r-card.green .r-value{color:var(--green);}
+.r-sub{font-size:11px;color:var(--muted);margin-top:6px;}
+.r-card.primary .r-sub{color:rgba(255,255,255,.5);}
+.bench-panel{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:20px;}
+.bench-row{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid var(--border);}
+.bench-row:last-child{border-bottom:none;}
+.bench-name{font-size:13px;color:var(--mid);width:180px;flex-shrink:0;}
+.bench-range{font-family:var(--mono);font-size:12px;font-weight:600;width:70px;flex-shrink:0;}
+.bench-bar-wrap{flex:1;height:5px;background:var(--bg);border-radius:99px;overflow:hidden;}
+.bench-bar{height:100%;border-radius:99px;}
+.info-box{background:var(--bluebg);border:1px solid #BFDBFE;border-radius:10px;padding:16px 20px;font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:20px;}
+.info-box strong{color:var(--blue);}
+footer{background:var(--ink);padding:28px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;}
+.flogo{font-size:16px;font-weight:700;color:white;}.flogo span{color:var(--blue);}
+.fcopy{font-size:12px;color:rgba(255,255,255,.3);}
+.flinks{display:flex;gap:14px;list-style:none;flex-wrap:wrap;}
+.flinks a{font-size:12px;color:rgba(255,255,255,.4);transition:color .2s;}
+.flinks a:hover{color:white;}
+@media(max-width:768px){nav{padding:0 16px;}.nl{display:none;position:fixed;top:60px;left:0;right:0;background:white;border-bottom:1px solid var(--border);flex-direction:column;padding:12px;gap:2px;z-index:99;}.nl.open{display:flex;}.burger{display:block;}.page-header,main{padding-left:16px;padding-right:16px;}.results-row{grid-template-columns:1fr 1fr;}footer{padding:20px 16px;flex-direction:column;align-items:flex-start;}}
+
+.share-bar { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-top: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.share-label { font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+.share-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.share-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 8px; font-family: var(--font); font-size: 12px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); background: var(--white); color: var(--mid); transition: all .15s; text-decoration: none; }
+.share-btn:hover { border-color: var(--blue); color: var(--blue); background: var(--bluebg); }
+.share-btn.pdf-btn { background: var(--blue); color: white; border-color: var(--blue); }
+.share-btn.pdf-btn:hover { background: var(--blue2); }
+.share-btn.copied { background: var(--greenbg); color: var(--green); border-color: #6EE7B7; }
+
+@media print {
+  nav, .share-bar, .burger, footer { display: none !important; }
+  body { background: white !important; }
+  .page-header { border: none; padding: 20px 0; }
+  main { padding: 20px 0; }
+  .watermark-footer { display: block !important; position: fixed; bottom: 10px; right: 20px; font-size: 11px; color: #94A3B8; font-family: sans-serif; }
+}
+.watermark-footer { display: none; }
+
+.translate-btn { background: var(--white); border: 1.5px solid var(--border); border-radius: 6px; padding: 5px 12px; font-family: var(--font); font-size: 12px; font-weight: 500; color: var(--mid); cursor: pointer; transition: all .15s; margin-left: 8px; }
+.translate-btn:hover { border-color: var(--blue); color: var(--blue); }
+.en-flag { opacity: .55; font-size: 10px; font-weight: 600; margin-left: 4px; }
+
+.nav-r { display: flex; align-items: center; gap: 8px; }
+.dropdown { position: relative; }
+.dropdown-btn { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: var(--mid); padding: 6px 14px; border-radius: 6px; background: none; border: none; cursor: pointer; font-family: var(--font); transition: background .15s, color .15s; }
+.dropdown-btn:hover { background: var(--bluebg); color: var(--blue); }
+.dropdown-btn .arrow { font-size: 10px; transition: transform .2s; }
+.dropdown.open .dropdown-btn { background: var(--bluebg); color: var(--blue); }
+.dropdown.open .arrow { transform: rotate(180deg); }
+.dropdown-menu { display: none; position: absolute; top: calc(100% + 8px); right: 0; background: white; border: 1px solid var(--border); border-radius: 12px; padding: 8px; box-shadow: 0 8px 32px rgba(0,0,0,.1); min-width: 220px; z-index: 200; max-height: calc(100vh - 80px); overflow-y: auto; }
+.dropdown.open .dropdown-menu { display: block; }
+.dropdown-section { font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); padding: 8px 12px 4px; }
+.dropdown-item { display: block; padding: 8px 12px; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--mid); text-decoration: none; transition: background .12s, color .12s; white-space: nowrap; }
+.dropdown-item:hover { background: var(--bluebg); color: var(--blue); }
+.dropdown-item.active { color: var(--blue); background: var(--bluebg); }
+.dropdown-item .item-icon { margin-right: 8px; }
+.dropdown-divider { height: 1px; background: var(--border); margin: 6px 8px; }
+
+</style>
+<!-- Open Graph / Social sharing -->
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ratekit.org/ru/profit-margin">
+<meta property="og:title" content="Калькулятор маржи и наценки онлайн — RateKit">
+<meta property="og:description" content="Рассчитайте валовую и чистую маржу, наценку. Найдите цену продажи по себестоимости и желаемой марже. Бесплатно.">
+<meta property="og:image" content="https://ratekit.org/og-image.png">
+<meta property="og:site_name" content="RateKit — Business Calculators">
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Калькулятор маржи и наценки — RateKit">
+<meta name="twitter:description" content="Рассчитайте валовую и чистую маржу, наценку. Бесплатно.">
+<meta name="twitter:image" content="https://ratekit.org/og-image.png">
+<!-- Canonical -->
+<link rel="canonical" href="https://ratekit.org/ru/profit-margin">
+<link rel="alternate" hreflang="en" href="https://ratekit.org/profit-margin">
+<link rel="alternate" hreflang="ru" href="https://ratekit.org/ru/profit-margin">
+<link rel="alternate" hreflang="x-default" href="https://ratekit.org/profit-margin">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Калькулятор маржи и наценки",
+  "description": "Рассчитайте валовую и чистую маржу, наценку. Найдите цену продажи по себестоимости и желаемой марже.",
+  "url": "https://ratekit.org/ru/profit-margin",
+  "inLanguage": "ru",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "provider": { "@type": "Organization", "name": "RateKit", "url": "https://ratekit.org" }
+}
+</script>
+<!-- Google Analytics GA4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-JZZPXY8N1E"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-JZZPXY8N1E');
+</script>
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7303101907130018" crossorigin="anonymous"></script>
+<style>
+.rk-guide{margin-top:48px;padding-top:32px;border-top:1px solid rgba(0,0,0,.1);max-width:780px}
+.rk-guide h2{font-size:1.45rem;font-weight:700;letter-spacing:-.01em;margin:0 0 12px}
+.rk-guide h3{font-size:1.05rem;font-weight:700;margin:28px 0 10px}
+.rk-guide p{margin:0 0 12px;opacity:.9}
+.rk-guide pre{white-space:pre-wrap;background:rgba(0,0,0,.04);border-radius:8px;padding:14px 16px;font-size:.92rem;line-height:1.55;margin:0 0 12px;font-family:inherit}
+.rk-guide details{border-bottom:1px solid rgba(0,0,0,.1);padding:12px 0}
+.rk-guide summary{cursor:pointer;font-weight:600}
+.rk-guide details p{margin:10px 0 0}
+.rk-related{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:0}
+.rk-related a{display:inline-block;padding:6px 12px;border:1px solid rgba(0,0,0,.15);border-radius:999px;text-decoration:none;color:inherit;font-size:.9rem}
+@media print{.rk-guide{display:none}}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "inLanguage": "ru", "mainEntity": [{"@type": "Question", "name": "В чём разница между маржой и наценкой?", "acceptedAnswer": {"@type": "Answer", "text": "Маржа — это прибыль, делённая на цену продажи; наценка — прибыль, делённая на себестоимость. Одна и та же прибыль $40 при цене $100 — это 40% маржи, но 66,7% наценки."}}, {"@type": "Question", "name": "Какая маржа считается хорошей для малого бизнеса?", "acceptedAnswer": {"@type": "Answer", "text": "Зависит от отрасли: услуги и софт часто дают 20-40% и выше, розница и рестораны — 3-10% чистой маржи. Сравнивайте с компаниями своей отрасли."}}, {"@type": "Question", "name": "Как установить цену для целевой маржи?", "acceptedAnswer": {"@type": "Answer", "text": "Разделите себестоимость на (1 − целевая маржа). Для маржи 30% при себестоимости $70: $70 / 0,7 = $100."}}]}</script>
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:locale:alternate" content="en_US">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "RateKit", "item": "https://ratekit.org/ru/"}, {"@type": "ListItem", "position": 2, "name": "Маржа и наценка", "item": "https://ratekit.org/ru/profit-margin"}]}</script>
+</head>
+<body>
+<nav id="nav">
+  <a href="/ru/" class="logo">Rate<span>Kit</span></a>
+  <div class="nav-r">
+    <a href="/profit-margin" class="translate-btn" title="English version">EN</a>
+    <div class="dropdown" id="tools-dropdown" data-dropdown-init="1">
+      <button class="dropdown-btn" onclick="(function(e){e.stopPropagation();document.getElementById('tools-dropdown').classList.toggle('open');})(event)">
+        🧮 Все инструменты <span class="arrow">▾</span>
+      </button>
+      <div class="dropdown-menu">
+        <div class="dropdown-section">Фрилансерам</div>
+        <a href="/ru/freelance-rate" class="dropdown-item "><span class="item-icon">💰</span>Ставка фрилансера</a>
+        <a href="/salary-hourly" class="dropdown-item"><span class="item-icon">🔄</span>Оклад ↔ Ставка <span class="en-flag">EN</span></a>
+        <a href="/1099-vs-w2" class="dropdown-item"><span class="item-icon">📋</span>1099 vs W2 <span class="en-flag">EN</span></a>
+        <a href="/stripe-fee" class="dropdown-item "><span class="item-icon">💳</span>Комиссия Stripe/PayPal <span class="en-flag">EN</span></a>
+        <a href="/ru/vat-calculator" class="dropdown-item "><span class="item-icon">🌍</span>Калькулятор НДС / GST</a>
+        <a href="/ru/invoice-generator" class="dropdown-item "><span class="item-icon">🧾</span>Счёт-фактура</a>
+        <a href="/self-employment-tax" class="dropdown-item "><span class="item-icon">🇺🇸</span>Self-Employment Tax <span class="en-flag">EN</span></a>
+        <a href="/form-2555" class="dropdown-item "><span class="item-icon">📋</span>Form 2555 (Expat) <span class="en-flag">EN</span></a>
+        <a href="/deal-coach" class="dropdown-item "><span class="item-icon">🤖</span>Deal Coach AI <span class="en-flag">EN</span></a>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-section">Бизнес и стартапы</div>
+        <a href="/ru/roi-calculator" class="dropdown-item "><span class="item-icon">📈</span>Калькулятор ROI</a>
+        <a href="/ru/profit-margin" class="dropdown-item active"><span class="item-icon">🛒</span>Маржа и наценка</a>
+        <a href="/ru/break-even" class="dropdown-item "><span class="item-icon">⚖️</span>Точка безубыточности</a>
+        <a href="/loan-calculator" class="dropdown-item "><span class="item-icon">🏦</span>Бизнес-кредит <span class="en-flag">EN</span></a>
+        <a href="/pl-statement" class="dropdown-item "><span class="item-icon">📊</span>Отчёт P&L <span class="en-flag">EN</span></a>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-section">Стартапам</div>
+        <a href="/safe-calculator" class="dropdown-item "><span class="item-icon">🚀</span>SAFE Equity <span class="en-flag">EN</span></a>
+        <a href="/burn-rate" class="dropdown-item "><span class="item-icon">🔥</span>Burn Rate & Runway <span class="en-flag">EN</span></a>
+        <a href="/ltv-cac" class="dropdown-item "><span class="item-icon">📉</span>LTV : CAC <span class="en-flag">EN</span></a>
+      </div>
+    </div>
+    <button class="burger" onclick="document.getElementById('tools-dropdown').classList.toggle('open')">☰</button>
+  </div>
+</nav>
+<div class="page-header">
+  <div class="breadcrumb"><a href="/ru/">RateKit</a> › Маржа и наценка</div>
+  <div class="page-tag">🛒 E-commerce и розница</div>
+  <h1>Калькулятор маржи и наценки</h1>
+  <p class="page-sub">Рассчитайте валовую маржу, чистую маржу и наценку. Найдите цену продажи по себестоимости и желаемой марже — или наоборот.</p>
+</div>
+<main>
+  <div class="panel">
+    <div class="panel-title">Рассчитать из</div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" onclick="setMode('cost',this)">Себестоимость + выручка → Маржа</button>
+      <button class="mode-btn" onclick="setMode('margin',this)">Себестоимость + маржа → Цена продажи</button>
+    </div>
+    <div id="cost-mode">
+      <div class="field"><label class="lbl">Выручка / цена продажи</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="revenue" value="100" min="0" step="0.01" oninput="calc()"></div></div>
+      <div class="field"><label class="lbl">Себестоимость товара (COGS)</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="cogs" value="40" min="0" step="0.01" oninput="calc()"></div></div>
+      <div class="field"><label class="lbl">Операционные расходы <span class="hint">(необязательно, для чистой маржи)</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="opex" value="20" min="0" step="0.01" oninput="calc()"></div></div>
+    </div>
+    <div id="margin-mode" style="display:none;">
+      <div class="field"><label class="lbl">Себестоимость товара (COGS)</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="cost2" value="40" min="0" step="0.01" oninput="calc()"></div></div>
+      <div class="field"><label class="lbl">Желаемая валовая маржа</label><div class="input-wrap"><input type="number" id="target-margin" value="60" min="0" max="100" step="0.1" oninput="calc()"><span class="ifix ifix-r">%</span></div></div>
+    </div>
+  </div>
+
+  <div class="results-row">
+    <div class="r-card primary">
+      <div class="r-label" id="r1-lbl">Валовая маржа</div>
+      <div class="r-value" id="r-margin">—</div>
+      <div class="r-sub" id="r1-sub">от выручки</div>
+    </div>
+    <div class="r-card">
+      <div class="r-label" id="r2-lbl">Валовая прибыль</div>
+      <div class="r-value" id="r-profit">—</div>
+      <div class="r-sub" id="r2-sub">выручка − себестоимость</div>
+    </div>
+    <div class="r-card">
+      <div class="r-label">Наценка</div>
+      <div class="r-value" id="r-markup">—</div>
+      <div class="r-sub">сверх себестоимости</div>
+    </div>
+    <div class="r-card green">
+      <div class="r-label" id="r4-lbl">Чистая маржа</div>
+      <div class="r-value" id="r-net">—</div>
+      <div class="r-sub">после операционных расходов</div>
+    </div>
+  </div>
+
+  <div class="bench-panel">
+    <div class="panel-title">Ориентиры по отраслям (валовая маржа)</div>
+    <div class="bench-row"><span class="bench-name">SaaS / софт</span><span class="bench-range" style="color:var(--green);">70–80%</span><div class="bench-bar-wrap"><div class="bench-bar" style="width:75%;background:var(--green);"></div></div></div>
+    <div class="bench-row"><span class="bench-name">Консалтинг / услуги</span><span class="bench-range" style="color:var(--blue);">60–70%</span><div class="bench-bar-wrap"><div class="bench-bar" style="width:65%;background:var(--blue);"></div></div></div>
+    <div class="bench-row"><span class="bench-name">E-commerce / розница</span><span class="bench-range" style="color:var(--amber);">30–50%</span><div class="bench-bar-wrap"><div class="bench-bar" style="width:40%;background:var(--amber);"></div></div></div>
+    <div class="bench-row"><span class="bench-name">Производство</span><span class="bench-range" style="color:var(--amber);">25–35%</span><div class="bench-bar-wrap"><div class="bench-bar" style="width:30%;background:var(--amber);"></div></div></div>
+    <div class="bench-row"><span class="bench-name">Рестораны / общепит</span><span class="bench-range" style="color:var(--red);">10–20%</span><div class="bench-bar-wrap"><div class="bench-bar" style="width:15%;background:var(--red);"></div></div></div>
+  </div>
+
+  <div class="info-box">
+    <strong>📐 Ключевое отличие:</strong> <strong>Маржа</strong> = Прибыль / Выручка × 100 (например, маржа 60% при продаже за $100 = $60 прибыли). <strong>Наценка</strong> = Прибыль / Себестоимость × 100 (например, наценка 150% при себестоимости $40 = $60 прибыли). Число похожее, база разная.
+  </div>
+
+  <!-- SHARE + PDF BAR -->
+  <div class="share-bar" id="share-bar">
+    <span class="share-label">Поделиться или сохранить</span>
+    <div class="share-btns">
+      <button class="share-btn" onclick="copyLink(this)" title="Скопировать ссылку">🔗 Скопировать ссылку</button>
+      <a class="share-btn" id="tw-btn" href="#" target="_blank" rel="noopener">𝕏 Twitter</a>
+      <a class="share-btn" id="li-btn" href="#" target="_blank" rel="noopener">in LinkedIn</a>
+      <a class="share-btn" id="tg-btn" href="#" target="_blank" rel="noopener">✈️ Telegram</a>
+      <a class="share-btn" id="wa-btn" href="#" target="_blank" rel="noopener">💬 WhatsApp</a>
+      <button class="share-btn pdf-btn" onclick="printPDF()">⬇ Сохранить в PDF</button>
+    </div>
+  </div>
+  <div class="watermark-footer">Рассчитано с RateKit · ratekit.org · Бесплатные бизнес-калькуляторы</div>
+
+
+  <section class="rk-guide" aria-labelledby="rk-guide-h">
+    <h2 id="rk-guide-h">Как рассчитать маржу и наценку</h2>
+    <p>Маржа показывает, какая доля цены продажи — это прибыль; наценка показывает, сколько вы добавили сверх себестоимости. Это одна и та же цена, но с разных сторон, и их часто путают: наценка 50% — это маржа всего 33%.</p>
+    <h3>Формула</h3>
+    <pre>Валовая маржа = (Цена − Себестоимость) / Цена × 100%
+Наценка = (Цена − Себестоимость) / Себестоимость × 100%
+Цена для целевой маржи = Себестоимость / (1 − Маржа)</pre>
+    <h3>Пример</h3>
+    <p>Себестоимость $60, цена $100: маржа = 40%, наценка = 66,7%. Чтобы получить маржу 50% при себестоимости $60, ставьте цену $60 / 0,5 = $120.</p>
+    <h3>Частые вопросы</h3>
+    <details><summary>В чём разница между маржой и наценкой?</summary><p>Маржа — это прибыль, делённая на цену продажи; наценка — прибыль, делённая на себестоимость. Одна и та же прибыль $40 при цене $100 — это 40% маржи, но 66,7% наценки.</p></details>
+    <details><summary>Какая маржа считается хорошей для малого бизнеса?</summary><p>Зависит от отрасли: услуги и софт часто дают 20-40% и выше, розница и рестораны — 3-10% чистой маржи. Сравнивайте с компаниями своей отрасли.</p></details>
+    <details><summary>Как установить цену для целевой маржи?</summary><p>Разделите себестоимость на (1 − целевая маржа). Для маржи 30% при себестоимости $70: $70 / 0,7 = $100.</p></details>
+    <h3>Похожие калькуляторы</h3>
+    <ul class="rk-related">
+      <li><a href="/ru/break-even">Точка безубыточности</a></li>
+      <li><a href="/ru/vat-calculator">Калькулятор НДС / GST</a></li>
+      <li><a href="/pl-statement">P&L Statement (EN)</a></li>
+      <li><a href="/ru/roi-calculator">Калькулятор ROI</a></li>
+    </ul>
+  </section>
+</main>
+<footer>
+  <a href="/ru/" class="flogo">Rate<span>Kit</span></a>
+  <span class="fcopy">© 2026 RateKit · Бесплатные бизнес-калькуляторы</span>
+  <ul class="flinks">
+    <li><a href="/about">About</a></li>
+    <li><a href="/contact">Contact</a></li>
+    <li><a href="/privacy">Privacy</a></li>
+    <li><a href="/terms">Terms</a></li>
+    <li><a href="/cookies">Cookies</a></li>
+  </ul>
+</footer>
+<script>
+let mode='cost';
+function setMode(m,btn){
+  mode=m;
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('cost-mode').style.display=m==='cost'?'block':'none';
+  document.getElementById('margin-mode').style.display=m==='margin'?'block':'none';
+  calc();
+}
+function fmt(n){return '$'+Math.abs(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,' ');}
+function calc(){
+  if(mode==='cost'){
+    const rev=+document.getElementById('revenue').value||1;
+    const cogs=+document.getElementById('cogs').value||0;
+    const opex=+document.getElementById('opex').value||0;
+    const grossProfit=rev-cogs;
+    const grossMargin=grossProfit/rev*100;
+    const markup=cogs>0?grossProfit/cogs*100:0;
+    const netProfit=grossProfit-opex;
+    const netMargin=netProfit/rev*100;
+    document.getElementById('r-margin').textContent=grossMargin.toFixed(1)+'%';
+    document.getElementById('r-profit').textContent=fmt(grossProfit);
+    document.getElementById('r-markup').textContent=markup.toFixed(1)+'%';
+    document.getElementById('r-net').textContent=netMargin.toFixed(1)+'%';
+    document.getElementById('r4-lbl').textContent='Чистая маржа';
+    document.getElementById('r2-lbl').textContent='Валовая прибыль';
+    document.getElementById('r1-lbl').textContent='Валовая маржа';
+  } else {
+    const cost=+document.getElementById('cost2').value||1;
+    const margin=+document.getElementById('target-margin').value||0;
+    const price=cost/(1-margin/100);
+    const profit=price-cost;
+    const markup=profit/cost*100;
+    document.getElementById('r-margin').textContent=margin.toFixed(1)+'%';
+    document.getElementById('r-profit').textContent=fmt(price);
+    document.getElementById('r-markup').textContent=markup.toFixed(1)+'%';
+    document.getElementById('r-net').textContent=fmt(profit);
+    document.getElementById('r1-lbl').textContent='Целевая маржа';
+    document.getElementById('r2-lbl').textContent='Цена продажи';
+    document.getElementById('r4-lbl').textContent='Валовая прибыль';
+  }
+}
+function toggleNav(){document.getElementById('nl').classList.toggle('open');}
+calc();
+
+function getShareText() {
+  const title = document.title.replace(' — RateKit', '');
+  return `${title} — рассчитано в RateKit (бесплатно) 👉 ${window.location.href}`;
+}
+
+function copyLink(btn) {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    btn.textContent = '✅ Скопировано!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '🔗 Скопировать ссылку';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+function printPDF() {
+  window.print();
+}
+
+function initShare() {
+  const url = encodeURIComponent(window.location.href);
+  const text = encodeURIComponent(getShareText());
+  const tw = document.getElementById('tw-btn');
+  const li = document.getElementById('li-btn');
+  const tg = document.getElementById('tg-btn');
+  const wa = document.getElementById('wa-btn');
+  if (tw) tw.href = `https://twitter.com/intent/tweet?text=${text}`;
+  if (li) li.href = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+  if (tg) tg.href = `https://t.me/share/url?url=${url}&text=${text}`;
+  if (wa) wa.href = `https://wa.me/?text=${text}`;
+}
+
+window.addEventListener('load', initShare);
+
+function saveInputs() {
+  const key = 'rk_' + window.location.pathname.replace(/[^a-z0-9]/gi,'_');
+  const inputs = {};
+  document.querySelectorAll('input[type="number"], input[type="date"], select').forEach(el => {
+    if (el.id) inputs[el.id] = el.value;
+  });
+  localStorage.setItem(key, JSON.stringify(inputs));
+}
+
+function restoreInputs() {
+  const key = 'rk_' + window.location.pathname.replace(/[^a-z0-9]/gi,'_');
+  const saved = localStorage.getItem(key);
+  if (!saved) return;
+  try {
+    const inputs = JSON.parse(saved);
+    Object.keys(inputs).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.value = inputs[id]; }
+    });
+    if (typeof calc === 'function') calc();
+  } catch(e) {}
+}
+
+document.addEventListener('input', saveInputs);
+document.addEventListener('change', saveInputs);
+window.addEventListener('load', () => { restoreInputs(); });
+
+</script>
+<script>
+document.addEventListener("click", function(e) {
+  var dd = document.getElementById("tools-dropdown");
+  if (dd && !dd.contains(e.target)) dd.classList.remove("open");
+});
+</script>
+</body>
+</html>

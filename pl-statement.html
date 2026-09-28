@@ -158,7 +158,7 @@ footer{background:var(--ink);padding:24px 48px;display:flex;justify-content:spac
 <nav id="nav">
   <a href="/" class="logo">Rate<span>Kit</span></a>
   <div class="nav-r">
-    <button class="translate-btn" id="translate-btn-nav" onclick="document.getElementById('google_translate_element').style.display='block';this.style.display='none';" title="Translate page">🌐</button>
+    <a href="/ru/" class="translate-btn" title="Русская версия">RU</a>
     <div class="dropdown" id="tools-dropdown" data-dropdown-init="1">
       <button class="dropdown-btn" onclick="(function(e){e.stopPropagation();document.getElementById('tools-dropdown').classList.toggle('open');})(event)">
         🧮 All Tools <span class="arrow">▾</span>
@@ -299,11 +299,6 @@ Net profit = Operating profit - Interest - Taxes</pre>
   </ul>
 </footer>
 
-<div id="google_translate_element" style="display:none;"></div>
-<script>
-function googleTranslateElementInit(){new google.translate.TranslateElement({pageLanguage:'en',includedLanguages:'ru,es,fr,de,zh-CN,ar,pt,ja,ko,tr,uk,kk',autoDisplay:false},'google_translate_element');}
-</script>
-<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 <script>
 const sym = () => document.getElementById('currency-select').value;

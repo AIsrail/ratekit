@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RateKit — Free Business Calculators for Founders & Freelancers</title>
-<meta name="description" content="Free business calculators: freelance rate, SAFE equity, burn rate, LTV:CAC, break-even. Built for founders, startups and freelancers.">
+<title>RateKit — Бесплатные бизнес-калькуляторы для фрилансеров и стартапов</title>
+<meta name="description" content="Бесплатные бизнес-калькуляторы онлайн: расчёт ставки фрилансера, ROI, точки безубыточности, маржи, НДС, счёт-фактура. Без регистрации, мгновенный результат.">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/favicon-180x180.png">
@@ -76,7 +76,7 @@ h1 {
 h1 em { font-style: normal; color: var(--blue); }
 .hero-sub {
   font-size: 17px; color: var(--mid); font-weight: 400;
-  max-width: 520px; margin: 0 auto 32px;
+  max-width: 560px; margin: 0 auto 32px;
 }
 .hero-badges { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
 .badge {
@@ -128,6 +128,7 @@ h1 em { font-style: normal; color: var(--blue); }
   transition: gap .15s;
 }
 .tool-card:hover .card-link { gap: 10px; }
+.en-flag { opacity: .55; font-size: 10px; font-weight: 600; margin-left: 6px; }
 
 /* POPULAR BADGE */
 .card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
@@ -163,22 +164,20 @@ footer {
   footer { padding: 24px 20px; flex-direction: column; align-items: flex-start; }
 }
 
-.translate-btn {
+.lang-switch {
   background: var(--white);
   border: 1.5px solid var(--border);
   border-radius: 6px;
   padding: 5px 12px;
   font-family: var(--font);
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--mid);
   cursor: pointer;
   transition: all .15s;
   margin-left: 8px;
 }
-.translate-btn:hover { border-color: var(--blue); color: var(--blue); }
-#google_translate_element { margin-left: 8px; }
-
+.lang-switch:hover { border-color: var(--blue); color: var(--blue); }
 
 /* ═══ DROPDOWN NAV ═══ */
 .nav-r { display: flex; align-items: center; gap: 8px; }
@@ -218,18 +217,18 @@ footer {
 </style>
 <!-- Open Graph / Social sharing -->
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://ratekit.org/">
-<meta property="og:title" content="RateKit — Free Business Calculators for Founders & Freelancers">
-<meta property="og:description" content="Free business calculators: freelance rate, SAFE equity, burn rate, LTV:CAC, break-even, Stripe fees, VAT, ROI. Built for founders, startups and freelancers.">
+<meta property="og:url" content="https://ratekit.org/ru/">
+<meta property="og:title" content="RateKit — Бесплатные бизнес-калькуляторы для фрилансеров и стартапов">
+<meta property="og:description" content="Бесплатные бизнес-калькуляторы онлайн: расчёт ставки фрилансера, ROI, точки безубыточности, маржи, НДС, счёт-фактура. Без регистрации, мгновенный результат.">
 <meta property="og:image" content="https://ratekit.org/og-image.png">
 <meta property="og:site_name" content="RateKit — Business Calculators">
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="RateKit — Free Business Calculators for Founders & Freelancers">
-<meta name="twitter:description" content="Free business calculators: freelance rate, SAFE equity, burn rate, LTV:CAC, break-even, Stripe fees, VAT, ROI. Built for founders, startups and freelancers.">
+<meta name="twitter:title" content="RateKit — Бесплатные бизнес-калькуляторы для фрилансеров и стартапов">
+<meta name="twitter:description" content="Бесплатные бизнес-калькуляторы онлайн: ROI, точка безубыточности, маржа, НДС, счёт-фактура и другие. Без регистрации.">
 <meta name="twitter:image" content="https://ratekit.org/og-image.png">
-<!-- Canonical -->
-<link rel="canonical" href="https://ratekit.org/">
+<!-- Canonical + hreflang -->
+<link rel="canonical" href="https://ratekit.org/ru/">
 <link rel="alternate" hreflang="en" href="https://ratekit.org/">
 <link rel="alternate" hreflang="ru" href="https://ratekit.org/ru/">
 <link rel="alternate" hreflang="x-default" href="https://ratekit.org/">
@@ -238,9 +237,10 @@ footer {
   "@context": "https://schema.org",
   "@type": "WebSite",
   "name": "RateKit",
-  "url": "https://ratekit.org",
-  "description": "Free business calculators: freelance rate, SAFE equity, burn rate, LTV:CAC, break-even, Stripe fees, VAT, ROI. Built for founders, startups and freelancers.",
-  "potentialAction": {"@type": "SearchAction", "target": "https://ratekit.org/?q={search_term_string}", "query-input": "required name=search_term_string"}
+  "url": "https://ratekit.org/ru/",
+  "inLanguage": "ru",
+  "description": "Бесплатные бизнес-калькуляторы: ставка фрилансера, ROI, точка безубыточности, маржа, НДС/GST, счета. Для фаундеров, стартапов и фрилансеров.",
+  "potentialAction": {"@type": "SearchAction", "target": "https://ratekit.org/ru/?q={search_term_string}", "query-input": "required name=search_term_string"}
 }
 </script>
 <script type="application/ld+json">
@@ -251,7 +251,7 @@ footer {
   "alternateName": "RateKit Business Calculators",
   "url": "https://ratekit.org",
   "logo": "https://ratekit.org/favicon-512x512.png",
-  "description": "RateKit.org provides free, no-signup, browser-based business calculators (ROI, break-even, burn rate, freelance rate, VAT, business taxes and more) for founders, startups and freelancers. Not affiliated with rate-card or sponsorship-pricing tools of a similar name."
+  "description": "RateKit.org — бесплатные бизнес-калькуляторы (ROI, точка безубыточности, ставка фрилансера, НДС, налоги и другие) для фаундеров, стартапов и фрилансеров. Работают прямо в браузере, без регистрации."
 }
 </script>
 <!-- Google Analytics GA4 -->
@@ -265,41 +265,42 @@ footer {
 <!-- Google AdSense -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7303101907130018" crossorigin="anonymous"></script>
   <meta name="robots" content="index, follow, max-image-preview:large">
-  <meta property="og:locale" content="en_US">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:locale:alternate" content="en_US">
 </head>
 <body>
 
 <nav id="nav">
-  <a href="/" class="logo">Rate<span>Kit</span></a>
+  <a href="/ru/" class="logo">Rate<span>Kit</span></a>
   <div class="nav-r">
-    <a href="/ru/" class="translate-btn" title="Русская версия">RU</a>
+    <a href="/" class="lang-switch" title="Switch to English">EN</a>
     <div class="dropdown" id="tools-dropdown" data-dropdown-init="1">
       <button class="dropdown-btn" onclick="(function(e){e.stopPropagation();document.getElementById('tools-dropdown').classList.toggle('open');})(event)">
-        🧮 All Tools <span class="arrow">▾</span>
+        🧮 Все инструменты <span class="arrow">▾</span>
       </button>
       <div class="dropdown-menu">
-        <div class="dropdown-section">Freelancers</div>
-        <a href="/freelance-rate" class="dropdown-item "><span class="item-icon">💰</span>Freelance Rate</a>
-        <a href="/salary-hourly" class="dropdown-item"><span class="item-icon">🔄</span>Salary ↔ Hourly</a>
-        <a href="/1099-vs-w2" class="dropdown-item"><span class="item-icon">📋</span>1099 vs W2</a>
-        <a href="/stripe-fee" class="dropdown-item "><span class="item-icon">💳</span>Stripe / PayPal Fee</a>
-        <a href="/vat-calculator" class="dropdown-item "><span class="item-icon">🌍</span>VAT / GST Calculator</a>
-        <a href="/invoice-generator" class="dropdown-item "><span class="item-icon">🧾</span>Invoice Generator</a>
-        <a href="/self-employment-tax" class="dropdown-item "><span class="item-icon">🇺🇸</span>Self-Employment Tax</a>
-        <a href="/form-2555" class="dropdown-item "><span class="item-icon">📋</span>Form 2555 (Expat)</a>
-        <a href="/deal-coach" class="dropdown-item "><span class="item-icon">🤖</span>Deal Coach AI</a>
+        <div class="dropdown-section">Фрилансерам</div>
+        <a href="/ru/freelance-rate" class="dropdown-item "><span class="item-icon">💰</span>Ставка фрилансера</a>
+        <a href="/salary-hourly" class="dropdown-item"><span class="item-icon">🔄</span>Оклад ↔ Ставка в час <span class="en-flag">EN</span></a>
+        <a href="/1099-vs-w2" class="dropdown-item"><span class="item-icon">📋</span>1099 vs W2 <span class="en-flag">EN</span></a>
+        <a href="/stripe-fee" class="dropdown-item "><span class="item-icon">💳</span>Комиссия Stripe / PayPal <span class="en-flag">EN</span></a>
+        <a href="/ru/vat-calculator" class="dropdown-item "><span class="item-icon">🌍</span>Калькулятор НДС / GST</a>
+        <a href="/ru/invoice-generator" class="dropdown-item "><span class="item-icon">🧾</span>Счёт-фактура онлайн</a>
+        <a href="/self-employment-tax" class="dropdown-item "><span class="item-icon">🇺🇸</span>Self-Employment Tax <span class="en-flag">EN</span></a>
+        <a href="/form-2555" class="dropdown-item "><span class="item-icon">📋</span>Form 2555 (Expat) <span class="en-flag">EN</span></a>
+        <a href="/deal-coach" class="dropdown-item "><span class="item-icon">🤖</span>Deal Coach AI <span class="en-flag">EN</span></a>
         <div class="dropdown-divider"></div>
-        <div class="dropdown-section">Business & Startups</div>
-        <a href="/roi-calculator" class="dropdown-item "><span class="item-icon">📈</span>ROI Calculator</a>
-        <a href="/profit-margin" class="dropdown-item "><span class="item-icon">🛒</span>Profit Margin</a>
-        <a href="/break-even" class="dropdown-item "><span class="item-icon">⚖️</span>Break-even</a>
-        <a href="/loan-calculator" class="dropdown-item "><span class="item-icon">🏦</span>Business Loan</a>
-        <a href="/pl-statement" class="dropdown-item "><span class="item-icon">📊</span>P&L Statement</a>
+        <div class="dropdown-section">Бизнес и стартапы</div>
+        <a href="/ru/roi-calculator" class="dropdown-item "><span class="item-icon">📈</span>Калькулятор ROI</a>
+        <a href="/ru/profit-margin" class="dropdown-item "><span class="item-icon">🛒</span>Маржа и наценка</a>
+        <a href="/ru/break-even" class="dropdown-item "><span class="item-icon">⚖️</span>Точка безубыточности</a>
+        <a href="/loan-calculator" class="dropdown-item "><span class="item-icon">🏦</span>Бизнес-кредит <span class="en-flag">EN</span></a>
+        <a href="/pl-statement" class="dropdown-item "><span class="item-icon">📊</span>Отчёт P&L <span class="en-flag">EN</span></a>
         <div class="dropdown-divider"></div>
-        <div class="dropdown-section">Startups</div>
-        <a href="/safe-calculator" class="dropdown-item "><span class="item-icon">🚀</span>SAFE Equity</a>
-        <a href="/burn-rate" class="dropdown-item "><span class="item-icon">🔥</span>Burn Rate & Runway</a>
-        <a href="/ltv-cac" class="dropdown-item "><span class="item-icon">📉</span>LTV : CAC</a>
+        <div class="dropdown-section">Стартапам</div>
+        <a href="/safe-calculator" class="dropdown-item "><span class="item-icon">🚀</span>SAFE Equity <span class="en-flag">EN</span></a>
+        <a href="/burn-rate" class="dropdown-item "><span class="item-icon">🔥</span>Burn Rate & Runway <span class="en-flag">EN</span></a>
+        <a href="/ltv-cac" class="dropdown-item "><span class="item-icon">📉</span>LTV : CAC <span class="en-flag">EN</span></a>
       </div>
     </div>
     <button class="burger" onclick="document.getElementById('tools-dropdown').classList.toggle('open')">☰</button>
@@ -307,42 +308,97 @@ footer {
 </nav>
 
 <div class="hero">
-  <div class="hero-tag">Free · No signup · Instant results</div>
-  <h1>Business calculators for<br><em>founders & freelancers</em></h1>
-  <p class="hero-sub">Make smarter financial decisions with tools built for startups, consultants, and independent professionals.</p>
+  <div class="hero-tag">Бесплатно · Без регистрации · Мгновенный результат</div>
+  <h1>Бизнес-калькуляторы для<br><em>фаундеров и фрилансеров</em></h1>
+  <p class="hero-sub">Принимайте более взвешенные финансовые решения с инструментами для стартапов, консультантов и независимых специалистов.</p>
   <div class="hero-badges">
-    <span class="badge">100% free forever</span>
-    <span class="badge">No data stored</span>
-    <span class="badge">Works on mobile</span>
-    <span class="badge">Instant calculations</span>
+    <span class="badge">Полностью бесплатно</span>
+    <span class="badge">Данные не сохраняются</span>
+    <span class="badge">Работает на телефоне</span>
+    <span class="badge">Мгновенный расчёт</span>
   </div>
 </div>
 
 <section class="tools-section">
-  <div class="section-label">All tools — 15 tools</div>
+  <div class="section-label">Все инструменты — 6 переведены на русский, остальные на английском</div>
   <div class="tools-grid">
 
-    <a href="/freelance-rate" class="tool-card">
+    <a href="/ru/freelance-rate" class="tool-card">
       <div class="card-header">
         <div class="card-icon" style="background:#EFF6FF;">💰</div>
-        <span class="popular-badge">⭐ Popular</span>
+        <span class="popular-badge">⭐ Популярный</span>
       </div>
-      <div class="card-title">Freelance Rate Calculator</div>
-      <p class="card-desc">Calculate the minimum hourly, daily, and project rate you need to charge based on your income goals, expenses, and working schedule.</p>
+      <div class="card-title">Калькулятор ставки фрилансера</div>
+      <p class="card-desc">Рассчитайте минимальную почасовую, дневную и проектную ставку исходя из целевого дохода, расходов и рабочего графика.</p>
       <div class="card-tags">
-        <span class="tag">Freelancers</span>
-        <span class="tag">Consultants</span>
-        <span class="tag">Agencies</span>
+        <span class="tag">Фрилансеры</span>
+        <span class="tag">Консультанты</span>
+        <span class="tag">Агентства</span>
       </div>
-      <span class="card-link">Open calculator →</span>
+      <span class="card-link">Открыть калькулятор →</span>
+    </a>
+
+    <a href="/ru/roi-calculator" class="tool-card">
+      <div class="card-header">
+        <div class="card-icon" style="background:#F5F3FF;">📈</div>
+      </div>
+      <div class="card-title">Калькулятор ROI</div>
+      <p class="card-desc">Рассчитайте окупаемость инвестиций (ROI), годовую доходность и срок окупаемости для любого проекта или рекламной кампании.</p>
+      <div class="card-tags"><span class="tag">Маркетинг</span><span class="tag">Инвестиции</span><span class="tag">Бизнес</span></div>
+      <span class="card-link">Открыть калькулятор →</span>
+    </a>
+
+    <a href="/ru/break-even" class="tool-card">
+      <div class="card-header">
+        <div class="card-icon" style="background:#FFF1F2;">⚖️</div>
+      </div>
+      <div class="card-title">Точка безубыточности</div>
+      <p class="card-desc">Узнайте, сколько единиц товара нужно продать (или какую выручку получить), чтобы покрыть постоянные и переменные расходы.</p>
+      <div class="card-tags">
+        <span class="tag">Бизнес</span>
+        <span class="tag">Ценообразование</span>
+        <span class="tag">Планирование</span>
+      </div>
+      <span class="card-link">Открыть калькулятор →</span>
+    </a>
+
+    <a href="/ru/profit-margin" class="tool-card">
+      <div class="card-header">
+        <div class="card-icon" style="background:#FFFBEB;">🛒</div>
+      </div>
+      <div class="card-title">Калькулятор маржи и наценки</div>
+      <p class="card-desc">Рассчитайте валовую и чистую маржу, процент наценки и идеальную цену продажи исходя из себестоимости.</p>
+      <div class="card-tags"><span class="tag">E-commerce</span><span class="tag">Розница</span><span class="tag">Ценообразование</span></div>
+      <span class="card-link">Открыть калькулятор →</span>
+    </a>
+
+    <a href="/ru/vat-calculator" class="tool-card">
+      <div class="card-header">
+        <div class="card-icon" style="background:#F0FDF4;">🌍</div>
+      </div>
+      <div class="card-title">Калькулятор НДС / GST</div>
+      <p class="card-desc">Добавьте или вычтите НДС/GST из любой суммы. Поддерживает ЕС, Великобританию, Австралию, Канаду и произвольную ставку.</p>
+      <div class="card-tags"><span class="tag">Европа</span><span class="tag">Австралия</span><span class="tag">Мир</span></div>
+      <span class="card-link">Открыть калькулятор →</span>
+    </a>
+
+    <a href="/ru/invoice-generator" class="tool-card">
+      <div class="card-header">
+        <div class="card-icon" style="background:#F0FDF4;">🧾</div>
+        <span class="popular-badge">⭐ Популярный</span>
+      </div>
+      <div class="card-title">Счёт-фактура онлайн</div>
+      <p class="card-desc">Создавайте профессиональные счета за секунды. Добавляйте позиции, налог, скачивайте в PDF. Данные сохраняются автоматически.</p>
+      <div class="card-tags"><span class="tag">Фрилансеры</span><span class="tag">Малый бизнес</span><span class="tag">PDF</span></div>
+      <span class="card-link">Открыть инструмент →</span>
     </a>
 
     <a href="/safe-calculator" class="tool-card">
       <div class="card-header">
         <div class="card-icon" style="background:#F0FDF4;">📊</div>
-        <span class="popular-badge">🚀 Startups</span>
+        <span class="popular-badge">🚀 Стартапам</span>
       </div>
-      <div class="card-title">SAFE Equity Calculator</div>
+      <div class="card-title">SAFE Equity Calculator <span class="en-flag">EN</span></div>
       <p class="card-desc">Model your SAFE note conversion, ownership percentage, and dilution. Supports valuation cap, discount rate, and MFN provisions.</p>
       <div class="card-tags">
         <span class="tag">Startups</span>
@@ -356,7 +412,7 @@ footer {
       <div class="card-header">
         <div class="card-icon" style="background:#FFF7ED;">🔥</div>
       </div>
-      <div class="card-title">Burn Rate & Runway</div>
+      <div class="card-title">Burn Rate & Runway <span class="en-flag">EN</span></div>
       <p class="card-desc">Find out how long your startup can survive on current cash. Calculate gross and net burn rate, runway in months, and zero-cash date.</p>
       <div class="card-tags">
         <span class="tag">Startups</span>
@@ -370,7 +426,7 @@ footer {
       <div class="card-header">
         <div class="card-icon" style="background:#F5F3FF;">📈</div>
       </div>
-      <div class="card-title">LTV : CAC Calculator</div>
+      <div class="card-title">LTV : CAC Calculator <span class="en-flag">EN</span></div>
       <p class="card-desc">Calculate your Customer Lifetime Value and Customer Acquisition Cost. Find out if your unit economics are healthy and how to improve them.</p>
       <div class="card-tags">
         <span class="tag">SaaS</span>
@@ -380,59 +436,14 @@ footer {
       <span class="card-link">Open calculator →</span>
     </a>
 
-    <a href="/break-even" class="tool-card">
-      <div class="card-header">
-        <div class="card-icon" style="background:#FFF1F2;">⚖️</div>
-      </div>
-      <div class="card-title">Break-even Calculator</div>
-      <p class="card-desc">Determine how many units you need to sell (or revenue you need to generate) to cover your fixed and variable costs and start turning a profit.</p>
-      <div class="card-tags">
-        <span class="tag">Business</span>
-        <span class="tag">Pricing</span>
-        <span class="tag">Planning</span>
-      </div>
-      <span class="card-link">Open calculator →</span>
-    </a>
-
-
     <a href="/stripe-fee" class="tool-card">
       <div class="card-header">
         <div class="card-icon" style="background:#FFF7ED;">💳</div>
-        <span class="popular-badge">🔥 #1 Requested</span>
+        <span class="popular-badge">🔥 Часто ищут</span>
       </div>
-      <div class="card-title">Stripe & PayPal Fee Calculator</div>
+      <div class="card-title">Stripe & PayPal Fee Calculator <span class="en-flag">EN</span></div>
       <p class="card-desc">Find out how much to charge your client so you receive your desired amount after Stripe, PayPal, or Square processing fees.</p>
       <div class="card-tags"><span class="tag">Freelancers</span><span class="tag">E-commerce</span><span class="tag">Invoicing</span></div>
-      <span class="card-link">Open calculator →</span>
-    </a>
-
-    <a href="/vat-calculator" class="tool-card">
-      <div class="card-header">
-        <div class="card-icon" style="background:#F0FDF4;">🌍</div>
-      </div>
-      <div class="card-title">VAT & GST Calculator</div>
-      <p class="card-desc">Add or remove VAT/GST from any price. Supports UK, EU, Australia, Canada, and 10+ countries. Essential for international invoicing.</p>
-      <div class="card-tags"><span class="tag">Europe</span><span class="tag">Australia</span><span class="tag">Global</span></div>
-      <span class="card-link">Open calculator →</span>
-    </a>
-
-    <a href="/roi-calculator" class="tool-card">
-      <div class="card-header">
-        <div class="card-icon" style="background:#F5F3FF;">📈</div>
-      </div>
-      <div class="card-title">ROI Calculator</div>
-      <p class="card-desc">Calculate return on investment, annualized ROI, and payback period for any business investment, marketing campaign, or project.</p>
-      <div class="card-tags"><span class="tag">Marketing</span><span class="tag">Investment</span><span class="tag">Business</span></div>
-      <span class="card-link">Open calculator →</span>
-    </a>
-
-    <a href="/profit-margin" class="tool-card">
-      <div class="card-header">
-        <div class="card-icon" style="background:#FFFBEB;">🛒</div>
-      </div>
-      <div class="card-title">Profit Margin Calculator</div>
-      <p class="card-desc">Calculate gross and net profit margin, markup percentage, and find your ideal selling price from cost and desired margin.</p>
-      <div class="card-tags"><span class="tag">E-commerce</span><span class="tag">Retail</span><span class="tag">Pricing</span></div>
       <span class="card-link">Open calculator →</span>
     </a>
 
@@ -440,8 +451,8 @@ footer {
       <div class="card-header">
         <div class="card-icon" style="background:#FEF2F2;">🇺🇸</div>
       </div>
-      <div class="card-title">Self-Employment Tax Calculator</div>
-      <p class="card-desc">Calculate US self-employment tax (15.3%), estimated quarterly payments, and how much to set aside from every freelance payment.</p>
+      <div class="card-title">Self-Employment Tax Calculator <span class="en-flag">EN</span></div>
+      <p class="card-desc">Calculate US self-employment tax (15.3%), estimated quarterly payments, and how much to set aside from every freelance payment. US tax rules — for US taxpayers.</p>
       <div class="card-tags"><span class="tag">USA</span><span class="tag">Freelancers</span><span class="tag">Tax 2026</span></div>
       <span class="card-link">Open calculator →</span>
     </a>
@@ -450,29 +461,17 @@ footer {
       <div class="card-header">
         <div class="card-icon" style="background:#EFF6FF;">🏦</div>
       </div>
-      <div class="card-title">Business Loan Calculator</div>
+      <div class="card-title">Business Loan Calculator <span class="en-flag">EN</span></div>
       <p class="card-desc">Calculate monthly payments, total interest, and true APR for any business loan. Includes full amortization schedule.</p>
       <div class="card-tags"><span class="tag">Finance</span><span class="tag">Loans</span><span class="tag">APR</span></div>
       <span class="card-link">Open calculator →</span>
-    </a>
-
-
-    <a href="/invoice-generator" class="tool-card">
-      <div class="card-header">
-        <div class="card-icon" style="background:#F0FDF4;">🧾</div>
-        <span class="popular-badge">⭐ Popular</span>
-      </div>
-      <div class="card-title">Invoice Generator</div>
-      <p class="card-desc">Create professional invoices in seconds. Add line items, tax, and download as PDF. Your data is saved automatically.</p>
-      <div class="card-tags"><span class="tag">Freelancers</span><span class="tag">Small Business</span><span class="tag">PDF</span></div>
-      <span class="card-link">Open tool →</span>
     </a>
 
     <a href="/pl-statement" class="tool-card">
       <div class="card-header">
         <div class="card-icon" style="background:#EFF6FF;">📊</div>
       </div>
-      <div class="card-title">P&L Statement</div>
+      <div class="card-title">P&L Statement <span class="en-flag">EN</span></div>
       <p class="card-desc">Build your Profit & Loss statement online. Auto-calculates gross profit, EBITDA, and net profit. Export as PDF.</p>
       <div class="card-tags"><span class="tag">Business</span><span class="tag">Finance</span><span class="tag">Reporting</span></div>
       <span class="card-link">Open tool →</span>
@@ -482,19 +481,18 @@ footer {
       <div class="card-header">
         <div class="card-icon" style="background:#FEF2F2;">🇺🇸</div>
       </div>
-      <div class="card-title">Form 2555 — FEIE Calculator</div>
-      <p class="card-desc">US expats: calculate your Foreign Earned Income Exclusion for 2026. Supports Bona Fide Residence and Physical Presence tests.</p>
+      <div class="card-title">Form 2555 — FEIE Calculator <span class="en-flag">EN</span></div>
+      <p class="card-desc">US expats: calculate your Foreign Earned Income Exclusion for 2026. US tax rules — for US taxpayers only.</p>
       <div class="card-tags"><span class="tag">US Expats</span><span class="tag">Tax 2026</span><span class="tag">FEIE</span></div>
       <span class="card-link">Open calculator →</span>
     </a>
 
-
     <a href="/deal-coach" class="tool-card">
       <div class="card-header">
         <div class="card-icon" style="background:#F0FDF4;">🤖</div>
-        <span class="popular-badge">✨ AI-Powered</span>
+        <span class="popular-badge">✨ AI</span>
       </div>
-      <div class="card-title">Deal Coach</div>
+      <div class="card-title">Deal Coach <span class="en-flag">EN</span></div>
       <p class="card-desc">AI negotiation assistant. Get structured arguments for your rate negotiation or equity/SAFE discussion — in 2-3 minutes.</p>
       <div class="card-tags"><span class="tag">Freelancers</span><span class="tag">Founders</span><span class="tag">AI</span></div>
       <span class="card-link">Open Deal Coach →</span>
@@ -504,8 +502,8 @@ footer {
 </section>
 
 <footer>
-  <a href="/" class="flogo">Rate<span>Kit</span></a>
-  <span class="fcopy">© 2026 RateKit · Free business calculators</span>
+  <a href="/ru/" class="flogo">Rate<span>Kit</span></a>
+  <span class="fcopy">© 2026 RateKit · Бесплатные бизнес-калькуляторы</span>
   <ul class="flinks">
     <li><a href="/about">About</a></li>
     <li><a href="/contact">Contact</a></li>

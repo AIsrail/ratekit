@@ -21,3 +21,12 @@
 - [Self-Employment Tax Calculator 2026](https://ratekit.org/self-employment-tax): Calculate US self-employment tax (15.3%), quarterly estimated payments, and how much to set aside from each paycheck. Free SE tax calculator for freelancers.
 - [Stripe & PayPal Fee Calculator](https://ratekit.org/stripe-fee): Calculate exact Stripe and PayPal fees. Find out how much to charge your client to receive your desired amount after processing fees. Free, instant.
 - [VAT & GST Calculator](https://ratekit.org/vat-calculator): Add or remove VAT and GST from any price. Supports all countries and custom rates. Free VAT calculator for invoicing and business.
+
+## Russian (русская версия)
+- [RateKit на русском](https://ratekit.org/ru/): бесплатные бизнес-калькуляторы для фрилансеров и стартапов.
+- [Калькулятор ставки фрилансера](https://ratekit.org/ru/freelance-rate)
+- [Калькулятор ROI](https://ratekit.org/ru/roi-calculator)
+- [Точка безубыточности](https://ratekit.org/ru/break-even)
+- [Маржа и наценка](https://ratekit.org/ru/profit-margin)
+- [Калькулятор НДС / GST](https://ratekit.org/ru/vat-calculator)
+- [Счёт-фактура онлайн](https://ratekit.org/ru/invoice-generator)
