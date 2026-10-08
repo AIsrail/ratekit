@@ -1,1 +1,8 @@
 .wrangler/
+
+# Unrelated project (resumelink) that ended up in this working directory on disk —
+# not part of the ratekit site, must never be committed here.
+resumelink-local/
+resumelink-*.md
+add-descriptions.py
+promo-drafts.md
