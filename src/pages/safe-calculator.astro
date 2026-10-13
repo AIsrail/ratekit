@@ -1,0 +1,179 @@
+---
+import ToolLayout from '../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: 'What is the difference between pre-money and post-money SAFEs?',
+    a: "In a post-money SAFE the cap includes all SAFE money, so each investor's ownership is fixed and founders absorb dilution from later SAFEs. In older pre-money SAFEs, SAFE holders dilute each other." },
+  { q: 'How much dilution should founders expect from SAFEs?',
+    a: 'Add up investment / post-money cap for every SAFE. Raising $1M in SAFEs at a $10M post-money cap means about 10% dilution before the priced round.' },
+  { q: 'Does a SAFE have a discount?',
+    a: 'Some do. Common forms offer a valuation cap, a discount (often 10-25%), both, or neither (MFN only). The investor gets whichever gives the lower conversion price.' },
+];
+
+const related = [
+  { label: 'Burn Rate & Runway Calculator', path: '/burn-rate' },
+  { label: 'LTV : CAC Calculator', path: '/ltv-cac' },
+  { label: 'Deal Coach', path: '/deal-coach' },
+  { label: 'ROI Calculator', path: '/roi-calculator' },
+];
+---
+<ToolLayout
+  slug="safe-calculator"
+  lang="en"
+  title="SAFE Note Equity Calculator"
+  description="Calculate your SAFE note conversion, ownership percentage, and dilution. Supports valuation cap, discount rate. Free tool for founders and investors."
+  pageTag="🚀 Startup Tool"
+  h1="SAFE Note Equity Calculator"
+  pageSub="Model your SAFE note conversion and see exactly what ownership percentage investors receive. Supports post-money SAFE (YC standard), valuation cap and discount rate."
+  dateModified="2026-10-13"
+  guideTitle="How SAFE notes convert to equity"
+  faq={faq}
+  related={related}
+>
+  <style>
+    .table-panel tbody td:first-child { font-weight: 600; color: var(--ink); }
+  </style>
+
+  <div class="info-box">
+    <strong>What is a SAFE?</strong> A SAFE (Simple Agreement for Future Equity) is a startup financing instrument created by Y Combinator. Investors give money now in exchange for equity at the next priced round, at a discount or capped valuation. This calculator uses the <strong>post-money SAFE</strong> model (YC standard since 2018).
+  </div>
+
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-title">SAFE Terms</div>
+      <div class="field">
+        <label class="lbl">SAFE Type</label>
+        <div class="mode-toggle">
+          <button class="mode-btn active" id="type-cap-btn">Valuation Cap</button>
+          <button class="mode-btn" id="type-discount-btn">Discount Only</button>
+          <button class="mode-btn" id="type-both-btn">Cap + Discount</button>
+        </div>
+      </div>
+      <div class="field"><label class="lbl">Investment Amount</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="investment" value="250000" min="0"></div></div>
+      <div class="field" id="cap-field"><label class="lbl">Valuation Cap <span class="hint">(post-money)</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="valcap" value="5000000" min="0"></div></div>
+      <div class="field" id="discount-field" style="display:none;"><label class="lbl">Discount Rate <span class="hint">(off next round price)</span></label><div class="input-wrap"><input type="number" id="discount" value="20" min="0" max="50"><span class="ifix ifix-r">%</span></div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Next Priced Round</div>
+      <div class="field"><label class="lbl">Pre-money Valuation</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="premoney" value="10000000" min="0"></div></div>
+      <div class="field"><label class="lbl">New Investment Raised</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="newround" value="2000000" min="0"></div></div>
+      <div class="field"><label class="lbl">Existing Shares (pre-round)</label><div class="input-wrap"><input type="number" id="shares" value="10000000" min="1"><span class="ifix ifix-r">shares</span></div></div>
+      <div class="field"><label class="lbl">Option Pool (new) <span class="hint">(added pre-round)</span></label><div class="input-wrap"><input type="number" id="optpool" value="10" min="0" max="30"><span class="ifix ifix-r">%</span></div></div>
+    </div>
+  </div>
+
+  <div class="results-row">
+    <div class="r-card highlight"><div class="r-label">Investor Ownership</div><div class="r-value" id="r-ownership">—</div><div class="r-sub">at conversion</div></div>
+    <div class="r-card"><div class="r-label">Effective Price/Share</div><div class="r-value" id="r-price">—</div><div class="r-sub">SAFE conversion price</div></div>
+    <div class="r-card"><div class="r-label">Shares Issued</div><div class="r-value" id="r-shares">—</div><div class="r-sub">to SAFE investor</div></div>
+    <div class="r-card"><div class="r-label">Founder Dilution</div><div class="r-value" id="r-dilution">—</div><div class="r-sub">from this SAFE</div></div>
+  </div>
+
+  <div class="table-panel">
+    <div class="table-title">Cap Table After Conversion</div>
+    <table>
+      <thead><tr><th>Stakeholder</th><th>Shares</th><th>Ownership %</th><th>Value (at round price)</th></tr></thead>
+      <tbody id="captable">
+        <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px;">Enter values above to see cap table</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="warn-box">
+    <strong>⚠️ Disclaimer:</strong> This calculator is for illustrative purposes only and uses simplified assumptions. Real SAFE conversions may involve pro-rata rights, MFN clauses, side letters, and other terms. Always consult a startup lawyer before signing any legal documents.
+  </div>
+
+  <div style="background:var(--ink);border-radius:12px;padding:24px 28px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+    <div>
+      <div style="font-size:14px;font-weight:700;color:white;margin-bottom:4px;">🤖 Need help negotiating your SAFE terms?</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.45);">AI-powered negotiation coach — get structured arguments for your equity discussion</div>
+    </div>
+    <a href="/deal-coach" style="padding:10px 20px;background:var(--blue);color:white;border-radius:8px;font-family:var(--font);font-size:13px;font-weight:600;text-decoration:none;white-space:nowrap;">Open Deal Coach →</a>
+  </div>
+
+  <Fragment slot="guide">
+    <p>A SAFE (Simple Agreement for Future Equity) converts into shares at the next priced round. Post-money SAFEs, the standard Y Combinator form, fix the investor's ownership up front: investment divided by the post-money valuation cap.</p>
+    <h3>Formula</h3>
+    <pre>Ownership (post-money SAFE) = Investment / Post-money valuation cap
+Conversion price = lower of (Cap price, Round price x (1 - Discount))</pre>
+    <h3>Example</h3>
+    <p>$500,000 on a $10M post-money cap = 5% ownership before the priced round. If the round price per share is below the cap price, the investor converts at the round price (or the discounted price, if a discount applies).</p>
+  </Fragment>
+
+  <script>
+    let safeType = 'cap';
+
+    function setType(t) {
+      safeType = t;
+      document.getElementById('type-cap-btn').classList.toggle('active', t === 'cap');
+      document.getElementById('type-discount-btn').classList.toggle('active', t === 'discount');
+      document.getElementById('type-both-btn').classList.toggle('active', t === 'both');
+      document.getElementById('cap-field').style.display = (t === 'discount') ? 'none' : 'block';
+      document.getElementById('discount-field').style.display = (t === 'cap') ? 'none' : 'block';
+      calc();
+    }
+    document.getElementById('type-cap-btn').addEventListener('click', () => setType('cap'));
+    document.getElementById('type-discount-btn').addEventListener('click', () => setType('discount'));
+    document.getElementById('type-both-btn').addEventListener('click', () => setType('both'));
+
+    function fmtNum(n) { return n >= 1000000 ? (n / 1000000).toFixed(2) + 'M' : n >= 1000 ? (n / 1000).toFixed(1) + 'K' : Math.round(n).toLocaleString(); }
+    function fmtPct(n) { return n.toFixed(2) + '%'; }
+    function fmtUSD(n) { return '$' + Math.round(n).toLocaleString(); }
+
+    function calc() {
+      const inv = +document.getElementById('investment').value || 0;
+      const cap = +document.getElementById('valcap').value || 0;
+      const disc = +document.getElementById('discount').value || 0;
+      const pre = +document.getElementById('premoney').value || 1;
+      const newRound = +document.getElementById('newround').value || 0;
+      const existShares = +document.getElementById('shares').value || 1;
+      const optPool = +document.getElementById('optpool').value || 0;
+
+      const postMoney = pre + newRound;
+
+      const optPoolShares = Math.round(existShares * optPool / (100 - optPool));
+      const totalPreShares = existShares + optPoolShares;
+
+      const roundPricePerShare = pre / totalPreShares;
+
+      let conversionPrice;
+      if (safeType === 'cap') {
+        conversionPrice = cap / totalPreShares;
+      } else if (safeType === 'discount') {
+        conversionPrice = roundPricePerShare * (1 - disc / 100);
+      } else {
+        const capPrice = cap / totalPreShares;
+        const discPrice = roundPricePerShare * (1 - disc / 100);
+        conversionPrice = Math.min(capPrice, discPrice);
+      }
+
+      const safeShares = conversionPrice > 0 ? Math.round(inv / conversionPrice) : 0;
+      const newRoundShares = roundPricePerShare > 0 ? Math.round(newRound / roundPricePerShare) : 0;
+      const totalShares = totalPreShares + safeShares + newRoundShares;
+
+      const ownershipPct = totalShares > 0 ? (safeShares / totalShares * 100) : 0;
+      const founderDilution = totalShares > 0 ? (safeShares / totalShares * 100) : 0;
+
+      document.getElementById('r-ownership').textContent = fmtPct(ownershipPct);
+      document.getElementById('r-price').textContent = conversionPrice > 0 ? '$' + conversionPrice.toFixed(4) : '—';
+      document.getElementById('r-shares').textContent = fmtNum(safeShares);
+      document.getElementById('r-dilution').textContent = fmtPct(founderDilution);
+
+      const founderPct = existShares / totalShares * 100;
+      const optPct = optPoolShares / totalShares * 100;
+      const newInvPct = newRoundShares / totalShares * 100;
+
+      document.getElementById('captable').innerHTML = `
+        <tr><td>Founders</td><td class="mono">${fmtNum(existShares)}</td><td class="mono">${fmtPct(founderPct)}</td><td class="mono">${fmtUSD(existShares * roundPricePerShare)}</td></tr>
+        <tr><td>Option Pool</td><td class="mono">${fmtNum(optPoolShares)}</td><td class="mono">${fmtPct(optPct)}</td><td class="mono">${fmtUSD(optPoolShares * roundPricePerShare)}</td></tr>
+        <tr><td>SAFE Investor</td><td class="mono">${fmtNum(safeShares)}</td><td class="mono">${fmtPct(ownershipPct)}</td><td class="mono">${fmtUSD(safeShares * roundPricePerShare)}</td></tr>
+        <tr><td>New Round Investors</td><td class="mono">${fmtNum(newRoundShares)}</td><td class="mono">${fmtPct(newInvPct)}</td><td class="mono">${fmtUSD(newRound)}</td></tr>
+        <tr class="total"><td>Total</td><td class="mono">${fmtNum(totalShares)}</td><td class="mono">100.00%</td><td class="mono">${fmtUSD(postMoney)}</td></tr>
+      `;
+    }
+
+    document.addEventListener('input', calc);
+    document.addEventListener('rk:restored', calc);
+    window.addEventListener('load', calc);
+  </script>
+</ToolLayout>

@@ -1,0 +1,199 @@
+---
+import ToolLayout from '../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: 'What is the difference between a P&L and a cash flow statement?',
+    a: 'The P&L shows profitability when revenue is earned and costs are incurred; the cash flow statement shows when cash actually moves. A profitable business can still run out of cash.' },
+  { q: 'What goes into COGS?',
+    a: 'Direct costs of delivering your product or service: materials, production, direct labor, hosting for SaaS, and payment processing tied to sales.' },
+  { q: 'How often should I prepare a P&L?',
+    a: 'Monthly for management decisions, quarterly for investors and lenders, and annually for taxes.' },
+];
+
+const related = [
+  { label: 'Profit Margin Calculator', path: '/profit-margin' },
+  { label: 'Break-even Calculator', path: '/break-even' },
+  { label: 'Burn Rate & Runway Calculator', path: '/burn-rate' },
+  { label: 'VAT & GST Calculator', path: '/vat-calculator' },
+];
+---
+<ToolLayout
+  slug="pl-statement"
+  lang="en"
+  title="P&L Statement (Profit & Loss)"
+  description="Build your Profit & Loss statement online. Auto-calculates gross profit, EBITDA, and net profit. Free P&L tool for businesses and startups."
+  pageTag="📊 Business Tool"
+  h1="Profit & Loss Statement"
+  pageSub="Build your P&L online. Enter your numbers — gross profit, EBITDA, and net profit calculate automatically."
+  dateModified="2026-10-13"
+  guideTitle="How to build a profit and loss (P&L) statement"
+  faq={faq}
+  related={related}
+>
+  <style>
+    .controls { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; align-items: center; }
+    .ctrl-btn { padding: 8px 16px; border-radius: 8px; font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); background: var(--white); color: var(--mid); transition: all .15s; }
+    .ctrl-btn:hover { border-color: var(--blue); color: var(--blue); }
+    .ctrl-btn.primary { background: var(--blue); color: white; border-color: var(--blue); }
+    .ctrl-btn.primary:hover { background: var(--blue2); }
+    .period-select { padding: 8px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-family: var(--font); font-size: 13px; color: var(--ink); background: var(--white); cursor: pointer; }
+    .pl-wrap { background: var(--white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
+    .pl-header { background: var(--ink); color: white; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+    .pl-header-title { font-size: 14px; font-weight: 700; }
+    .pl-header-period { font-size: 12px; color: rgba(255,255,255,.5); }
+    .pl-table { width: 100%; border-collapse: collapse; }
+    .pl-table td { padding: 10px 24px; border-bottom: 1px solid var(--border); font-size: 13px; }
+    .pl-table td:last-child { text-align: right; font-family: var(--mono); }
+    .pl-table td input { width: 100%; background: transparent; border: none; outline: none; font-family: var(--mono); font-size: 13px; color: var(--ink); text-align: right; padding: 0; }
+    .pl-table td input:focus { background: var(--bluebg); border-radius: 4px; padding: 2px 4px; }
+    .pl-table .section-head td { background: var(--bg); font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); padding: 8px 24px; }
+    .pl-table .subtotal td { background: #F8FAFF; font-weight: 700; color: var(--blue); border-top: 2px solid var(--border); }
+    .pl-table .subtotal td:first-child { color: var(--mid); }
+    .pl-table .grand-total td { background: var(--ink); color: white; font-weight: 700; font-size: 14px; border-top: none; }
+    .pl-table .grand-total.profit td { background: var(--green); }
+    .pl-table .grand-total.loss td { background: var(--red); }
+    .pl-table .indent td:first-child { padding-left: 40px; color: var(--mid); }
+    .pl-table .editable td:first-child { color: var(--ink); }
+    .item-name-input { width: 100%; background: transparent; border: none; outline: none; font-family: var(--font); font-size: 13px; color: var(--ink); padding: 0; }
+    .summary-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 20px; }
+    .s-card { background: var(--white); border: 1.5px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+    .s-card.green { background: var(--greenbg); border-color: #6EE7B7; }
+    .s-card.red { background: var(--redbg); border-color: #FECACA; }
+    .s-label { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .s-card.green .s-label { color: var(--green); }
+    .s-card.red .s-label { color: var(--red); }
+    .s-value { font-family: var(--mono); font-size: 1.4rem; font-weight: 600; color: var(--ink); }
+    .s-card.green .s-value { color: var(--green); }
+    .s-card.red .s-value { color: var(--red); }
+    .s-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    @media print { .controls { display: none !important; } }
+    @media (max-width: 768px) { .summary-row { grid-template-columns: 1fr 1fr; } }
+  </style>
+
+  <div class="controls">
+    <select class="period-select" id="period-select">
+      <option>Q1 2026</option><option>Q2 2026</option><option>Q3 2026</option><option>Q4 2026</option>
+      <option>FY 2026</option><option>FY 2025</option><option>Monthly</option>
+    </select>
+    <select class="period-select" id="currency-select">
+      <option value="$">USD ($)</option><option value="€">EUR (€)</option><option value="£">GBP (£)</option>
+    </select>
+    <button class="ctrl-btn primary" id="export-btn">⬇ Export PDF</button>
+    <button class="ctrl-btn" id="reset-btn">↺ Reset</button>
+  </div>
+
+  <div class="summary-row">
+    <div class="s-card"><div class="s-label">Total Revenue</div><div class="s-value" id="s-rev">$0</div><div class="s-sub">top line</div></div>
+    <div class="s-card" id="s-gross-card"><div class="s-label">Gross Profit</div><div class="s-value" id="s-gross">$0</div><div class="s-sub" id="s-gross-margin">0% margin</div></div>
+    <div class="s-card" id="s-ebitda-card"><div class="s-label">EBITDA</div><div class="s-value" id="s-ebitda">$0</div><div class="s-sub">before D&A + tax</div></div>
+    <div class="s-card" id="s-net-card"><div class="s-label">Net Profit</div><div class="s-value" id="s-net">$0</div><div class="s-sub" id="s-net-margin">0% margin</div></div>
+  </div>
+
+  <div class="pl-wrap">
+    <div class="pl-header">
+      <span class="pl-header-title">Profit & Loss Statement</span>
+      <span class="pl-header-period" id="period-display">Q1 2026</span>
+    </div>
+    <table class="pl-table">
+      <tr class="section-head"><td colspan="2">Revenue</td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Product / Service Revenue"></td><td><input type="number" id="rev1" value="0"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Recurring Revenue (MRR × months)"></td><td><input type="number" id="rev2" value="0"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Other Revenue"></td><td><input type="number" id="rev3" value="0"></td></tr>
+      <tr class="subtotal"><td>Total Revenue</td><td id="t-rev">$0</td></tr>
+
+      <tr class="section-head"><td colspan="2">Cost of Goods Sold (COGS)</td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Direct Materials / Hosting"></td><td><input type="number" id="cogs1" value="0"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Direct Labor / Contractors"></td><td><input type="number" id="cogs2" value="0"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Other COGS"></td><td><input type="number" id="cogs3" value="0"></td></tr>
+      <tr class="subtotal"><td>Total COGS</td><td id="t-cogs">$0</td></tr>
+      <tr class="subtotal" style="background:#F0FDF4;"><td style="color:var(--green);">Gross Profit</td><td id="t-gross" style="color:var(--green);">$0</td></tr>
+
+      <tr class="section-head"><td colspan="2">Operating Expenses (OpEx)</td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Salaries & Payroll"></td><td><input type="number" id="op1" value="0"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Marketing & Advertising"></td><td><input type="number" id="op2" value="0"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Rent & Utilities"></td><td><input type="number" id="op3" value="0"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Software & Subscriptions"></td><td><input type="number" id="op4" value="0"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Legal & Professional"></td><td><input type="number" id="op5" value="0"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Other Operating Expenses"></td><td><input type="number" id="op6" value="0"></td></tr>
+      <tr class="subtotal"><td>Total OpEx</td><td id="t-opex">$0</td></tr>
+      <tr class="subtotal" style="background:#EFF6FF;"><td style="color:var(--blue);">EBITDA</td><td id="t-ebitda" style="color:var(--blue);">$0</td></tr>
+
+      <tr class="section-head"><td colspan="2">Below EBITDA</td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Depreciation & Amortization"></td><td><input type="number" id="da1" value="0"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Interest Expense"></td><td><input type="number" id="da2" value="0"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Income Tax"></td><td><input type="number" id="da3" value="0"></td></tr>
+
+      <tr class="grand-total" id="net-row"><td>Net Profit / (Loss)</td><td id="t-net">$0</td></tr>
+    </table>
+  </div>
+
+  <div class="info-box">
+    <strong>💡 How to use:</strong> Enter your numbers in each row. Click on row labels to rename them. All totals calculate automatically. Use "Export PDF" to download a clean printable version. Your data is saved automatically in your browser.
+  </div>
+
+  <Fragment slot="guide">
+    <p>A P&L statement (income statement) shows revenue, costs and profit for a period. It answers whether the business made money and where it went. Build it monthly to spot trends early.</p>
+    <h3>Formula</h3>
+    <pre>Gross profit = Revenue - Cost of goods sold (COGS)
+Operating profit (EBIT) = Gross profit - Operating expenses
+Net profit = Operating profit - Interest - Taxes</pre>
+    <h3>Example</h3>
+    <p>Revenue $40,000, COGS $15,000: gross profit $25,000 (62.5%). Operating expenses $18,000: operating profit $7,000. After $1,500 of tax, net profit is $5,500 (13.75% net margin).</p>
+  </Fragment>
+
+  <script>
+    const sym = () => (document.getElementById('currency-select')).value;
+    function fmt(n) { return sym() + Math.round(Math.abs(n)).toLocaleString('en-US'); }
+    function fmtSigned(n) { return (n >= 0 ? '' : '-') + fmt(n); }
+    function v(id) { return +(document.getElementById(id)).value || 0; }
+
+    const ids = ['rev1', 'rev2', 'rev3', 'cogs1', 'cogs2', 'cogs3', 'op1', 'op2', 'op3', 'op4', 'op5', 'op6', 'da1', 'da2', 'da3'];
+
+    function calc() {
+      const rev = v('rev1') + v('rev2') + v('rev3');
+      const cogs = v('cogs1') + v('cogs2') + v('cogs3');
+      const gross = rev - cogs;
+      const opex = v('op1') + v('op2') + v('op3') + v('op4') + v('op5') + v('op6');
+      const ebitda = gross - opex;
+      const da = v('da1') + v('da2') + v('da3');
+      const net = ebitda - da;
+      const grossMargin = rev > 0 ? gross / rev * 100 : 0;
+      const netMargin = rev > 0 ? net / rev * 100 : 0;
+
+      document.getElementById('t-rev').textContent = fmt(rev);
+      document.getElementById('t-cogs').textContent = fmt(cogs);
+      document.getElementById('t-gross').textContent = fmtSigned(gross);
+      document.getElementById('t-opex').textContent = fmt(opex);
+      document.getElementById('t-ebitda').textContent = fmtSigned(ebitda);
+      document.getElementById('t-net').textContent = fmtSigned(net);
+
+      document.getElementById('s-rev').textContent = fmt(rev);
+      document.getElementById('s-gross').textContent = fmtSigned(gross);
+      document.getElementById('s-gross-margin').textContent = grossMargin.toFixed(1) + '% margin';
+      document.getElementById('s-ebitda').textContent = fmtSigned(ebitda);
+      document.getElementById('s-net').textContent = fmtSigned(net);
+      document.getElementById('s-net-margin').textContent = netMargin.toFixed(1) + '% margin';
+
+      document.getElementById('s-net-card').className = 's-card ' + (net >= 0 ? 'green' : 'red');
+      document.getElementById('s-ebitda-card').className = 's-card ' + (ebitda >= 0 ? 'green' : 'red');
+      document.getElementById('s-gross-card').className = 's-card ' + (gross >= 0 ? 'green' : 'red');
+
+      document.getElementById('net-row').className = 'grand-total ' + (net >= 0 ? 'profit' : 'loss');
+
+      document.getElementById('period-display').textContent = (document.getElementById('period-select')).value;
+    }
+
+    document.getElementById('export-btn').addEventListener('click', () => window.print());
+    document.getElementById('reset-btn').addEventListener('click', () => {
+      if (!confirm('Reset all values?')) return;
+      ids.forEach((id) => { (document.getElementById(id)).value = '0'; });
+      calc();
+    });
+    document.getElementById('period-select').addEventListener('change', calc);
+    document.getElementById('currency-select').addEventListener('change', calc);
+
+    document.addEventListener('input', calc);
+    document.addEventListener('rk:restored', calc);
+    window.addEventListener('load', calc);
+  </script>
+</ToolLayout>
