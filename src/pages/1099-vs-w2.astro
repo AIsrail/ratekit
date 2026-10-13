@@ -1,0 +1,200 @@
+---
+import ToolLayout from '../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: 'Is it better to be 1099 or W-2?',
+    a: 'W-2 gives stability, employer-paid payroll tax and benefits. 1099 gives flexibility and business deductions, but you pay the full 15.3% SE tax. Compare total net income, not headline pay.' },
+  { q: 'How much more should a 1099 contractor charge?',
+    a: 'Typically 25-40% more than the equivalent W-2 hourly wage to cover SE tax, benefits, unpaid time off and business costs.' },
+  { q: 'Can 1099 contractors deduct expenses?',
+    a: 'Yes. Ordinary and necessary business expenses reduce taxable profit, and half of SE tax is deductible. Some may also qualify for the QBI deduction.' },
+];
+
+const related = [
+  { label: 'Self-Employment Tax Calculator', path: '/self-employment-tax' },
+  { label: 'Salary ↔ Hourly Calculator', path: '/salary-hourly' },
+  { label: 'Freelance Rate Calculator', path: '/freelance-rate' },
+  { label: 'Form 2555 — Foreign Earned Income Exclusion', path: '/form-2555' },
+];
+---
+<ToolLayout
+  slug="1099-vs-w2"
+  lang="en"
+  title="1099 vs W2 Calculator 2026 — Should You Be a Contractor?"
+  description="Compare 1099 contractor vs W2 employee compensation. Calculate take-home pay, taxes, and benefits to decide which is better for you. Free 2026 calculator."
+  pageTag="🇺🇸 US Tax · 2026"
+  pageTagColor="var(--red)"
+  h1="1099 vs W2 Calculator"
+  pageSub="Compare contractor (1099) vs employee (W2) take-home pay. Find out which option actually puts more money in your pocket after taxes and benefits."
+  dateModified="2026-10-13"
+  guideTitle="1099 contractor vs W-2 employee: how to compare offers"
+  faq={faq}
+  related={related}
+>
+  <div class="info-box">
+    <strong>How it works:</strong> Enter the same gross compensation for both scenarios. The calculator accounts for self-employment tax (15.3%), employer benefits, and income tax to show your true take-home pay in each situation.
+  </div>
+
+  <div class="compare-grid">
+    <div class="compare-panel w2">
+      <div class="compare-header"><span class="compare-badge w2">W2</span><span class="compare-title">Employee (W2)</span></div>
+      <div class="field"><label class="lbl">Annual W2 Salary</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="w2-salary" value="120000" min="0"></div></div>
+      <div class="field"><label class="lbl">Health Insurance (employer pays) <span class="hint">/year</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="w2-health" value="6000" min="0"></div></div>
+      <div class="field"><label class="lbl">401k Match (employer) <span class="hint">/year</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="w2-401k" value="4000" min="0"></div></div>
+      <div class="field"><label class="lbl">Other Benefits <span class="hint">(PTO value, gym, etc.)</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="w2-benefits" value="3000" min="0"></div></div>
+      <div class="field"><label class="lbl">401k Contribution (your own) <span class="hint">/year</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="w2-yourk" value="6000" min="0"></div></div>
+    </div>
+    <div class="compare-panel c1099">
+      <div class="compare-header"><span class="compare-badge c1099">1099</span><span class="compare-title">Contractor (1099)</span></div>
+      <div class="field"><label class="lbl">Annual 1099 Income</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="c-income" value="150000" min="0"></div></div>
+      <div class="field"><label class="lbl">Business Expenses <span class="hint">(deductible)</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="c-expenses" value="10000" min="0"></div></div>
+      <div class="field"><label class="lbl">Health Insurance (self-pay) <span class="hint">/year</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="c-health" value="8000" min="0"></div></div>
+      <div class="field"><label class="lbl">SEP-IRA / Solo 401k Contribution</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="c-retirement" value="10000" min="0"></div></div>
+      <div class="field"><label class="lbl">Other Business Costs <span class="hint">(tools, insurance...)</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="c-other" value="3000" min="0"></div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Tax Settings</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div class="field"><label class="lbl">Filing Status</label><div class="input-wrap"><select id="filing"><option value="single">Single</option><option value="married">Married Filing Jointly</option></select></div></div>
+      <div class="field"><label class="lbl">State Income Tax Rate <span class="hint">(0% for TX, FL, etc.)</span></label><div class="input-wrap"><input type="number" id="state-tax" value="5" min="0" max="15" step="0.1"><span class="ifix ifix-r">%</span></div></div>
+    </div>
+  </div>
+
+  <div class="verdict-panel" id="verdict-panel">
+    <div>
+      <div class="verdict-text" id="verdict-text">Calculating...</div>
+      <div class="verdict-sub" id="verdict-sub"></div>
+    </div>
+    <div class="verdict-diff" id="verdict-diff"></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Side-by-Side Comparison</div>
+    <table class="results-table">
+      <thead><tr><th>Item</th><th>W2 Employee</th><th>1099 Contractor</th></tr></thead>
+      <tbody id="comparison-body"></tbody>
+    </table>
+  </div>
+
+  <div class="warn-box">
+    <strong>⚠️ Disclaimer:</strong> This calculator uses simplified 2026 federal tax brackets and is for estimation only. It does not account for all deductions, credits, AMT, NIIT, or state-specific rules. Consult a CPA before making employment decisions.
+  </div>
+
+  <Fragment slot="guide">
+    <p>A W-2 employee's employer pays half of payroll taxes and usually provides benefits; a 1099 contractor pays the full 15.3% self-employment tax and buys their own benefits. To break even, a contractor rate usually needs to be 25-40% higher than the equivalent salary.</p>
+    <h3>Formula</h3>
+    <pre>Contractor net = 1099 income - SE tax - Income tax - Benefits you buy - Business expenses
+Employee net = Salary - Employee FICA (7.65%) - Income tax, plus the value of employer benefits</pre>
+    <h3>Example</h3>
+    <p>A $100,000 salary with health insurance and a 401(k) match can be worth more than a $115,000 1099 contract once self-employment tax and self-paid insurance are included.</p>
+  </Fragment>
+
+  <script>
+    function fmt(n) { return '$' + Math.round(Math.abs(n)).toLocaleString('en-US'); }
+
+    function calcFedTax(taxable, filing) {
+      const brackets = filing === 'married'
+        ? [[0, .10, 24800], [24800, .12, 100800], [100800, .22, 211400], [211400, .24, 403550], [403550, .32, 512450], [512450, .35, 768700], [768700, .37, Infinity]]
+        : [[0, .10, 12400], [12400, .12, 50400], [50400, .22, 105700], [105700, .24, 201775], [201775, .32, 256225], [256225, .35, 640600], [640600, .37, Infinity]];
+      let tax = 0;
+      for (let i = 0; i < brackets.length; i++) {
+        const [min, rate, max] = brackets[i];
+        if (taxable <= min) break;
+        tax += (Math.min(taxable, max) - min) * rate;
+        if (taxable <= max) break;
+      }
+      return Math.max(0, tax);
+    }
+
+    function calc() {
+      const filing = document.getElementById('filing').value;
+      const stateTax = +document.getElementById('state-tax').value / 100;
+      const stdDed = filing === 'married' ? 32200 : 16100;
+
+      const w2Salary = +document.getElementById('w2-salary').value || 0;
+      const w2Health = +document.getElementById('w2-health').value || 0;
+      const w2Match = +document.getElementById('w2-401k').value || 0;
+      const w2Perks = +document.getElementById('w2-benefits').value || 0;
+      const w2YourK = +document.getElementById('w2-yourk').value || 0;
+
+      const w2FICA = Math.min(w2Salary, 184500) * 0.062 + w2Salary * 0.0145;
+      const w2Taxable = Math.max(0, w2Salary - w2YourK - stdDed);
+      const w2Fed = calcFedTax(w2Taxable, filing);
+      const w2State = w2Salary * stateTax;
+      const w2TotalTax = w2FICA + w2Fed + w2State;
+      const w2TakeHome = w2Salary - w2TotalTax - w2YourK;
+      const w2TotalComp = w2Salary + w2Health + w2Match + w2Perks;
+
+      const cIncome = +document.getElementById('c-income').value || 0;
+      const cExpenses = +document.getElementById('c-expenses').value || 0;
+      const cHealth = +document.getElementById('c-health').value || 0;
+      const cRetire = +document.getElementById('c-retirement').value || 0;
+      const cOther = +document.getElementById('c-other').value || 0;
+
+      const cNet = Math.max(0, cIncome - cExpenses);
+      const cSEBase = cNet * 0.9235;
+      const cSETax = Math.min(cSEBase, 184500) * 0.124 + cSEBase * 0.029;
+      const cSEDed = cSETax / 2;
+      const cAGI = cNet - cSEDed - cHealth - cRetire;
+      const cTaxable = Math.max(0, cAGI - stdDed);
+      const cFed = calcFedTax(cTaxable, filing);
+      const cState = cNet * stateTax;
+      const cTotalTax = cSETax + cFed + cState;
+      const cTakeHome = cIncome - cExpenses - cHealth - cOther - cRetire - cTotalTax;
+
+      const diff = cTakeHome - w2TakeHome;
+      const vp = document.getElementById('verdict-panel');
+      const vt = document.getElementById('verdict-text');
+      const vs = document.getElementById('verdict-sub');
+      const vd = document.getElementById('verdict-diff');
+
+      if (Math.abs(diff) < 1000) {
+        vp.className = 'verdict-panel tie';
+        vt.textContent = '⚖️ Roughly equal take-home pay';
+        vs.textContent = 'The difference is less than $1,000/year. Choose based on lifestyle, not money.';
+        vd.textContent = '~Tie';
+        vd.className = 'verdict-diff amber';
+      } else if (diff > 0) {
+        vp.className = 'verdict-panel winner-1099';
+        vt.textContent = '🏆 1099 Contractor wins by ' + fmt(diff) + '/year';
+        vs.textContent = 'After taxes and expenses, contracting puts more money in your pocket.';
+        vd.textContent = '+' + fmt(diff);
+        vd.className = 'verdict-diff blue';
+      } else {
+        vp.className = 'verdict-panel winner-w2';
+        vt.textContent = '🏆 W2 Employee wins by ' + fmt(-diff) + '/year';
+        vs.textContent = 'After accounting for benefits and taxes, employment is the better deal.';
+        vd.textContent = '+' + fmt(-diff);
+        vd.className = 'verdict-diff green';
+      }
+
+      document.getElementById('comparison-body').innerHTML = `
+        <tr class="section-row"><td colspan="3">Gross Compensation</td></tr>
+        <tr><td>Gross Income / Salary</td><td>${fmt(w2Salary)}</td><td>${fmt(cIncome)}</td></tr>
+        <tr><td>Employer Benefits (health, 401k, perks)</td><td>${fmt(w2Health + w2Match + w2Perks)}</td><td>—</td></tr>
+        <tr><td>Total Compensation Package</td><td>${fmt(w2TotalComp)}</td><td>${fmt(cIncome)}</td></tr>
+        <tr class="section-row"><td colspan="3">Deductions & Expenses</td></tr>
+        <tr><td>Business Expenses</td><td>—</td><td>${fmt(cExpenses)}</td></tr>
+        <tr><td>Health Insurance (self-pay)</td><td>—</td><td>${fmt(cHealth)}</td></tr>
+        <tr><td>Retirement Contributions</td><td>${fmt(w2YourK)}</td><td>${fmt(cRetire)}</td></tr>
+        <tr><td>Other Business Costs</td><td>—</td><td>${fmt(cOther)}</td></tr>
+        <tr class="section-row"><td colspan="3">Taxes</td></tr>
+        <tr><td>Self-Employment Tax (15.3%)</td><td>—</td><td>${fmt(cSETax)}</td></tr>
+        <tr><td>FICA / Payroll Tax (employee share)</td><td>${fmt(w2FICA)}</td><td>—</td></tr>
+        <tr><td>Federal Income Tax</td><td>${fmt(w2Fed)}</td><td>${fmt(cFed)}</td></tr>
+        <tr><td>State Income Tax (~${(stateTax * 100).toFixed(1)}%)</td><td>${fmt(w2State)}</td><td>${fmt(cState)}</td></tr>
+        <tr><td><strong>Total Tax Burden</strong></td><td><strong>${fmt(w2TotalTax)}</strong></td><td><strong>${fmt(cTotalTax)}</strong></td></tr>
+        <tr><td>Effective Tax Rate</td><td>${w2Salary > 0 ? (w2TotalTax / w2Salary * 100).toFixed(1) : 0}%</td><td>${cIncome > 0 ? (cTotalTax / cIncome * 100).toFixed(1) : 0}%</td></tr>
+        <tr class="total-row"><td>💵 Annual Take-Home Pay</td><td>${fmt(w2TakeHome)}</td><td>${fmt(cTakeHome)}</td></tr>
+        <tr class="highlight-row"><td>Monthly Take-Home</td><td>${fmt(w2TakeHome / 12)}/mo</td><td>${fmt(cTakeHome / 12)}/mo</td></tr>
+      `;
+    }
+
+    document.addEventListener('input', calc);
+    document.addEventListener('change', calc);
+    document.addEventListener('rk:restored', calc);
+    window.addEventListener('load', calc);
+  </script>
+</ToolLayout>
