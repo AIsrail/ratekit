@@ -83,7 +83,7 @@ check_json() {
 }
 
 check_title "/" "RateKit"
-check_title "/budget-calculator" "Budget & Cash Flow Calculator"
+check_title "/budget-calculator" "Cash Flow Calculator"
 check_title "/ru/budget-calculator" "Калькулятор бюджета"
 check_title "/roi-calculator" "ROI Calculator"
 check_json "/api/roi?investment=1000&returns=1500&months=12"
