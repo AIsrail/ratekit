@@ -1,0 +1,103 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: 'Что считается хорошим ROI?',
+    a: 'Зависит от риска и срока. Многие компании ориентируются на маркетинговый ROI выше 100% (2 доллара на каждый вложенный), а долгосрочные инвестиции сравнивают со средней доходностью рынка 7-10% годовых.' },
+  { q: 'В чём разница между ROI и ROAS?',
+    a: 'ROAS — это выручка, делённая на расходы на рекламу; ROI вычитает все затраты и делит прибыль на вложения. У кампании может быть высокий ROAS и при этом отрицательный ROI, если маржа низкая.' },
+  { q: 'Использовать выручку или прибыль в формуле ROI?',
+    a: 'Используйте прибыль (доход минус все связанные расходы). Если взять выручку, ROI будет завышен.' },
+];
+
+const related = [
+  { label: 'Точка безубыточности', path: '/ru/break-even' },
+  { label: 'Маржа и наценка', path: '/ru/profit-margin' },
+  { label: 'LTV : CAC Calculator', path: '/ltv-cac' },
+  { label: 'Business Loan & APR Calculator', path: '/loan-calculator' },
+];
+---
+<ToolLayout
+  slug="roi-calculator"
+  lang="ru"
+  title="Калькулятор ROI — окупаемость инвестиций"
+  description="Рассчитайте окупаемость инвестиций (ROI), годовую доходность и срок окупаемости для любого проекта или рекламной кампании."
+  pageTag="📈 Инвестиционный инструмент"
+  h1="Калькулятор ROI"
+  pageSub="Рассчитайте окупаемость инвестиций, годовой ROI и срок окупаемости для любой инвестиции, кампании или проекта."
+  dateModified="2026-10-13"
+  guideTitle="Как рассчитать ROI (окупаемость инвестиций)"
+  faq={faq}
+  related={related}
+>
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-title">Инвестиция</div>
+      <div class="field"><label class="lbl">Первоначальные вложения</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="invest" value="10000" min="0"></div></div>
+      <div class="field"><label class="lbl">Итоговый доход (полученная выручка)</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="returns" value="15000" min="0"></div></div>
+      <div class="field"><label class="lbl">Период <span class="hint">(необязательно, для годового ROI)</span></label>
+        <div class="input-wrap"><input type="number" id="months" value="12" min="1"><span class="ifix ifix-r">мес.</span></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Необязательно: текущие расходы</div>
+      <div class="field"><label class="lbl">Ежемесячные операционные расходы <span class="hint">(необязательно)</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="opcost" value="0" min="0"></div></div>
+      <div class="field"><label class="lbl">Ежемесячный доход <span class="hint">(необязательно)</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="monthly-rev" value="0" min="0"></div></div>
+    </div>
+  </div>
+
+  <div class="results-row">
+    <div class="r-card primary"><div class="r-label">ROI</div><div class="r-value" id="r-roi">—</div><div class="r-sub">окупаемость инвестиций</div></div>
+    <div class="r-card"><div class="r-label">Чистая прибыль</div><div class="r-value" id="r-profit">—</div><div class="r-sub">итоговая прибыль</div></div>
+    <div class="r-card"><div class="r-label">Годовой ROI</div><div class="r-value" id="r-annual">—</div><div class="r-sub">в год</div></div>
+    <div class="r-card"><div class="r-label">Срок окупаемости</div><div class="r-value" id="r-payback">—</div><div class="r-sub">до выхода в ноль</div></div>
+  </div>
+
+  <div class="verdict" id="verdict"></div>
+
+  <div class="info-box">
+    <strong>📐 Формула:</strong> ROI = (Чистая прибыль / Инвестиция) × 100 &nbsp;·&nbsp; Годовой ROI = (1 + ROI/100)^(12/месяцы) − 1 &nbsp;·&nbsp; Ориентир по рынку: маркетинговые кампании 200–400% ROI, недвижимость 8–12% годовых.
+  </div>
+
+  <Fragment slot="guide">
+    <p>ROI показывает, сколько вы заработали относительно того, сколько потратили. Это самый простой способ сравнить маркетинговые кампании, покупку оборудования или проекты между собой — но он не учитывает время, поэтому для многолетних инвестиций смотрите ещё и на годовой (annualized) ROI.</p>
+    <h3>Формула</h3>
+    <pre>ROI = (Доход от инвестиции − Стоимость инвестиции) / Стоимость инвестиции × 100%
+Годовой ROI = (1 + ROI)^(1 / Годы) − 1</pre>
+    <h3>Пример</h3>
+    <p>Вы тратите $5 000 на кампанию, которая приносит $8 000 валовой прибыли. ROI = ($8 000 − $5 000) / $5 000 = 60%. Если это заняло 2 года, годовой ROI составит около 26,5%.</p>
+  </Fragment>
+
+  <script>
+    function fmt(n) { return '$' + Math.round(Math.abs(n)).toLocaleString('ru-RU'); }
+
+    function calc() {
+      const invest = +document.getElementById('invest').value || 1;
+      const returns = +document.getElementById('returns').value || 0;
+      const months = +document.getElementById('months').value || 12;
+      const net = returns - invest;
+      const roi = net / invest * 100;
+      const annualized = (Math.pow(1 + roi / 100, 12 / months) - 1) * 100;
+      const payback = net > 0 ? invest / (net / months) : Infinity;
+
+      const rc = document.getElementById('r-roi');
+      rc.textContent = roi.toFixed(1) + '%';
+      rc.style.color = roi >= 0 ? 'white' : '#FECACA';
+
+      document.getElementById('r-profit').textContent = (net >= 0 ? '+' : '-') + fmt(net);
+      document.getElementById('r-profit').style.color = net >= 0 ? 'var(--ink)' : 'var(--red)';
+      document.getElementById('r-annual').textContent = annualized.toFixed(1) + '%';
+      document.getElementById('r-payback').textContent = payback === Infinity ? 'Никогда' : payback.toFixed(1) + ' мес.';
+
+      const v = document.getElementById('verdict');
+      if (roi < 0) { v.style.cssText = 'background:var(--redbg);color:var(--red);'; v.textContent = '🚨 Отрицательный ROI — инвестиция убыточна. Пересмотрите структуру расходов или прогноз доходов.'; }
+      else if (roi < 50) { v.style.cssText = 'background:#FFFBEB;color:var(--amber);'; v.textContent = '⚠️ Низкий ROI (' + roi.toFixed(1) + '%). Подумайте, стоит ли эта инвестиция риска по сравнению с более простыми альтернативами.'; }
+      else if (roi < 200) { v.style.cssText = 'background:var(--greenbg);color:var(--green);'; v.textContent = '✅ Хороший ROI (' + roi.toFixed(1) + '%). Инвестиция приносит устойчивую доходность.'; }
+      else { v.style.cssText = 'background:var(--bluebg);color:var(--blue);'; v.textContent = '🚀 Отличный ROI (' + roi.toFixed(1) + '%). Высокая доходность — есть смысл масштабировать эту инвестицию.'; }
+    }
+
+    document.addEventListener('input', calc);
+    document.addEventListener('rk:restored', calc);
+    window.addEventListener('load', calc);
+  </script>
+</ToolLayout>

@@ -1,0 +1,103 @@
+---
+import ToolLayout from '../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: 'What is a good ROI?',
+    a: 'It depends on risk and time. Many businesses target marketing ROI above 100% (earning $2 for every $1 spent), while long-term investments are often compared to a 7-10% annual market return.' },
+  { q: 'What is the difference between ROI and ROAS?',
+    a: 'ROAS divides revenue by ad spend; ROI subtracts all costs and divides profit by investment. A campaign can have a high ROAS and still a negative ROI if margins are thin.' },
+  { q: 'Should I use revenue or profit in the ROI formula?',
+    a: 'Use profit (gain minus all related costs). Using revenue overstates ROI.' },
+];
+
+const related = [
+  { label: 'Break-even Calculator', path: '/break-even' },
+  { label: 'Profit Margin Calculator', path: '/profit-margin' },
+  { label: 'LTV : CAC Calculator', path: '/ltv-cac' },
+  { label: 'Business Loan & APR Calculator', path: '/loan-calculator' },
+];
+---
+<ToolLayout
+  slug="roi-calculator"
+  lang="en"
+  title="ROI Calculator — Return on Investment"
+  description="Calculate Return on Investment (ROI), annualized ROI, and payback period. Free ROI calculator for marketing, business investments, and projects."
+  pageTag="📈 Investment Tool"
+  h1="ROI Calculator"
+  pageSub="Calculate return on investment, annualized ROI, and payback period for any business investment, campaign, or project."
+  dateModified="2026-10-13"
+  guideTitle="How to calculate return on investment (ROI)"
+  faq={faq}
+  related={related}
+>
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-title">Investment</div>
+      <div class="field"><label class="lbl">Initial Investment</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="invest" value="10000" min="0"></div></div>
+      <div class="field"><label class="lbl">Total Return (revenue generated)</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="returns" value="15000" min="0"></div></div>
+      <div class="field"><label class="lbl">Time Period <span class="hint">(optional, for annualized ROI)</span></label>
+        <div class="input-wrap"><input type="number" id="months" value="12" min="1"><span class="ifix ifix-r">months</span></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Optional: Ongoing Costs</div>
+      <div class="field"><label class="lbl">Monthly Operating Cost <span class="hint">(optional)</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="opcost" value="0" min="0"></div></div>
+      <div class="field"><label class="lbl">Monthly Revenue Generated <span class="hint">(optional)</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="monthly-rev" value="0" min="0"></div></div>
+    </div>
+  </div>
+
+  <div class="results-row">
+    <div class="r-card primary"><div class="r-label">ROI</div><div class="r-value" id="r-roi">—</div><div class="r-sub">return on investment</div></div>
+    <div class="r-card"><div class="r-label">Net Profit</div><div class="r-value" id="r-profit">—</div><div class="r-sub">total gain</div></div>
+    <div class="r-card"><div class="r-label">Annualized ROI</div><div class="r-value" id="r-annual">—</div><div class="r-sub">per year</div></div>
+    <div class="r-card"><div class="r-label">Payback Period</div><div class="r-value" id="r-payback">—</div><div class="r-sub">to break even</div></div>
+  </div>
+
+  <div class="verdict" id="verdict"></div>
+
+  <div class="info-box">
+    <strong>📐 Formula:</strong> ROI = (Net Profit / Investment) × 100 &nbsp;·&nbsp; Annualized ROI = (1 + ROI/100)^(12/months) − 1 &nbsp;·&nbsp; Industry benchmark: marketing campaigns 200–400% ROI, real estate 8–12% annual ROI.
+  </div>
+
+  <Fragment slot="guide">
+    <p>ROI measures how much you gained relative to what you spent. It is the simplest way to compare marketing campaigns, equipment purchases or projects, but it ignores time, so for multi-year investments also look at annualized ROI.</p>
+    <h3>Formula</h3>
+    <pre>ROI = (Gain from investment - Cost of investment) / Cost of investment x 100%
+Annualized ROI = (1 + ROI)^(1 / Years) - 1</pre>
+    <h3>Example</h3>
+    <p>You spend $5,000 on a campaign that brings $8,000 in gross profit. ROI = ($8,000 - $5,000) / $5,000 = 60%. If that took 2 years, annualized ROI is about 26.5%.</p>
+  </Fragment>
+
+  <script>
+    function fmt(n) { return '$' + Math.round(Math.abs(n)).toLocaleString('en-US'); }
+
+    function calc() {
+      const invest = +document.getElementById('invest').value || 1;
+      const returns = +document.getElementById('returns').value || 0;
+      const months = +document.getElementById('months').value || 12;
+      const net = returns - invest;
+      const roi = net / invest * 100;
+      const annualized = (Math.pow(1 + roi / 100, 12 / months) - 1) * 100;
+      const payback = net > 0 ? invest / (net / months) : Infinity;
+
+      const rc = document.getElementById('r-roi');
+      rc.textContent = roi.toFixed(1) + '%';
+      rc.style.color = roi >= 0 ? 'white' : '#FECACA';
+
+      document.getElementById('r-profit').textContent = (net >= 0 ? '+' : '-') + fmt(net);
+      document.getElementById('r-profit').style.color = net >= 0 ? 'var(--ink)' : 'var(--red)';
+      document.getElementById('r-annual').textContent = annualized.toFixed(1) + '%';
+      document.getElementById('r-payback').textContent = payback === Infinity ? 'Never' : payback.toFixed(1) + ' mo';
+
+      const v = document.getElementById('verdict');
+      if (roi < 0) { v.style.cssText = 'background:var(--redbg);color:var(--red);'; v.textContent = '🚨 Negative ROI — this investment lost money. Review your cost structure or revenue assumptions.'; }
+      else if (roi < 50) { v.style.cssText = 'background:#FFFBEB;color:var(--amber);'; v.textContent = '⚠️ Low ROI (' + roi.toFixed(1) + '%). Consider whether this investment is worth the risk vs simpler alternatives.'; }
+      else if (roi < 200) { v.style.cssText = 'background:var(--greenbg);color:var(--green);'; v.textContent = '✅ Good ROI (' + roi.toFixed(1) + '%). This investment is delivering solid returns.'; }
+      else { v.style.cssText = 'background:var(--bluebg);color:var(--blue);'; v.textContent = '🚀 Excellent ROI (' + roi.toFixed(1) + '%). Strong returns — consider scaling this investment.'; }
+    }
+
+    document.addEventListener('input', calc);
+    document.addEventListener('rk:restored', calc);
+    window.addEventListener('load', calc);
+  </script>
+</ToolLayout>

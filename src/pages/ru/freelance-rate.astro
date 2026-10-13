@@ -1,0 +1,275 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: 'Какая почасовая ставка хорошая для фрилансера?',
+    a: 'Зависит от рынка и навыков, но ваш минимум — это точка безубыточности из этого калькулятора: целевой доход плюс расходы и налоги, делённые на реально оплачиваемые часы. Цену выше этого минимума ставьте исходя из ценности, которую вы приносите.' },
+  { q: 'Сколько оплачиваемых часов в год у фрилансера?',
+    a: 'Обычно 1000-1400. 40-часовая неделя на протяжении 46 недель — это 1840 часов, но обычно оплачивается только 50-70% этого времени.' },
+  { q: 'Брать оплату почасово или за проект?',
+    a: 'Используйте почасовую ставку как внутренний минимум, а там, где возможно, называйте цену за проект или за день. Клиенты сравнивают результат, а фиксированная цена вознаграждает вас за эффективную работу.' },
+];
+
+const related = [
+  { label: 'Salary ↔ Hourly Calculator', path: '/salary-hourly' },
+  { label: 'Self-Employment Tax Calculator', path: '/self-employment-tax' },
+  { label: 'Счёт-фактура', path: '/ru/invoice-generator' },
+  { label: 'Маржа и наценка', path: '/ru/profit-margin' },
+];
+---
+<ToolLayout
+  slug="freelance-rate"
+  lang="ru"
+  title="Калькулятор ставки фрилансера"
+  description="Рассчитайте минимальную почасовую ставку фрилансера на основе целевого дохода, расходов, налоговой ставки и графика работы. Бесплатно, мгновенно."
+  pageTag="Бесплатный инструмент"
+  pageTagColor="var(--blue)"
+  h1="Калькулятор ставки фрилансера"
+  pageSub="Введите целевой доход и график работы — получите минимальную ставку, которую стоит брать за час, день и проект."
+  dateModified="2026-10-13"
+  guideTitle="Как рассчитать почасовую ставку фрилансера"
+  faq={faq}
+  related={related}
+>
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-title">Доход и расходы</div>
+      <div class="panel-title" style="border:none;padding:0;margin-bottom:10px;font-size:11px;">Валюта</div>
+      <div class="cur-row">
+        <button class="cur-btn active" data-sym="$">$ USD</button>
+        <button class="cur-btn" data-sym="€">€ EUR</button>
+        <button class="cur-btn" data-sym="£">£ GBP</button>
+        <button class="cur-btn" data-sym="₽">₽ RUB</button>
+      </div>
+      <div class="field">
+        <label class="lbl">Годовой доход на руки <span class="hint">(цель после налогов)</span></label>
+        <div class="input-wrap"><span class="ifix" id="sym">$</span><input type="number" id="income" value="60000" min="0"></div>
+      </div>
+      <div class="field">
+        <label class="lbl">Годовые бизнес-расходы <span class="hint">(инструменты, подписки...)</span></label>
+        <div class="input-wrap"><span class="ifix" id="sym2">$</span><input type="number" id="expenses" value="5000" min="0"></div>
+      </div>
+      <div class="field">
+        <label class="lbl">Налоговая ставка</label>
+        <div class="input-wrap"><input type="number" id="tax" value="25" min="0" max="99"><span class="ifix ifix-r">%</span></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Рабочий график</div>
+      <div class="field"><label class="lbl">Оплачиваемых часов в день</label><div class="input-wrap"><input type="number" id="hours" value="6" min="1" max="16"><span class="ifix ifix-r">ч</span></div></div>
+      <div class="field"><label class="lbl">Рабочих дней в неделю</label><div class="input-wrap"><input type="number" id="days" value="5" min="1" max="7"><span class="ifix ifix-r">дн.</span></div></div>
+      <div class="field"><label class="lbl">Отпуск, недель в год</label><div class="input-wrap"><input type="number" id="vacation" value="4" min="0" max="30"><span class="ifix ifix-r">нед.</span></div></div>
+      <div class="field"><label class="lbl">Неоплачиваемое время <span class="hint">(админка, маркетинг...)</span></label><div class="input-wrap"><input type="number" id="overhead" value="20" min="0" max="80"><span class="ifix ifix-r">%</span></div></div>
+    </div>
+  </div>
+
+  <div class="results-row" style="grid-template-columns:repeat(3,1fr);">
+    <div class="r-card primary"><div class="r-label">Ставка в час</div><div class="r-value" id="r-hourly">—</div><div class="r-sub">минимум к оплате</div></div>
+    <div class="r-card"><div class="r-label">Ставка в день</div><div class="r-value" id="r-daily">—</div><div class="r-sub" id="r-daily-sub">за рабочий день</div></div>
+    <div class="r-card"><div class="r-label">Цель в месяц</div><div class="r-value" id="r-monthly">—</div><div class="r-sub">нужная валовая выручка</div></div>
+  </div>
+
+  <div class="panel">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;">
+      <div>
+        <div class="panel-title">Разбивка годового дохода</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;"><span style="font-size:12px;color:var(--mid);width:130px;flex-shrink:0;">Доход на руки</span><div style="flex:1;height:4px;background:var(--bg);border-radius:99px;overflow:hidden;"><div id="bar-income" style="height:100%;border-radius:99px;background:#2563EB;width:0%;transition:width .5s ease;"></div></div><span id="lbl-income" style="font-family:var(--mono);font-size:12px;font-weight:600;width:80px;text-align:right;flex-shrink:0;">—</span></div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;"><span style="font-size:12px;color:var(--mid);width:130px;flex-shrink:0;">Налоги</span><div style="flex:1;height:4px;background:var(--bg);border-radius:99px;overflow:hidden;"><div id="bar-tax" style="height:100%;border-radius:99px;background:#DC2626;width:0%;transition:width .5s ease;"></div></div><span id="lbl-tax" style="font-family:var(--mono);font-size:12px;font-weight:600;width:80px;text-align:right;flex-shrink:0;">—</span></div>
+        <div style="display:flex;align-items:center;gap:12px;"><span style="font-size:12px;color:var(--mid);width:130px;flex-shrink:0;">Бизнес-расходы</span><div style="flex:1;height:4px;background:var(--bg);border-radius:99px;overflow:hidden;"><div id="bar-exp" style="height:100%;border-radius:99px;background:#94A3B8;width:0%;transition:width .5s ease;"></div></div><span id="lbl-exp" style="font-family:var(--mono);font-size:12px;font-weight:600;width:80px;text-align:right;flex-shrink:0;">—</span></div>
+      </div>
+      <div>
+        <div class="panel-title">Оценка проектов</div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);"><span style="font-size:13px;color:var(--mid);">Проект на 1 неделю</span><span id="est-1w" style="font-family:var(--mono);font-size:15px;font-weight:600;">—</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);"><span style="font-size:13px;color:var(--mid);">Проект на 2 недели</span><span id="est-2w" style="font-family:var(--mono);font-size:15px;font-weight:600;">—</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);"><span style="font-size:13px;color:var(--mid);">Проект на 1 месяц</span><span id="est-1m" style="font-family:var(--mono);font-size:15px;font-weight:600;">—</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;"><span style="font-size:13px;color:var(--mid);">Проект на 3 месяца</span><span id="est-3m" style="font-family:var(--mono);font-size:15px;font-weight:600;">—</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-box" id="tip"></div>
+
+  <div class="panel">
+    <div class="panel-title">📇 Ваша карточка ставки — можно поделиться</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+      <div class="field"><label class="lbl">Ваше имя (необязательно)</label><div class="input-wrap"><input type="text" id="card-name" placeholder="Иван Иванов"></div></div>
+      <div class="field"><label class="lbl">Специализация / роль</label><div class="input-wrap"><input type="text" id="card-role" placeholder="UX-дизайнер"></div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+      <div class="field"><label class="lbl">Страна</label><div class="input-wrap"><input type="text" id="card-country" placeholder="Кыргызстан"></div></div>
+      <div class="field"><label class="lbl">Лет опыта</label><div class="input-wrap"><input type="number" id="card-years" placeholder="5" min="0"></div></div>
+    </div>
+    <div style="background:var(--ink);border-radius:12px;padding:28px;margin-bottom:16px;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(circle,rgba(37,99,235,0.3),transparent 70%);pointer-events:none;"></div>
+      <div style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:16px;">КАРТОЧКА СТАВКИ · 2026</div>
+      <div style="font-size:clamp(1.8rem,4vw,2.8rem);font-family:var(--mono);font-weight:700;color:white;line-height:1;" id="card-rate-display">$—/ч</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.5);margin-top:6px;margin-bottom:20px;" id="card-daily-display">— /день</div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;">
+        <div><div style="font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.1em;text-transform:uppercase;">Имя</div><div style="font-size:14px;font-weight:600;color:white;" id="card-name-display">—</div></div>
+        <div><div style="font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.1em;text-transform:uppercase;">Специализация</div><div style="font-size:14px;font-weight:600;color:white;" id="card-role-display">—</div></div>
+        <div><div style="font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.1em;text-transform:uppercase;">Локация</div><div style="font-size:14px;font-weight:600;color:white;" id="card-country-display">—</div></div>
+        <div><div style="font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.1em;text-transform:uppercase;">Опыт</div><div style="font-size:14px;font-weight:600;color:white;" id="card-years-display">—</div></div>
+      </div>
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,.1);font-size:10px;color:rgba(255,255,255,.2);">Рассчитано в RateKit · ratekit.org</div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button id="li-share-btn" style="padding:10px 18px;background:#0077B5;color:white;border:none;border-radius:8px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;">in Поделиться в LinkedIn</button>
+      <button id="copy-card-btn" style="padding:10px 18px;background:var(--white);color:var(--mid);border:1.5px solid var(--border);border-radius:8px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;">🔗 Скопировать ссылку</button>
+      <a href="/deal-coach" style="padding:10px 18px;background:var(--white);color:var(--mid);border:1.5px solid var(--border);border-radius:8px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;">🤖 Обсудить эту ставку (EN) →</a>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">🎯 Планировщик сценариев «что если»</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:20px;">Посмотрите, сколько вы заработаете, подняв ставку — и скольких клиентов вы можете позволить себе потерять.</p>
+    <div style="margin-bottom:16px;">
+      <label class="lbl">Произвольное повышение: <span id="scenario-pct-label" style="color:var(--blue);font-weight:700;">+20%</span></label>
+      <input type="range" id="scenario-slider" min="5" max="100" step="5" value="20" style="width:100%;margin-top:8px;accent-color:var(--blue);">
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;" id="scenario-grid"></div>
+  </div>
+
+  <Fragment slot="guide">
+    <p>Минимальная ставка фрилансера — это сумма, которую нужно выставлять за час, чтобы покрыть целевой доход, бизнес-расходы и налоги, учитывая реально оплачиваемые часы. Большинство фрилансеров оплачивают клиентам только 50-70% своего рабочего времени — остальное уходит на продажи, администрирование и обучение.</p>
+    <h3>Формула</h3>
+    <pre>Ставка в час = (Целевой доход + Годовые расходы) / (1 − Налоговая ставка) / Оплачиваемых часов в год
+Оплачиваемые часы = Рабочих недель × Часов в неделю × % оплачиваемых</pre>
+    <h3>Пример</h3>
+    <p>Целевой доход $60 000, расходы $6 000, налоги ~25%. 46 рабочих недель × 40 ч × 60% оплачиваемых = 1 104 оплачиваемых часа. ($60 000 + $6 000) / 0,75 / 1 104 = около $80 в час минимум.</p>
+  </Fragment>
+
+  <script>
+    let sym = '$';
+    let currentHourly = 0;
+    let currentDaily = 0;
+
+    document.querySelectorAll('.cur-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        sym = btn.getAttribute('data-sym') || '$';
+        document.querySelectorAll('.cur-btn').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('sym').textContent = sym;
+        document.getElementById('sym2').textContent = sym;
+        calc();
+      });
+    });
+
+    function fmt(n) { return sym + Math.round(n).toLocaleString('ru-RU'); }
+
+    function calc() {
+      const income = +document.getElementById('income').value || 0;
+      const expenses = +document.getElementById('expenses').value || 0;
+      const tax = +document.getElementById('tax').value || 0;
+      const hrs = +document.getElementById('hours').value || 1;
+      const days = +document.getElementById('days').value || 5;
+      const vac = +document.getElementById('vacation').value || 0;
+      const oh = +document.getElementById('overhead').value || 0;
+      const workWeeks = 52 - vac;
+      const workDays = workWeeks * days;
+      const billable = workDays * hrs * (1 - oh / 100);
+      const gross = (income + expenses) / (1 - tax / 100);
+      const hourly = billable > 0 ? gross / billable : 0;
+      const daily = hourly * hrs;
+      const monthly = gross / 12;
+
+      document.getElementById('r-hourly').textContent = fmt(hourly);
+      document.getElementById('r-daily').textContent = fmt(daily);
+      document.getElementById('r-daily-sub').textContent = `${hrs}ч оплачиваемый день`;
+      document.getElementById('r-monthly').textContent = fmt(monthly);
+
+      const taxes = Math.max(0, gross - income - expenses);
+      document.getElementById('lbl-income').textContent = fmt(income);
+      document.getElementById('lbl-tax').textContent = fmt(taxes);
+      document.getElementById('lbl-exp').textContent = fmt(expenses);
+      const t = gross || 1;
+      document.getElementById('bar-income').style.width = (income / t * 100) + '%';
+      document.getElementById('bar-tax').style.width = (taxes / t * 100) + '%';
+      document.getElementById('bar-exp').style.width = (expenses / t * 100) + '%';
+
+      document.getElementById('est-1w').textContent = fmt(daily * days);
+      document.getElementById('est-2w').textContent = fmt(daily * days * 2);
+      document.getElementById('est-1m').textContent = fmt(daily * days * (workWeeks / 12));
+      document.getElementById('est-3m').textContent = fmt(daily * days * (workWeeks / 4));
+
+      const tip = document.getElementById('tip');
+      if (hourly < 15) { tip.innerHTML = '<strong>⚠️ Низкая ставка:</strong> Рассчитанная ставка очень низкая. Подумайте о сокращении неоплачиваемого времени, снижении расходов или пересмотре целевого дохода.'; }
+      else if (hourly > 250) { tip.innerHTML = '<strong>🎯 Уровень эксперта:</strong> Ставки выше $250/ч достижимы для узкой экспертизы (AI, юриспруденция, финансы, стратегия). Убедитесь, что портфолио это оправдывает.'; }
+      else { tip.innerHTML = '<strong>💡 Совет:</strong> Добавьте <strong>20–30%</strong> сверх этого минимума в реальном предложении — это ваша точка безубыточности. Опытные фрилансеры часто берут в 2–3 раза больше минимума.'; }
+
+      currentHourly = hourly; currentDaily = daily;
+      renderCard();
+      renderScenarios(+document.getElementById('scenario-slider').value);
+    }
+
+    function renderCard() {
+      const name = document.getElementById('card-name').value || 'Ваше имя';
+      const role = document.getElementById('card-role').value || 'Фрилансер';
+      const country = document.getElementById('card-country').value || '—';
+      const years = document.getElementById('card-years').value;
+      document.getElementById('card-name-display').textContent = name;
+      document.getElementById('card-role-display').textContent = role;
+      document.getElementById('card-country-display').textContent = country;
+      document.getElementById('card-years-display').textContent = years ? years + ' лет' : '—';
+      document.getElementById('card-rate-display').textContent = currentHourly > 0 ? sym + Math.round(currentHourly) + '/ч' : sym + '—/ч';
+      document.getElementById('card-daily-display').textContent = currentDaily > 0 ? sym + Math.round(currentDaily) + '/день' : '— /день';
+    }
+
+    document.getElementById('li-share-btn').addEventListener('click', () => {
+      const rate = currentHourly > 0 ? sym + Math.round(currentHourly) + '/ч' : 'моя ставка';
+      const role = document.getElementById('card-role').value || 'фрилансер';
+      const text = encodeURIComponent('Только что рассчитал(а) свою минимальную ставку как ' + role + ': ' + rate + '. Использовал(а) бесплатный инструмент RateKit, чтобы понять, сколько нужно брать для достижения цели по доходу. ratekit.org/ru/freelance-rate');
+      window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent('https://ratekit.org/ru/freelance-rate') + '&summary=' + text, '_blank');
+    });
+
+    document.getElementById('copy-card-btn').addEventListener('click', (e) => {
+      const btn = e.currentTarget;
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        btn.textContent = '✅ Скопировано!';
+        setTimeout(() => btn.textContent = '🔗 Скопировать ссылку', 2000);
+      });
+    });
+
+    document.getElementById('scenario-slider').addEventListener('input', () => {
+      const pct = +document.getElementById('scenario-slider').value;
+      document.getElementById('scenario-pct-label').textContent = '+' + pct + '%';
+      renderScenarios(pct);
+    });
+
+    function renderScenarios(customPct) {
+      if (currentHourly <= 0) return;
+      const scenarios = [
+        { label: 'Текущая ставка', mult: 1, color: 'var(--border)', textColor: 'var(--ink)' },
+        { label: '+20%', mult: 1.2, color: '#BFDBFE', textColor: 'var(--blue)' },
+        { label: '+' + (customPct || 20) + '%', mult: 1 + (customPct || 20) / 100, color: '#6EE7B7', textColor: 'var(--green)' },
+      ];
+
+      const income = +document.getElementById('income').value || 0;
+      const expenses = +document.getElementById('expenses').value || 0;
+      const tax = +document.getElementById('tax').value || 0;
+      const hrs = +document.getElementById('hours').value || 6;
+      const days = +document.getElementById('days').value || 5;
+      const vac = +document.getElementById('vacation').value || 0;
+      const workWeeks = 52 - vac;
+
+      const grid = document.getElementById('scenario-grid');
+      grid.innerHTML = scenarios.map((s) => {
+        const rate = currentHourly * s.mult;
+        const daily = rate * hrs;
+        const annualGross = rate * (workWeeks * days * hrs);
+        const annualNet = annualGross * (1 - tax / 100) - expenses;
+        return '<div style="background:var(--white);border:1.5px solid ' + s.color + ';border-radius:12px;padding:18px;text-align:center;">' +
+          '<div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">' + s.label + '</div>' +
+          '<div style="font-family:var(--mono);font-size:1.5rem;font-weight:700;color:' + s.textColor + ';">' + sym + Math.round(rate) + '/ч</div>' +
+          '<div style="font-size:11px;color:var(--muted);margin-top:4px;">' + sym + Math.round(daily) + '/день</div>' +
+          '<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:11px;color:var(--mid);">Годовая выручка: <strong>' + sym + Math.round(annualGross / 1000) + 'K</strong></div>' +
+          '<div style="font-size:11px;color:var(--mid);">На руки: <strong>' + sym + Math.round(Math.max(0, annualNet) / 1000) + 'K</strong></div>' +
+          '</div>';
+      }).join('');
+    }
+
+    document.addEventListener('input', calc);
+    document.addEventListener('rk:restored', calc);
+    window.addEventListener('load', calc);
+  </script>
+</ToolLayout>

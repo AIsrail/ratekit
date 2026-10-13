@@ -1,0 +1,328 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: 'Какие стандартные сроки оплаты по счёту?',
+    a: 'Net 30 (оплата в течение 30 дней) — самый распространённый вариант; фрилансеры всё чаще используют Net 7 или Net 15. Чёткий срок оплаты снижает число просрочек.' },
+  { q: 'Нужно ли добавлять НДС в счёт?',
+    a: 'Только если вы зарегистрированы как плательщик НДС/GST или обязаны его взимать по иным причинам. Указывайте ставку и сумму налога отдельно.' },
+  { q: 'Этот генератор счетов бесплатный?',
+    a: 'Да. Он бесплатный и не требует регистрации.' },
+];
+
+const related = [
+  { label: 'Stripe & PayPal Fee Calculator', path: '/stripe-fee' },
+  { label: 'Калькулятор НДС / GST', path: '/ru/vat-calculator' },
+  { label: 'Ставка фрилансера', path: '/ru/freelance-rate' },
+  { label: 'P&L Statement', path: '/pl-statement' },
+];
+---
+<ToolLayout
+  slug="invoice-generator"
+  lang="ru"
+  title="Счёт-фактура онлайн бесплатно"
+  description="Создайте профессиональный счёт за секунды. Скачайте как PDF. Бесплатный генератор счетов для фрилансеров и малого бизнеса. Без регистрации."
+  pageTag="🧾 Бесплатный инструмент"
+  pageTagColor="var(--blue)"
+  h1="Генератор счетов онлайн"
+  pageSub="Создайте профессиональный счёт за секунды. Скачайте как PDF. Без регистрации, без водяных знаков."
+  dateModified="2026-10-13"
+  guideTitle="Что должно быть в профессиональном счёте"
+  faq={faq}
+  related={related}
+>
+  <style is:global>
+    main { max-width: 1400px !important; }
+    .inv-app-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 20px; }
+    .inv-form-panel { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 28px; }
+    .inv-section-title { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+    .inv-field { margin-bottom: 12px; }
+    .inv-lbl { display: block; font-size: 11px; font-weight: 600; color: var(--mid); margin-bottom: 4px; letter-spacing: .04em; }
+    .inv-form-panel input[type="text"], .inv-form-panel input[type="number"], .inv-form-panel input[type="date"], .inv-form-panel textarea, .inv-form-panel select { width: 100%; background: var(--bg); border: 1.5px solid var(--border); border-radius: 6px; padding: 8px 12px; font-family: var(--font); font-size: 13px; color: var(--ink); outline: none; transition: border-color .15s; }
+    .inv-form-panel input:focus, .inv-form-panel textarea:focus, .inv-form-panel select:focus { border-color: var(--blue); }
+    .inv-form-panel textarea { resize: vertical; min-height: 60px; }
+    .inv-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .inv-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+    .items-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; font-size: 13px; }
+    .items-table th { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding: 6px 8px; border-bottom: 1px solid var(--border); text-align: left; }
+    .items-table td { padding: 6px 4px; }
+    .items-table input { padding: 6px 8px; }
+    .del-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 16px; padding: 4px; }
+    .del-btn:hover { color: var(--red); }
+    .add-btn { font-size: 12px; font-weight: 600; color: var(--blue); background: var(--bluebg); border: 1.5px solid #BFDBFE; border-radius: 6px; padding: 7px 14px; cursor: pointer; transition: all .15s; }
+    .add-btn:hover { background: #DBEAFE; }
+    .inv-preview-panel { position: sticky; top: 80px; }
+    .inv-preview-actions { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+    .inv-action-btn { padding: 9px 18px; border-radius: 8px; font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all .15s; }
+    .inv-action-btn.primary { background: var(--blue); color: white; }
+    .inv-action-btn.primary:hover { background: var(--blue2); }
+    .inv-action-btn.secondary { background: var(--white); color: var(--mid); border: 1.5px solid var(--border); }
+    .inv-action-btn.secondary:hover { border-color: var(--blue); color: var(--blue); }
+    .invoice-preview { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 40px; min-height: 600px; box-shadow: 0 4px 24px rgba(0,0,0,.06); }
+    .inv-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 36px; }
+    .inv-company { font-size: 22px; font-weight: 700; color: var(--ink); }
+    .inv-title { font-size: 28px; font-weight: 700; color: var(--blue); text-align: right; }
+    .inv-number { font-size: 12px; color: var(--muted); text-align: right; margin-top: 4px; }
+    .inv-dates { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 28px; }
+    .inv-block-label { font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .inv-block-val { font-size: 13px; color: var(--ink); line-height: 1.5; }
+    .inv-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+    .inv-table th { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding: 8px 10px; border-bottom: 2px solid var(--border); text-align: left; }
+    .inv-table th:last-child, .inv-table td:last-child { text-align: right; }
+    .inv-table td { padding: 10px; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--mid); }
+    .inv-table td:first-child { color: var(--ink); font-weight: 500; }
+    .inv-totals { margin-left: auto; width: 240px; }
+    .inv-total-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; color: var(--mid); }
+    .inv-total-row.grand { border-top: 2px solid var(--ink); margin-top: 8px; padding-top: 10px; font-size: 16px; font-weight: 700; color: var(--ink); }
+    .inv-notes { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); line-height: 1.6; }
+    .inv-watermark { margin-top: 32px; text-align: center; font-size: 10px; color: #CBD5E1; }
+    @media print {
+      .inv-form-panel, .inv-preview-actions { display: none !important; }
+      .inv-app-wrap { display: block; }
+      .inv-preview-panel { position: static; }
+      .invoice-preview { border: none; box-shadow: none; border-radius: 0; padding: 20px; }
+    }
+    @media (max-width: 1024px) {
+      .inv-app-wrap { grid-template-columns: 1fr; }
+      .inv-preview-panel { position: static; }
+    }
+  </style>
+
+  <div class="inv-app-wrap">
+    <div class="inv-form-panel">
+      <div class="inv-section-title">Ваш бизнес</div>
+      <div class="inv-field"><label class="inv-lbl">Компания / Ваше имя</label><input type="text" id="from-name" placeholder="ООО «Ромашка»"></div>
+      <div class="inv-field"><label class="inv-lbl">Адрес</label><textarea id="from-addr" rows="2" placeholder="ул. Примерная 1, Город, Страна"></textarea></div>
+      <div class="inv-row-2">
+        <div class="inv-field"><label class="inv-lbl">Email</label><input type="text" id="from-email" placeholder="you@company.com"></div>
+        <div class="inv-field"><label class="inv-lbl">Телефон</label><input type="text" id="from-phone" placeholder="+996 700 000 000"></div>
+      </div>
+
+      <div class="inv-section-title" style="margin-top:20px;">Получатель</div>
+      <div class="inv-field"><label class="inv-lbl">Имя / компания клиента</label><input type="text" id="to-name" placeholder="ООО «Клиент»"></div>
+      <div class="inv-field"><label class="inv-lbl">Адрес клиента</label><textarea id="to-addr" rows="2" placeholder="ул. Клиентская 2, Город"></textarea></div>
+
+      <div class="inv-section-title" style="margin-top:20px;">Данные счёта</div>
+      <div class="inv-row-3">
+        <div class="inv-field"><label class="inv-lbl">№ счёта</label><input type="text" id="inv-num" value="INV-001"></div>
+        <div class="inv-field"><label class="inv-lbl">Дата выставления</label><input type="date" id="inv-date"></div>
+        <div class="inv-field"><label class="inv-lbl">Срок оплаты</label><input type="date" id="due-date"></div>
+      </div>
+      <div class="inv-row-2">
+        <div class="inv-field"><label class="inv-lbl">Валюта</label>
+          <select id="currency">
+            <option value="$">USD ($)</option>
+            <option value="€">EUR (€)</option>
+            <option value="£">GBP (£)</option>
+            <option value="₽">RUB (₽)</option>
+            <option value="₸">KZT (₸)</option>
+          </select>
+        </div>
+        <div class="inv-field"><label class="inv-lbl">Ставка налога</label>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <input type="number" id="tax-rate" value="0" min="0" max="100" style="width:80px;">
+            <span style="font-size:13px;color:var(--muted);">%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="inv-section-title" style="margin-top:20px;">Позиции</div>
+      <table class="items-table">
+        <thead><tr><th>Описание</th><th>Кол-во</th><th>Цена</th><th>Сумма</th><th></th></tr></thead>
+        <tbody id="items-body"></tbody>
+      </table>
+      <button class="add-btn" id="add-item-btn">+ Добавить позицию</button>
+
+      <div class="inv-section-title" style="margin-top:20px;">Примечания</div>
+      <div class="inv-field"><textarea id="notes" rows="3" placeholder="Условия оплаты, банковские реквизиты, слова благодарности..."></textarea></div>
+    </div>
+
+    <div class="inv-preview-panel">
+      <div class="inv-preview-actions">
+        <button class="inv-action-btn primary" id="print-btn">⬇ Скачать PDF</button>
+        <button class="inv-action-btn secondary" id="copy-link-btn-inv">🔗 Скопировать ссылку</button>
+      </div>
+      <div class="invoice-preview" id="invoice-preview"></div>
+    </div>
+  </div>
+
+  <Fragment slot="guide">
+    <p>Понятный счёт оплачивают быстрее. Укажите, кто кому выставляет счёт, что было поставлено, суммы и налоги, условия и способ оплаты. Этот генератор работает прямо в браузере, счёт можно сохранить как PDF.</p>
+    <h3>Формула</h3>
+    <pre>Сумма позиции = Количество × Цена за единицу
+Промежуточный итог = Сумма всех позиций
+Итого к оплате = Промежуточный итог − Скидка + Налог</pre>
+    <h3>Пример</h3>
+    <p>Включите: номер и дату счёта, ваши данные и данные клиента, перечень услуг, промежуточный итог, налог (НДС/GST, если вы плательщик), итоговую сумму, срок оплаты (например, Net 15) и платёжные реквизиты.</p>
+  </Fragment>
+
+  <script>
+    let items = [{ desc: '', qty: 1, rate: 0 }];
+
+    function addItem() {
+      items.push({ desc: '', qty: 1, rate: 0 });
+      renderForm();
+      render();
+    }
+    function removeItem(i) {
+      items.splice(i, 1);
+      if (items.length === 0) items.push({ desc: '', qty: 1, rate: 0 });
+      renderForm();
+      render();
+    }
+
+    function renderForm() {
+      document.getElementById('items-body').innerHTML = items.map((item, i) => `
+        <tr>
+          <td><input type="text" value="${item.desc}" placeholder="Описание услуги" data-idx="${i}" data-field="desc" class="item-input"></td>
+          <td><input type="number" value="${item.qty}" min="0" style="width:60px;" data-idx="${i}" data-field="qty" class="item-input"></td>
+          <td><input type="number" value="${item.rate}" min="0" step="0.01" style="width:90px;" data-idx="${i}" data-field="rate" class="item-input"></td>
+          <td style="font-family:var(--mono);font-size:12px;padding:6px 10px;">${(item.qty * item.rate).toFixed(2)}</td>
+          <td><button class="del-btn" data-idx="${i}" type="button">×</button></td>
+        </tr>`).join('');
+
+      document.querySelectorAll('.item-input').forEach((el) => {
+        el.addEventListener('input', () => {
+          const i = +el.getAttribute('data-idx');
+          const field = el.getAttribute('data-field');
+          items[i][field] = field === 'desc' ? el.value : +el.value;
+          render();
+        });
+      });
+      document.querySelectorAll('.del-btn').forEach((btn) => {
+        btn.addEventListener('click', () => removeItem(+btn.getAttribute('data-idx')));
+      });
+    }
+
+    function fmt(n, sym) { return sym + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+
+    function render() {
+      const sym = document.getElementById('currency').value;
+      const taxRate = +document.getElementById('tax-rate').value || 0;
+      const subtotal = items.reduce((s, i) => s + i.qty * i.rate, 0);
+      const tax = subtotal * taxRate / 100;
+      const total = subtotal + tax;
+
+      const invNum = document.getElementById('inv-num').value || 'INV-001';
+      const invDate = document.getElementById('inv-date').value;
+      const dueDate = document.getElementById('due-date').value;
+      const fromName = document.getElementById('from-name').value || 'Ваша компания';
+      const fromAddr = (document.getElementById('from-addr').value || '').replace(/\n/g, '<br>');
+      const fromEmail = document.getElementById('from-email').value;
+      const fromPhone = document.getElementById('from-phone').value;
+      const toName = document.getElementById('to-name').value || 'Имя клиента';
+      const toAddr = (document.getElementById('to-addr').value || '').replace(/\n/g, '<br>');
+      const notes = (document.getElementById('notes').value || '').replace(/\n/g, '<br>');
+
+      const rows = items.map((i) => `
+        <tr>
+          <td>${i.desc || '—'}</td>
+          <td>${i.qty}</td>
+          <td>${fmt(i.rate, sym)}</td>
+          <td>${fmt(i.qty * i.rate, sym)}</td>
+        </tr>`).join('');
+
+      document.getElementById('invoice-preview').innerHTML = `
+        <div class="inv-header">
+          <div>
+            <div class="inv-company">${fromName}</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:4px;">${fromAddr}<br>${fromEmail}${fromPhone ? ' · ' + fromPhone : ''}</div>
+          </div>
+          <div>
+            <div class="inv-title">СЧЁТ</div>
+            <div class="inv-number"># ${invNum}</div>
+          </div>
+        </div>
+        <div class="inv-dates">
+          <div>
+            <div class="inv-block-label">Получатель</div>
+            <div class="inv-block-val"><strong>${toName}</strong><br>${toAddr}</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="inv-block-label">Дата выставления</div>
+            <div class="inv-block-val">${invDate || '—'}</div>
+            <div class="inv-block-label" style="margin-top:10px;">Срок оплаты</div>
+            <div class="inv-block-val">${dueDate || '—'}</div>
+          </div>
+        </div>
+        <table class="inv-table">
+          <thead><tr><th>Описание</th><th>Кол-во</th><th>Цена</th><th>Сумма</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+        <div class="inv-totals">
+          <div class="inv-total-row"><span>Промежуточный итог</span><span>${fmt(subtotal, sym)}</span></div>
+          ${taxRate > 0 ? `<div class="inv-total-row"><span>Налог (${taxRate}%)</span><span>${fmt(tax, sym)}</span></div>` : ''}
+          <div class="inv-total-row grand"><span>Итого к оплате</span><span>${fmt(total, sym)}</span></div>
+        </div>
+        ${notes ? `<div class="inv-notes"><strong>Примечания:</strong><br>${notes}</div>` : ''}
+        <div class="inv-watermark">Создано с RateKit · ratekit.org · Бесплатные бизнес-калькуляторы</div>
+      `;
+      save();
+    }
+
+    function save() {
+      const data = {
+        fromName: document.getElementById('from-name').value,
+        fromAddr: document.getElementById('from-addr').value,
+        fromEmail: document.getElementById('from-email').value,
+        fromPhone: document.getElementById('from-phone').value,
+        toName: document.getElementById('to-name').value,
+        toAddr: document.getElementById('to-addr').value,
+        invNum: document.getElementById('inv-num').value,
+        invDate: document.getElementById('inv-date').value,
+        dueDate: document.getElementById('due-date').value,
+        currency: document.getElementById('currency').value,
+        taxRate: document.getElementById('tax-rate').value,
+        notes: document.getElementById('notes').value,
+        items,
+      };
+      localStorage.setItem('rk_invoice_ru', JSON.stringify(data));
+    }
+
+    function load() {
+      const saved = localStorage.getItem('rk_invoice_ru');
+      if (!saved) return;
+      try {
+        const d = JSON.parse(saved);
+        document.getElementById('from-name').value = d.fromName || '';
+        document.getElementById('from-addr').value = d.fromAddr || '';
+        document.getElementById('from-email').value = d.fromEmail || '';
+        document.getElementById('from-phone').value = d.fromPhone || '';
+        document.getElementById('to-name').value = d.toName || '';
+        document.getElementById('to-addr').value = d.toAddr || '';
+        document.getElementById('inv-num').value = d.invNum || 'INV-001';
+        document.getElementById('inv-date').value = d.invDate || '';
+        document.getElementById('due-date').value = d.dueDate || '';
+        document.getElementById('currency').value = d.currency || '$';
+        document.getElementById('tax-rate').value = d.taxRate || 0;
+        document.getElementById('notes').value = d.notes || '';
+        if (d.items && d.items.length) items = d.items;
+      } catch (e) {}
+    }
+
+    document.getElementById('add-item-btn').addEventListener('click', addItem);
+    document.getElementById('print-btn').addEventListener('click', () => window.print());
+    document.getElementById('copy-link-btn-inv').addEventListener('click', (e) => {
+      const btn = e.currentTarget;
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        btn.textContent = '✅ Скопировано!';
+        setTimeout(() => btn.textContent = '🔗 Скопировать ссылку', 2000);
+      });
+    });
+
+    document.querySelectorAll('.inv-form-panel input, .inv-form-panel textarea, .inv-form-panel select').forEach((el) => {
+      el.addEventListener('input', render);
+      el.addEventListener('change', render);
+    });
+
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('inv-date').value = today;
+    const due = new Date();
+    due.setDate(due.getDate() + 30);
+    document.getElementById('due-date').value = due.toISOString().split('T')[0];
+
+    load();
+    renderForm();
+    render();
+  </script>
+</ToolLayout>
