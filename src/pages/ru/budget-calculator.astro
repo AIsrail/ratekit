@@ -1,0 +1,252 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: 'Какой нормальный burn rate для стартапа?',
+    a: 'Нет универсального числа — всё зависит от runway и стадии роста. Правило: держите runway выше 12 месяцев, если не привлекаете раунд, и пересчитывайте burn при каждом крупном изменении расходов.' },
+  { q: 'Чем runway отличается от burn rate?',
+    a: 'Burn rate — сколько денег компания теряет в месяц. Runway — сколько месяцев компания продержится при этом burn rate: деньги на счёте, делённые на месячный убыток.' },
+  { q: 'Включать ли свою зарплату в постоянные расходы?',
+    a: 'Да. Зарплата фаундера — реальный денежный расход, даже если вы планируете отложить выплату. Без неё бюджет занизит реальную потребность в деньгах.' },
+  { q: 'Что считается переменным расходом?',
+    a: 'Расходы, которые растут вместе с доходом или объёмом: комиссии платёжных систем, материалы, доставка, комиссии продавцам. Если расход одинаков и при $0, и при $100k выручки — это постоянный расход, а не переменный.' },
+  { q: 'Как часто обновлять бюджет?',
+    a: 'Раз в месяц, сразу после закрытия предыдущего месяца. Замените прогнозные цифры фактическими, чтобы прогноз не отрывался от реальности.' },
+  { q: 'Если прибыль положительная — есть ли runway?',
+    a: 'Нет — runway считается только при убытке. Положительная месячная прибыль означает, что баланс растёт каждый месяц, и обратного отсчёта нет.' },
+];
+
+const related = [
+  { label: 'Точка безубыточности', path: '/ru/break-even' },
+  { label: 'Burn Rate & Runway Calculator', path: '/burn-rate' },
+  { label: 'P&L Statement', path: '/pl-statement' },
+  { label: 'Калькулятор ROI', path: '/ru/roi-calculator' },
+];
+---
+<ToolLayout
+  slug="budget-calculator"
+  lang="ru"
+  title="Калькулятор бюджета и кассовых потоков — прогноз на 12 месяцев"
+  description="Бесплатный калькулятор месячного бюджета с прогнозом кассовых потоков на 12 месяцев и расчётом runway. Прибыль, маржа и сценарии дохода — мгновенно."
+  pageTag="💵 Инструмент планирования"
+  h1="Калькулятор бюджета и кассовых потоков"
+  pageSub="Спланируйте месячный бюджет, спроектируйте кассовый поток на 12 месяцев вперёд и узнайте, сколько продержится компания. Все расчёты — в браузере, ничего не отправляется на сервер."
+  dateModified="2026-10-13"
+  guideTitle="Как составить месячный бюджет и посчитать runway"
+  faq={faq}
+  related={related}
+>
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-title">💰 Месячный доход</div>
+      <div class="field"><label class="lbl">Доход от продукта / услуги</label>
+        <div class="input-wrap"><span class="ifix">$</span><input type="number" id="revenue-main" value="50000" min="0" step="100"></div>
+      </div>
+      <div class="field"><label class="lbl">Прочие источники дохода <span class="hint">(опционально)</span></label>
+        <div class="input-wrap"><span class="ifix">$</span><input type="number" id="revenue-other" value="0" min="0" step="100"></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">📊 Постоянные расходы (в месяц)</div>
+      <div class="field"><label class="lbl">Зарплаты команды <span class="hint">(включая фаундера)</span></label>
+        <div class="input-wrap"><span class="ifix">$</span><input type="number" id="cost-salaries" value="20000" min="0" step="100"></div>
+      </div>
+      <div class="field"><label class="lbl">Офис / сервера / инструменты</label>
+        <div class="input-wrap"><span class="ifix">$</span><input type="number" id="cost-ops" value="5000" min="0" step="100"></div>
+      </div>
+      <div class="field"><label class="lbl">Маркетинг и продажи</label>
+        <div class="input-wrap"><span class="ifix">$</span><input type="number" id="cost-marketing" value="3000" min="0" step="100"></div>
+      </div>
+      <div class="field"><label class="lbl">Прочие постоянные расходы</label>
+        <div class="input-wrap"><span class="ifix">$</span><input type="number" id="cost-other" value="2000" min="0" step="100"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">📉 Переменные расходы и начальный баланс</div>
+    <div class="grid-2" style="margin-bottom:0;">
+      <div class="field"><label class="lbl">Переменные расходы <span class="hint">(% от дохода — комиссии, материалы, бонусы)</span></label>
+        <div class="input-wrap"><input type="number" id="variable-cost-pct" value="10" min="0" max="100" step="0.1"><span class="ifix ifix-r">%</span></div>
+      </div>
+      <div class="field"><label class="lbl">Начальный баланс кассы</label>
+        <div class="input-wrap"><span class="ifix">$</span><input type="number" id="starting-cash" value="100000" min="0" step="1000"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="results-row">
+    <div class="r-card"><div class="r-label">Всего дохода</div><div class="r-value" id="out-revenue">—</div><div class="r-sub">в месяц</div></div>
+    <div class="r-card"><div class="r-label">Всего расходов</div><div class="r-value" id="out-costs">—</div><div class="r-sub">постоянные + переменные</div></div>
+    <div class="r-card primary"><div class="r-label">Прибыль / убыток</div><div class="r-value" id="out-profit">—</div><div class="r-sub" id="out-margin-sub">маржа —</div></div>
+    <div class="r-card"><div class="r-label">Runway</div><div class="r-value" id="out-runway">—</div><div class="r-sub">месяцев до $0</div></div>
+  </div>
+
+  <div class="verdict" id="verdict"></div>
+
+  <div class="info-box">
+    <strong>📐 Формула:</strong> Общие расходы = Постоянные + (Доход × Переменные %) &nbsp;·&nbsp; Прибыль/убыток = Доход − Общие расходы &nbsp;·&nbsp; Runway = Начальный баланс ÷ |Месячный убыток| (только при убытке).
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">📊 Сценарии дохода</div>
+    <div class="results-row" style="margin-bottom:0;">
+      <div class="r-card"><div class="r-label">Если доход −25%</div><div class="r-value" id="scenario-down25">—</div><div class="r-sub">прибыль/убыток</div></div>
+      <div class="r-card"><div class="r-label">Текущий</div><div class="r-value" id="scenario-base">—</div><div class="r-sub">прибыль/убыток</div></div>
+      <div class="r-card"><div class="r-label">Если доход +25%</div><div class="r-value" id="scenario-up25">—</div><div class="r-sub">прибыль/убыток</div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">📈 Прогноз кассовых потоков на 12 месяцев</div>
+    <canvas id="chart" height="280"></canvas>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Помесячная разбивка</div>
+    <table style="width:100%;font-size:13px;border-collapse:collapse;">
+      <thead>
+        <tr style="border-bottom:2px solid var(--border);">
+          <th style="text-align:left;padding:8px;color:var(--muted);font-weight:600;">Месяц</th>
+          <th style="text-align:right;padding:8px;color:var(--muted);font-weight:600;">Доход</th>
+          <th style="text-align:right;padding:8px;color:var(--muted);font-weight:600;">Расходы</th>
+          <th style="text-align:right;padding:8px;color:var(--muted);font-weight:600;">Прибыль/убыток</th>
+          <th style="text-align:right;padding:8px;color:var(--muted);font-weight:600;">Баланс</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
+
+  <Fragment slot="guide">
+    <p><strong>Коротко:</strong> месячный бюджет сравнивает доход с постоянными и переменными расходами, чтобы найти прибыль или убыток. Если расходы превышают доход, runway — деньги на счёте ÷ месячный убыток — показывает, сколько месяцев есть в запасе до нуля на счёте. Положительный денежный поток означает, что обратного отсчёта нет: баланс растёт, а не сгорает.</p>
+
+    <h3>Формула</h3>
+    <pre>Общие расходы = Постоянные расходы + (Доход × Переменные расходы %)
+Прибыль/убыток = Доход − Общие расходы
+Runway (месяцев) = Начальный баланс ÷ |Прибыль/убыток|   (только если убыток)</pre>
+
+    <h3>Пример</h3>
+    <p>Стартап зарабатывает $50 000/месяц, постоянные расходы — $30 000 (зарплаты, аренда, инструменты), переменные — 10% ($5 000). Итого расходов — $35 000, прибыль — $15 000/месяц: баланс растёт каждый месяц, runway не ограничен. Если бы постоянные расходы составили $55 000, итого расходов было бы $60 000 — убыток $10 000/месяц. При балансе в $100 000 это даёт runway 10 месяцев до нуля на счёте.</p>
+
+    <h3>Ориентиры</h3>
+    <table class="bench-table">
+      <thead><tr><th>Метрика</th><th>Здоровый диапазон</th></tr></thead>
+      <tbody>
+        <tr><td>Runway, бутстрап-бизнес</td><td>от 12 месяцев</td></tr>
+        <tr><td>Runway, стартап с инвестициями до product/market fit</td><td>18–24 месяца</td></tr>
+        <tr><td>Чистая маржа, сервисный бизнес</td><td>10–20%</td></tr>
+        <tr><td>Чистая маржа, ранний SaaS</td><td>от −20% до 10% (на инвестициях роста)</td></tr>
+        <tr><td>Доля переменных расходов</td><td>менее 30% от дохода</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Частые ошибки</h3>
+    <p>Забыть разовые расходы (оборудование, юристы, налоги) при прогнозе на несколько месяцев вперёд. Считать бюджет по выставленным счетам, а не по реально поступившим деньгам — неоплаченный счёт не покроет зарплату. Игнорировать сезонность — усреднённый месяц скрывает риск в низкие периоды. Считать "прибыльно на бумаге" синонимом "безопасно", не глядя на реальный баланс счёта. Не обновлять бюджет после закрытия месяца, из-за чего план отрывается от реальности.</p>
+  </Fragment>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script>
+    function readInputs() {
+      const n = (id) => parseFloat(document.getElementById(id)?.value || '0') || 0;
+      return {
+        revenueMain: n('revenue-main'), revenueOther: n('revenue-other'),
+        salaries: n('cost-salaries'), ops: n('cost-ops'), marketing: n('cost-marketing'), other: n('cost-other'),
+        variablePct: n('variable-cost-pct'), startingCash: n('starting-cash'),
+      };
+    }
+
+    function fmt(n) {
+      return (n < 0 ? '-$' : '$') + Math.round(Math.abs(n)).toLocaleString('en-US');
+    }
+
+    function profitFor(revenue, fixedCosts, variablePct) {
+      const totalCosts = fixedCosts + revenue * (variablePct / 100);
+      return { totalCosts, profit: revenue - totalCosts };
+    }
+
+    let chart = null;
+
+    function calc() {
+      const inp = readInputs();
+      const revenue = inp.revenueMain + inp.revenueOther;
+      const fixedCosts = inp.salaries + inp.ops + inp.marketing + inp.other;
+      const { totalCosts, profit } = profitFor(revenue, fixedCosts, inp.variablePct);
+      const margin = revenue > 0 ? (profit / revenue) * 100 : 0;
+      const runway = profit < -0.01 ? Math.floor(inp.startingCash / Math.abs(profit)) : null;
+
+      document.getElementById('out-revenue').textContent = fmt(revenue);
+      document.getElementById('out-costs').textContent = fmt(totalCosts);
+      document.getElementById('out-profit').textContent = (profit >= 0 ? '+' : '') + fmt(profit);
+      document.getElementById('out-margin-sub').textContent = `маржа ${margin.toFixed(1)}%`;
+      document.getElementById('out-runway').textContent = runway === null ? '∞' : `${runway} мес.`;
+
+      const verdict = document.getElementById('verdict');
+      if (profit < 0 && runway !== null && runway < 6) {
+        verdict.style.cssText = 'background:var(--redbg);color:var(--red);';
+        verdict.textContent = `🚨 Осталось ${runway} мес. runway. При таком burn rate нужно снижать расходы, расти в доходе или привлекать финансирование.`;
+      } else if (profit < 0 && runway !== null && runway < 12) {
+        verdict.style.cssText = 'background:#FFFBEB;color:var(--amber);';
+        verdict.textContent = `⚠️ ${runway} мес. runway. Пока комфортно, но начните планировать следующий шаг, прежде чем станет меньше 6.`;
+      } else if (profit >= 0) {
+        verdict.style.cssText = 'background:var(--greenbg);color:var(--green);';
+        verdict.textContent = `✅ Прибыльно — баланс растёт на ${fmt(profit)} каждый месяц. Ограничения по runway нет.`;
+      } else {
+        verdict.style.cssText = 'background:var(--bluebg);color:var(--blue);';
+        verdict.textContent = `${runway} мес. runway — нормально, но следите за изменением расходов и дохода.`;
+      }
+
+      const down25 = profitFor(revenue * 0.75, fixedCosts, inp.variablePct).profit;
+      const up25 = profitFor(revenue * 1.25, fixedCosts, inp.variablePct).profit;
+      document.getElementById('scenario-down25').textContent = (down25 >= 0 ? '+' : '') + fmt(down25);
+      document.getElementById('scenario-base').textContent = (profit >= 0 ? '+' : '') + fmt(profit);
+      document.getElementById('scenario-up25').textContent = (up25 >= 0 ? '+' : '') + fmt(up25);
+
+      const monthLabels = ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'];
+      let cash = inp.startingCash;
+      const cashLine = [];
+      const profitLine = [];
+      const tbody = document.getElementById('table-body');
+      tbody.innerHTML = '';
+      for (let i = 0; i < 12; i++) {
+        cash += profit;
+        cashLine.push(cash);
+        profitLine.push(profit);
+        const row = document.createElement('tr');
+        row.style.borderBottom = '1px solid var(--border)';
+        row.innerHTML = `
+          <td style="padding:8px;">${monthLabels[i]}</td>
+          <td style="text-align:right;padding:8px;">${fmt(revenue)}</td>
+          <td style="text-align:right;padding:8px;">${fmt(totalCosts)}</td>
+          <td style="text-align:right;padding:8px;color:${profit >= 0 ? '#059669' : '#DC2626'};font-weight:600;">${(profit >= 0 ? '+' : '') + fmt(profit)}</td>
+          <td style="text-align:right;padding:8px;font-family:var(--mono);font-weight:600;${cash < 0 ? 'color:#DC2626;' : ''}">${fmt(cash)}</td>`;
+        tbody.appendChild(row);
+      }
+
+      const Chart = window.Chart;
+      if (Chart) {
+        const ctx = document.getElementById('chart').getContext('2d');
+        if (chart) chart.destroy();
+        chart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: monthLabels,
+            datasets: [
+              { label: 'Баланс кассы', data: cashLine, borderColor: '#2563EB', backgroundColor: 'rgba(37,99,235,0.1)', borderWidth: 2, tension: 0.3, fill: true },
+              { label: 'Прибыль/убыток', data: profitLine, borderColor: '#059669', backgroundColor: 'rgba(5,150,105,0.1)', borderWidth: 2, tension: 0.3 },
+            ],
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { display: true, position: 'top' } },
+            scales: { y: { ticks: { callback: (v) => '$' + (v / 1000).toFixed(0) + 'k' } } },
+          },
+        });
+      }
+    }
+
+    document.addEventListener('input', calc);
+    document.addEventListener('rk:restored', calc);
+    window.addEventListener('load', calc);
+  </script>
+</ToolLayout>

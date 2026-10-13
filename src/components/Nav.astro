@@ -1,0 +1,76 @@
+---
+import { tools, sectionLabel, type Section } from '../data/tools';
+
+interface Props {
+  lang: 'en' | 'ru';
+  /** slug of the tool page currently rendering, for the active-link highlight */
+  activeSlug?: string;
+  /** where the language-switch link in the nav should point */
+  altLangPath: string;
+}
+
+const { lang, activeSlug, altLangPath } = Astro.props;
+
+const sections: Section[] = ['freelancers', 'business', 'startups'];
+
+function visibleItems(section: Section) {
+  return tools.filter((t) => {
+    if (t.section !== section) return false;
+    if (lang === 'en') return true;
+    return Boolean(t.ru) || Boolean(t.usOnly);
+  });
+}
+---
+<nav id="nav">
+  <a href={lang === 'en' ? '/' : '/ru/'} class="logo">Rate<span>Kit</span></a>
+  <div class="nav-r">
+    <a href={altLangPath} class="translate-btn" title={lang === 'en' ? 'Русская версия' : 'Switch to English'}>
+      {lang === 'en' ? 'RU' : 'EN'}
+    </a>
+    <div class="dropdown" id="tools-dropdown" data-dropdown-init="1">
+      <button class="dropdown-btn" data-dropdown-toggle>
+        🧮 {lang === 'en' ? 'All Tools' : 'Все инструменты'} <span class="arrow">▾</span>
+      </button>
+      <div class="dropdown-menu">
+        {sections.map((section, i) => {
+          const items = visibleItems(section);
+          if (items.length === 0) return null;
+          return (
+            <>
+              {i > 0 && <div class="dropdown-divider" />}
+              <div class="dropdown-section">{sectionLabel[section][lang]}</div>
+              {items.map((t) => {
+                const useRu = lang === 'ru' && t.ru;
+                const href = useRu ? t.ru!.path : t.en.path;
+                const label = useRu ? t.ru!.label : t.en.label;
+                const isActive = t.slug === activeSlug;
+                const isUsOnlyInRu = lang === 'ru' && !t.ru && t.usOnly;
+                return (
+                  <a href={href} class={`dropdown-item${isActive ? ' active' : ''}`}>
+                    <span class="item-icon">{t.icon}</span>{label}
+                    {isUsOnlyInRu && <span class="en-flag">US только</span>}
+                  </a>
+                );
+              })}
+            </>
+          );
+        })}
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  // The dropdown button already works standalone on mobile, so there's no separate
+  // burger/hamburger control — just one toggle, plus outside-click to close.
+  document.querySelectorAll('[data-dropdown-toggle]').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      document.getElementById('tools-dropdown')?.classList.toggle('open');
+    });
+  });
+  document.addEventListener('click', (e) => {
+    const dd = document.getElementById('tools-dropdown');
+    if (dd && !dd.contains(e.target)) dd.classList.remove('open');
+  });
+</script>

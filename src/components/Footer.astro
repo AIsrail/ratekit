@@ -1,0 +1,21 @@
+---
+interface Props {
+  lang: 'en' | 'ru';
+}
+const { lang } = Astro.props;
+const home = lang === 'en' ? '/' : '/ru/';
+const labels = lang === 'en'
+  ? { about: 'About', contact: 'Contact', privacy: 'Privacy', terms: 'Terms', cookies: 'Cookies', tagline: 'Free business calculators' }
+  : { about: 'О нас', contact: 'Контакты', privacy: 'Приватность', terms: 'Условия', cookies: 'Cookies', tagline: 'Бесплатные бизнес-калькуляторы' };
+---
+<footer>
+  <a href={home} class="flogo">Rate<span>Kit</span></a>
+  <span class="fcopy">© 2026 RateKit · {labels.tagline}</span>
+  <ul class="flinks">
+    <li><a href="/about">{labels.about}</a></li>
+    <li><a href="/contact">{labels.contact}</a></li>
+    <li><a href="/privacy">{labels.privacy}</a></li>
+    <li><a href="/terms">{labels.terms}</a></li>
+    <li><a href="/cookies">{labels.cookies}</a></li>
+  </ul>
+</footer>

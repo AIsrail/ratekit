@@ -1,4 +1,7 @@
 .wrangler/
+node_modules/
+dist/
+.astro/
 
 # Unrelated project (resumelink) that ended up in this working directory on disk —
 # not part of the ratekit site, must never be committed here.
@@ -7,8 +10,6 @@ resumelink-*.md
 add-descriptions.py
 promo-drafts.md
 
-# local working notes, not site content
+# local working notes, not site content (incl. REBUILD_PLAN.md)
 *.md
 !README.md
-resumelink-local/
-add-descriptions.py

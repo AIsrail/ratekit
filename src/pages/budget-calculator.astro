@@ -1,0 +1,252 @@
+---
+import ToolLayout from '../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: "What's a good monthly burn rate for a startup?",
+    a: "There's no universal number — it depends on your runway and growth stage. As a rule of thumb, keep runway above 12 months if you're not actively raising, and recalculate burn every time a major cost changes." },
+  { q: 'How is runway different from burn rate?',
+    a: 'Burn rate is how much cash you lose per month. Runway is how many months you can survive at that burn rate — cash on hand divided by the monthly loss.' },
+  { q: 'Should I include my own salary in fixed costs?',
+    a: "Yes. Founder pay is a real cash cost even if you plan to defer it — exclude it and your budget will understate how much cash you actually need." },
+  { q: 'What counts as a variable cost?',
+    a: 'Costs that scale with revenue or volume: payment processing fees, materials, shipping, sales commissions. If a cost stays the same whether you sell $0 or $100k, it is fixed, not variable.' },
+  { q: 'How often should I update my budget?',
+    a: "Monthly, right after you close the books for the previous month. Swap projected numbers for actuals so the forecast stays grounded instead of drifting from your original assumptions." },
+  { q: 'What if my profit is positive — do I still have a runway number?',
+    a: 'No — runway only applies when you are losing money. A positive monthly profit means your cash balance grows every month, so there is no countdown to calculate.' },
+];
+
+const related = [
+  { label: 'Break-even Calculator', path: '/break-even' },
+  { label: 'Burn Rate & Runway Calculator', path: '/burn-rate' },
+  { label: 'P&L Statement', path: '/pl-statement' },
+  { label: 'ROI Calculator', path: '/roi-calculator' },
+];
+---
+<ToolLayout
+  slug="budget-calculator"
+  lang="en"
+  title="Budget & Cash Flow Calculator — 12-Month Forecast"
+  description="Free monthly budget calculator with 12-month cash flow forecast and runway. See profit/loss, margin, and best/worst-case revenue scenarios instantly."
+  pageTag="💵 Planning Tool"
+  h1="Budget & Cash Flow Calculator"
+  pageSub="Plan your monthly budget, project cash flow 12 months out, and find out how long your runway lasts. Everything runs in your browser — nothing is sent to a server."
+  dateModified="2026-10-13"
+  guideTitle="How to build a monthly budget and calculate your cash runway"
+  faq={faq}
+  related={related}
+>
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-title">💰 Monthly Revenue</div>
+      <div class="field"><label class="lbl">Product / Service Revenue</label>
+        <div class="input-wrap"><span class="ifix">$</span><input type="number" id="revenue-main" value="50000" min="0" step="100"></div>
+      </div>
+      <div class="field"><label class="lbl">Other Income Sources <span class="hint">(optional)</span></label>
+        <div class="input-wrap"><span class="ifix">$</span><input type="number" id="revenue-other" value="0" min="0" step="100"></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">📊 Fixed Costs (Monthly)</div>
+      <div class="field"><label class="lbl">Team Salaries <span class="hint">(incl. founder pay)</span></label>
+        <div class="input-wrap"><span class="ifix">$</span><input type="number" id="cost-salaries" value="20000" min="0" step="100"></div>
+      </div>
+      <div class="field"><label class="lbl">Office / Servers / Tools</label>
+        <div class="input-wrap"><span class="ifix">$</span><input type="number" id="cost-ops" value="5000" min="0" step="100"></div>
+      </div>
+      <div class="field"><label class="lbl">Marketing & Sales</label>
+        <div class="input-wrap"><span class="ifix">$</span><input type="number" id="cost-marketing" value="3000" min="0" step="100"></div>
+      </div>
+      <div class="field"><label class="lbl">Other Fixed Costs</label>
+        <div class="input-wrap"><span class="ifix">$</span><input type="number" id="cost-other" value="2000" min="0" step="100"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">📉 Variable Costs & Starting Cash</div>
+    <div class="grid-2" style="margin-bottom:0;">
+      <div class="field"><label class="lbl">Variable Cost <span class="hint">(% of revenue — processing fees, materials, commissions)</span></label>
+        <div class="input-wrap"><input type="number" id="variable-cost-pct" value="10" min="0" max="100" step="0.1"><span class="ifix ifix-r">%</span></div>
+      </div>
+      <div class="field"><label class="lbl">Starting Cash on Hand</label>
+        <div class="input-wrap"><span class="ifix">$</span><input type="number" id="starting-cash" value="100000" min="0" step="1000"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="results-row">
+    <div class="r-card"><div class="r-label">Total Revenue</div><div class="r-value" id="out-revenue">—</div><div class="r-sub">per month</div></div>
+    <div class="r-card"><div class="r-label">Total Costs</div><div class="r-value" id="out-costs">—</div><div class="r-sub">fixed + variable</div></div>
+    <div class="r-card primary"><div class="r-label">Profit / Loss</div><div class="r-value" id="out-profit">—</div><div class="r-sub" id="out-margin-sub">margin —</div></div>
+    <div class="r-card"><div class="r-label">Runway</div><div class="r-value" id="out-runway">—</div><div class="r-sub">months until $0</div></div>
+  </div>
+
+  <div class="verdict" id="verdict"></div>
+
+  <div class="info-box">
+    <strong>📐 Formula:</strong> Total Costs = Fixed Costs + (Revenue × Variable %) &nbsp;·&nbsp; Profit/Loss = Revenue − Total Costs &nbsp;·&nbsp; Runway = Starting Cash ÷ |Monthly Loss| (only when losing money).
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">📊 Revenue scenarios</div>
+    <div class="results-row" style="margin-bottom:0;">
+      <div class="r-card"><div class="r-label">If revenue −25%</div><div class="r-value" id="scenario-down25">—</div><div class="r-sub">profit/loss</div></div>
+      <div class="r-card"><div class="r-label">Current</div><div class="r-value" id="scenario-base">—</div><div class="r-sub">profit/loss</div></div>
+      <div class="r-card"><div class="r-label">If revenue +25%</div><div class="r-value" id="scenario-up25">—</div><div class="r-sub">profit/loss</div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">📈 12-Month Cash Flow Forecast</div>
+    <canvas id="chart" height="280"></canvas>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Monthly Breakdown</div>
+    <table style="width:100%;font-size:13px;border-collapse:collapse;">
+      <thead>
+        <tr style="border-bottom:2px solid var(--border);">
+          <th style="text-align:left;padding:8px;color:var(--muted);font-weight:600;">Month</th>
+          <th style="text-align:right;padding:8px;color:var(--muted);font-weight:600;">Revenue</th>
+          <th style="text-align:right;padding:8px;color:var(--muted);font-weight:600;">Costs</th>
+          <th style="text-align:right;padding:8px;color:var(--muted);font-weight:600;">Profit/Loss</th>
+          <th style="text-align:right;padding:8px;color:var(--muted);font-weight:600;">Cash Balance</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
+
+  <Fragment slot="guide">
+    <p><strong>In short:</strong> a monthly budget compares revenue against fixed and variable costs to find your profit or loss. If costs exceed revenue, your runway — cash on hand ÷ monthly loss — tells you how many months you have before the account hits zero. Positive cash flow means there's no countdown: you're adding cash, not burning it.</p>
+
+    <h3>Formula</h3>
+    <pre>Total Costs = Fixed Costs + (Revenue × Variable Cost %)
+Profit/Loss = Revenue − Total Costs
+Runway (months) = Starting Cash ÷ |Profit/Loss|   (only when Profit/Loss is negative)</pre>
+
+    <h3>Example</h3>
+    <p>A startup earns $50,000/month, has $30,000 in fixed costs (salaries, rent, tools) and 10% variable costs ($5,000). Total costs = $35,000, so monthly profit is $15,000 — cash grows every month, no runway limit. If fixed costs were $55,000 instead, total costs would be $60,000, a $10,000/month loss. With $100,000 in the bank, that's a 10-month runway before the balance hits zero.</p>
+
+    <h3>Benchmarks</h3>
+    <table class="bench-table">
+      <thead><tr><th>Metric</th><th>Healthy range</th></tr></thead>
+      <tbody>
+        <tr><td>Runway, bootstrapped business</td><td>12+ months</td></tr>
+        <tr><td>Runway, VC-backed pre-product/market fit</td><td>18–24 months</td></tr>
+        <tr><td>Net margin, services business</td><td>10–20%</td></tr>
+        <tr><td>Net margin, early-stage SaaS</td><td>−20% to 10% (growth-funded)</td></tr>
+        <tr><td>Variable cost ratio</td><td>under 30% of revenue</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Common mistakes</h3>
+    <p>Forgetting one-time costs (equipment, legal, taxes) when projecting months ahead. Budgeting against invoiced revenue instead of cash actually collected — unpaid invoices don't cover payroll. Ignoring seasonality, so a flat monthly average hides risk in slow months. Treating "profitable on paper" as "safe" without checking the actual bank balance. Not updating the budget after a real month closes, so the plan drifts from reality.</p>
+  </Fragment>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script>
+    function readInputs() {
+      const n = (id) => parseFloat(document.getElementById(id)?.value || '0') || 0;
+      return {
+        revenueMain: n('revenue-main'), revenueOther: n('revenue-other'),
+        salaries: n('cost-salaries'), ops: n('cost-ops'), marketing: n('cost-marketing'), other: n('cost-other'),
+        variablePct: n('variable-cost-pct'), startingCash: n('starting-cash'),
+      };
+    }
+
+    function fmt(n) {
+      return (n < 0 ? '-$' : '$') + Math.round(Math.abs(n)).toLocaleString('en-US');
+    }
+
+    function profitFor(revenue, fixedCosts, variablePct) {
+      const totalCosts = fixedCosts + revenue * (variablePct / 100);
+      return { totalCosts, profit: revenue - totalCosts };
+    }
+
+    let chart = null;
+
+    function calc() {
+      const inp = readInputs();
+      const revenue = inp.revenueMain + inp.revenueOther;
+      const fixedCosts = inp.salaries + inp.ops + inp.marketing + inp.other;
+      const { totalCosts, profit } = profitFor(revenue, fixedCosts, inp.variablePct);
+      const margin = revenue > 0 ? (profit / revenue) * 100 : 0;
+      const runway = profit < -0.01 ? Math.floor(inp.startingCash / Math.abs(profit)) : null;
+
+      document.getElementById('out-revenue').textContent = fmt(revenue);
+      document.getElementById('out-costs').textContent = fmt(totalCosts);
+      document.getElementById('out-profit').textContent = (profit >= 0 ? '+' : '') + fmt(profit);
+      document.getElementById('out-margin-sub').textContent = `margin ${margin.toFixed(1)}%`;
+      document.getElementById('out-runway').textContent = runway === null ? '∞' : `${runway} mo`;
+
+      const verdict = document.getElementById('verdict');
+      if (profit < 0 && runway !== null && runway < 6) {
+        verdict.style.cssText = 'background:var(--redbg);color:var(--red);';
+        verdict.textContent = `🚨 ${runway} months of runway left. At this burn rate you need to cut costs, raise revenue, or raise funding soon.`;
+      } else if (profit < 0 && runway !== null && runway < 12) {
+        verdict.style.cssText = 'background:#FFFBEB;color:var(--amber);';
+        verdict.textContent = `⚠️ ${runway} months of runway. Comfortable for now, but start planning your next move before it drops under 6.`;
+      } else if (profit >= 0) {
+        verdict.style.cssText = 'background:var(--greenbg);color:var(--green);';
+        verdict.textContent = `✅ Profitable — cash grows by ${fmt(profit)} every month. No runway limit at this rate.`;
+      } else {
+        verdict.style.cssText = 'background:var(--bluebg);color:var(--blue);';
+        verdict.textContent = `${runway} months of runway — healthy, but keep an eye on it as costs or revenue change.`;
+      }
+
+      const down25 = profitFor(revenue * 0.75, fixedCosts, inp.variablePct).profit;
+      const up25 = profitFor(revenue * 1.25, fixedCosts, inp.variablePct).profit;
+      document.getElementById('scenario-down25').textContent = (down25 >= 0 ? '+' : '') + fmt(down25);
+      document.getElementById('scenario-base').textContent = (profit >= 0 ? '+' : '') + fmt(profit);
+      document.getElementById('scenario-up25').textContent = (up25 >= 0 ? '+' : '') + fmt(up25);
+
+      const monthLabels = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      let cash = inp.startingCash;
+      const cashLine = [];
+      const profitLine = [];
+      const tbody = document.getElementById('table-body');
+      tbody.innerHTML = '';
+      for (let i = 0; i < 12; i++) {
+        cash += profit;
+        cashLine.push(cash);
+        profitLine.push(profit);
+        const row = document.createElement('tr');
+        row.style.borderBottom = '1px solid var(--border)';
+        row.innerHTML = `
+          <td style="padding:8px;">${monthLabels[i]}</td>
+          <td style="text-align:right;padding:8px;">${fmt(revenue)}</td>
+          <td style="text-align:right;padding:8px;">${fmt(totalCosts)}</td>
+          <td style="text-align:right;padding:8px;color:${profit >= 0 ? '#059669' : '#DC2626'};font-weight:600;">${(profit >= 0 ? '+' : '') + fmt(profit)}</td>
+          <td style="text-align:right;padding:8px;font-family:var(--mono);font-weight:600;${cash < 0 ? 'color:#DC2626;' : ''}">${fmt(cash)}</td>`;
+        tbody.appendChild(row);
+      }
+
+      const Chart = window.Chart;
+      if (Chart) {
+        const ctx = document.getElementById('chart').getContext('2d');
+        if (chart) chart.destroy();
+        chart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: monthLabels,
+            datasets: [
+              { label: 'Cash Balance', data: cashLine, borderColor: '#2563EB', backgroundColor: 'rgba(37,99,235,0.1)', borderWidth: 2, tension: 0.3, fill: true },
+              { label: 'Monthly Profit/Loss', data: profitLine, borderColor: '#059669', backgroundColor: 'rgba(5,150,105,0.1)', borderWidth: 2, tension: 0.3 },
+            ],
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { display: true, position: 'top' } },
+            scales: { y: { ticks: { callback: (v) => '$' + (v / 1000).toFixed(0) + 'k' } } },
+          },
+        });
+      }
+    }
+
+    document.addEventListener('input', calc);
+    document.addEventListener('rk:restored', calc);
+    window.addEventListener('load', calc);
+  </script>
+</ToolLayout>
