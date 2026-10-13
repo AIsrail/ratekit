@@ -3,7 +3,7 @@ interface Props {
   lang: 'en' | 'ru';
 }
 const { lang } = Astro.props;
-const home = lang === 'en' ? '/' : '/ru/';
+const home = lang === 'en' ? '/' : '/ru';
 const labels = lang === 'en'
   ? { about: 'About', contact: 'Contact', privacy: 'Privacy', terms: 'Terms', cookies: 'Cookies', tagline: 'Free business calculators' }
   : { about: 'О нас', contact: 'Контакты', privacy: 'Приватность', terms: 'Условия', cookies: 'Cookies', tagline: 'Бесплатные бизнес-калькуляторы' };

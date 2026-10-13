@@ -4,7 +4,7 @@
     {
       "name": "ratekit-pages-dev",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["wrangler", "pages", "dev", ".", "--port", "8788"],
+      "runtimeArgs": ["wrangler", "pages", "dev", "dist", "--port", "8788", "--compatibility-date=2026-10-06"],
       "port": 8788
     }
   ]

@@ -32,11 +32,11 @@ Five of these calculators are also available as free, no-auth JSON endpoints —
 - [VAT & GST Calculator](https://ratekit.org/vat-calculator): Add or remove VAT and GST from any price. Supports all countries and custom rates. Free VAT calculator for invoicing and business.
 
 ## Russian (русская версия)
-- [RateKit на русском](https://ratekit.org/ru/): бесплатные бизнес-калькуляторы для фрилансеров и стартапов.
-- [Калькулятор ставки фрилансера](https://ratekit.org/ru/freelance-rate)
-- [Калькулятор ROI](https://ratekit.org/ru/roi-calculator)
-- [Точка безубыточности](https://ratekit.org/ru/break-even)
-- [Маржа и наценка](https://ratekit.org/ru/profit-margin)
-- [Калькулятор НДС / GST](https://ratekit.org/ru/vat-calculator)
-- [Счёт-фактура онлайн](https://ratekit.org/ru/invoice-generator)
-- [Калькулятор бюджета и кассовых потоков](https://ratekit.org/ru/budget-calculator)
+- [RateKit на русском](https://ratekit.org/ru): бесплатные бизнес-калькуляторы для фрилансеров и стартапов.
+- [Калькулятор ставки фрилансера](https://ratekit.org/rufreelance-rate)
+- [Калькулятор ROI](https://ratekit.org/ruroi-calculator)
+- [Точка безубыточности](https://ratekit.org/rubreak-even)
+- [Маржа и наценка](https://ratekit.org/ruprofit-margin)
+- [Калькулятор НДС / GST](https://ratekit.org/ruvat-calculator)
+- [Счёт-фактура онлайн](https://ratekit.org/ruinvoice-generator)
+- [Калькулятор бюджета и кассовых потоков](https://ratekit.org/rubudget-calculator)
