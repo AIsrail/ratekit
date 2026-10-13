@@ -1,0 +1,150 @@
+---
+import ToolLayout from '../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: 'What is the self-employment tax rate?',
+    a: '15.3%: 12.4% Social Security plus 2.9% Medicare, applied to 92.35% of net earnings. Social Security applies only up to the annual wage base; an additional 0.9% Medicare tax applies above $200,000 for single filers.' },
+  { q: 'Do I need to pay quarterly estimated taxes?',
+    a: 'Generally yes, if you expect to owe $1,000 or more for the year. Payments are due in April, June, September and January.' },
+  { q: 'How much should I set aside for taxes as a freelancer?',
+    a: 'A common rule of thumb is 25-30% of net profit to cover SE tax and federal income tax, plus state tax where applicable.' },
+];
+
+const related = [
+  { label: '1099 vs W2 Calculator', path: '/1099-vs-w2' },
+  { label: 'Freelance Rate Calculator', path: '/freelance-rate' },
+  { label: 'Form 2555 — Foreign Earned Income Exclusion', path: '/form-2555' },
+  { label: 'Salary ↔ Hourly Calculator', path: '/salary-hourly' },
+];
+---
+<ToolLayout
+  slug="self-employment-tax"
+  lang="en"
+  title="Self-Employment Tax Calculator 2026"
+  description="Calculate US self-employment tax (15.3%), quarterly estimated payments, and how much to set aside from each paycheck. Free SE tax calculator for freelancers."
+  pageTag="🇺🇸 US Tax Tool · 2026"
+  pageTagColor="var(--red)"
+  h1="Self-Employment Tax Calculator"
+  pageSub="Calculate exactly how much SE tax (15.3%) you owe, how much to set aside from each payment, and your quarterly estimated tax due dates."
+  dateModified="2026-10-13"
+  guideTitle="How US self-employment tax is calculated"
+  faq={faq}
+  related={related}
+>
+  <div class="panel">
+    <div class="field"><label class="lbl">Annual Freelance / Self-Employment Income</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="income" value="80000" min="0"></div></div>
+    <div class="field"><label class="lbl">Business Expenses <span class="hint">(deductible)</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="expenses" value="10000" min="0"></div></div>
+    <div class="field"><label class="lbl">Filing Status</label><div class="input-wrap"><select id="filing"><option value="single">Single</option><option value="married">Married Filing Jointly</option><option value="hoh">Head of Household</option></select></div></div>
+  </div>
+
+  <div class="results-row" style="grid-template-columns:repeat(3,1fr);">
+    <div class="r-card primary"><div class="r-label">SE Tax (15.3%)</div><div class="r-value" id="r-se">—</div><div class="r-sub">Social Security + Medicare</div></div>
+    <div class="r-card amber"><div class="r-label">Federal Income Tax</div><div class="r-value" id="r-fed">—</div><div class="r-sub">estimated</div></div>
+    <div class="r-card"><div class="r-label">Total Tax Burden</div><div class="r-value" id="r-total">—</div><div class="r-sub">SE + federal income tax</div></div>
+  </div>
+
+  <div class="big-row">
+    <div class="r-card green"><div class="r-label">Set aside per $1,000 earned</div><div class="r-value" id="r-per1k">—</div><div class="r-sub">recommended tax reserve</div></div>
+    <div class="r-card"><div class="r-label">Effective Tax Rate</div><div class="r-value" id="r-effective">—</div><div class="r-sub">of gross income</div></div>
+  </div>
+
+  <div class="breakdown-panel">
+    <div class="panel-title">Tax Breakdown</div>
+    <div class="bd-row"><span class="bd-label">Gross income</span><span class="bd-value" id="bd-gross">—</span></div>
+    <div class="bd-row"><span class="bd-label">Business expenses</span><span class="bd-value" id="bd-exp">—</span></div>
+    <div class="bd-row"><span class="bd-label">Net self-employment income</span><span class="bd-value" id="bd-net">—</span></div>
+    <div class="bd-row"><span class="bd-label">× 92.35% (SE tax base)</span><span class="bd-value" id="bd-base">—</span></div>
+    <div class="bd-row"><span class="bd-label">SE Tax (15.3%)</span><span class="bd-value" id="bd-se">—</span></div>
+    <div class="bd-row"><span class="bd-label">SE Tax deduction (½ SE Tax)</span><span class="bd-value" id="bd-ded">—</span></div>
+    <div class="bd-row"><span class="bd-label">Adjusted Gross Income (AGI)</span><span class="bd-value" id="bd-agi">—</span></div>
+    <div class="bd-row"><span class="bd-label">Standard deduction</span><span class="bd-value" id="bd-std">—</span></div>
+    <div class="bd-row"><span class="bd-label">Taxable income</span><span class="bd-value" id="bd-taxable">—</span></div>
+    <div class="bd-row"><span class="bd-label" style="font-weight:600;">Total estimated tax owed</span><span class="bd-value" id="bd-total">—</span></div>
+  </div>
+
+  <div class="panel-title" style="margin-top:4px;">2026 Quarterly Payment Due Dates</div>
+  <div class="quarterly-grid">
+    <div class="q-card"><div class="q-label">Q1</div><div class="q-date">Due Apr 15</div><div class="q-value" id="q1">—</div></div>
+    <div class="q-card"><div class="q-label">Q2</div><div class="q-date">Due Jun 16</div><div class="q-value" id="q2">—</div></div>
+    <div class="q-card"><div class="q-label">Q3</div><div class="q-date">Due Sep 15</div><div class="q-value" id="q3">—</div></div>
+    <div class="q-card"><div class="q-label">Q4</div><div class="q-date">Due Jan 15</div><div class="q-value" id="q4">—</div></div>
+  </div>
+
+  <div class="warn-box">
+    <strong>⚠️ Disclaimer:</strong> This calculator provides estimates based on 2026 tax rates and standard deductions. It does not account for state taxes, additional deductions, credits, or complex tax situations. Always consult a CPA or tax professional for accurate tax advice.
+  </div>
+
+  <Fragment slot="guide">
+    <p>Self-employed people in the US pay both the employee and employer shares of Social Security and Medicare, 15.3% in total, on 92.35% of net self-employment earnings. Half of the SE tax is deductible when calculating income tax.</p>
+    <h3>Formula</h3>
+    <pre>SE earnings = Net profit x 92.35%
+SE tax = SE earnings x 12.4% (Social Security, up to the annual wage base) + SE earnings x 2.9% (Medicare)
+Income-tax deduction = SE tax / 2</pre>
+    <h3>Example</h3>
+    <p>Net profit $50,000: SE earnings $46,175, SE tax about $7,065 (15.3%). About $3,532 is deductible when calculating income tax.</p>
+  </Fragment>
+
+  <script>
+    function fmt(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
+
+    function calcFedTax(taxable, filing) {
+      let brackets;
+      if (filing === 'married') {
+        brackets = [[0, 0.10, 24800], [24800, 0.12, 100800], [100800, 0.22, 211400], [211400, 0.24, 403550], [403550, 0.32, 512450], [512450, 0.35, 768700], [768700, 0.37, Infinity]];
+      } else {
+        brackets = [[0, 0.10, 12400], [12400, 0.12, 50400], [50400, 0.22, 105700], [105700, 0.24, 201775], [201775, 0.32, 256225], [256225, 0.35, 640600], [640600, 0.37, Infinity]];
+      }
+      let tax = 0;
+      for (let i = 0; i < brackets.length; i++) {
+        const [min, rate, max] = brackets[i];
+        if (taxable <= min) break;
+        tax += Math.min(taxable, max) * rate - min * rate;
+        if (taxable <= max) break;
+      }
+      return Math.max(0, tax);
+    }
+
+    function calc() {
+      const income = +document.getElementById('income').value || 0;
+      const expenses = +document.getElementById('expenses').value || 0;
+      const filing = document.getElementById('filing').value;
+      const stdDed = filing === 'married' ? 32200 : 16100;
+
+      const netIncome = income - expenses;
+      const seBase = netIncome * 0.9235;
+      const seTax = Math.min(seBase, 184500) * 0.124 + seBase * 0.029;
+      const seDed = seTax / 2;
+      const agi = netIncome - seDed;
+      const taxable = Math.max(0, agi - stdDed);
+      const fedTax = calcFedTax(taxable, filing);
+      const totalTax = seTax + fedTax;
+      const effective = income > 0 ? totalTax / income * 100 : 0;
+      const per1k = income > 0 ? totalTax / income * 1000 : 0;
+      const quarterly = totalTax / 4;
+
+      document.getElementById('r-se').textContent = fmt(seTax);
+      document.getElementById('r-fed').textContent = fmt(fedTax);
+      document.getElementById('r-total').textContent = fmt(totalTax);
+      document.getElementById('r-per1k').textContent = fmt(per1k);
+      document.getElementById('r-effective').textContent = effective.toFixed(1) + '%';
+
+      document.getElementById('bd-gross').textContent = fmt(income);
+      document.getElementById('bd-exp').textContent = '−' + fmt(expenses);
+      document.getElementById('bd-net').textContent = fmt(netIncome);
+      document.getElementById('bd-base').textContent = fmt(seBase);
+      document.getElementById('bd-se').textContent = fmt(seTax);
+      document.getElementById('bd-ded').textContent = '−' + fmt(seDed);
+      document.getElementById('bd-agi').textContent = fmt(agi);
+      document.getElementById('bd-std').textContent = '−' + fmt(stdDed);
+      document.getElementById('bd-taxable').textContent = fmt(taxable);
+      document.getElementById('bd-total').textContent = fmt(totalTax);
+
+      ['q1', 'q2', 'q3', 'q4'].forEach((q) => document.getElementById(q).textContent = fmt(quarterly));
+    }
+
+    document.addEventListener('input', calc);
+    document.addEventListener('change', calc);
+    document.addEventListener('rk:restored', calc);
+    window.addEventListener('load', calc);
+  </script>
+</ToolLayout>

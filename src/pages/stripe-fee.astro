@@ -1,0 +1,181 @@
+---
+import ToolLayout from '../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: 'How much does Stripe charge per transaction?',
+    a: "Standard US pricing is 2.9% + $0.30 per successful card charge. International cards and currency conversion add extra fees. Check Stripe's pricing page for your country." },
+  { q: 'How do I pass the Stripe fee to the customer?',
+    a: 'Gross up the price: charge (desired amount + fixed fee) / (1 - percentage). Surcharging rules differ by country and card network, so check local rules first.' },
+  { q: 'Is Stripe or PayPal cheaper?',
+    a: 'At standard US rates Stripe (2.9% + $0.30) is cheaper than PayPal checkout (3.49% + $0.49) for most amounts, but negotiated and regional pricing can change that.' },
+];
+
+const related = [
+  { label: 'Invoice Generator', path: '/invoice-generator' },
+  { label: 'Profit Margin Calculator', path: '/profit-margin' },
+  { label: 'VAT & GST Calculator', path: '/vat-calculator' },
+  { label: 'Freelance Rate Calculator', path: '/freelance-rate' },
+];
+---
+<ToolLayout
+  slug="stripe-fee"
+  lang="en"
+  title="Stripe & PayPal Fee Calculator"
+  description="Calculate exact Stripe and PayPal fees. Find out how much to charge your client to receive your desired amount after processing fees. Free, instant."
+  pageTag="🔥 Most Popular"
+  h1="Stripe & PayPal Fee Calculator"
+  pageSub="Find out exactly how much to charge your client so you receive your desired amount after payment processing fees."
+  dateModified="2026-10-13"
+  guideTitle="How Stripe and PayPal fees are calculated"
+  faq={faq}
+  related={related}
+>
+  <div class="panel">
+    <div class="panel-title">Mode</div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="mode-receive-btn">I want to receive...</button>
+      <button class="mode-btn" id="mode-charge-btn">I'm charging...</button>
+    </div>
+
+    <div class="panel-title">Payment Processor</div>
+    <div class="proc-tabs">
+      <button class="proc-btn active" data-proc="stripe">Stripe (2.9% + $0.30)</button>
+      <button class="proc-btn" data-proc="paypal">PayPal (3.49% + $0.49)</button>
+      <button class="proc-btn" data-proc="square">Square (2.6% + $0.10)</button>
+      <button class="proc-btn" data-proc="custom">Custom</button>
+    </div>
+
+    <div class="field" id="custom-fields" style="display:none;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div><label class="lbl">Percentage fee</label><div class="input-wrap"><input type="number" id="custom-pct" value="2.9" step="0.01" min="0"><span class="ifix ifix-r">%</span></div></div>
+        <div><label class="lbl">Fixed fee</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="custom-fixed" value="0.30" step="0.01" min="0"></div></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="lbl" id="amount-label">Amount you want to receive</label>
+      <div class="input-wrap"><span class="ifix">$</span><input type="number" id="amount" value="1000" min="0" step="0.01"></div>
+    </div>
+  </div>
+
+  <div class="results-row" style="grid-template-columns:repeat(3,1fr);">
+    <div class="r-card primary"><div class="r-label" id="r1-label">Charge your client</div><div class="r-value" id="r-charge">—</div><div class="r-sub">to receive your amount</div></div>
+    <div class="r-card"><div class="r-label">Fee amount</div><div class="r-value" id="r-fee">—</div><div class="r-sub" id="r-fee-sub">processing fee</div></div>
+    <div class="r-card green"><div class="r-label" id="r3-label">You receive</div><div class="r-value" id="r-receive">—</div><div class="r-sub">after fees</div></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Processor Comparison</div>
+    <table class="results-table">
+      <thead><tr><th>Processor</th><th>Rate</th><th>Fee on this amount</th><th>You receive</th></tr></thead>
+      <tbody id="comp-body"></tbody>
+    </table>
+  </div>
+
+  <div class="info-box">
+    <strong>💡 Pro tip:</strong> To pass fees to your client, use the formula: <strong>Charge = (Amount + Fixed Fee) / (1 − Percentage)</strong>. Always disclose processing fees upfront in your invoices.
+  </div>
+
+  <Fragment slot="guide">
+    <p>Card processors charge a percentage of each payment plus a fixed fee per transaction. Standard US online pricing is 2.9% + $0.30 for Stripe and 3.49% + $0.49 for PayPal checkout; international cards and currency conversion add extra percentage points.</p>
+    <h3>Formula</h3>
+    <pre>Fee = Amount x Percentage + Fixed fee
+You receive = Amount - Fee
+To receive X, charge = (X + Fixed fee) / (1 - Percentage)</pre>
+    <h3>Example</h3>
+    <p>On a $100 Stripe payment: $100 x 2.9% + $0.30 = $3.20 fee, so you receive $96.80. To receive exactly $100, charge ($100 + $0.30) / 0.971 = about $103.30.</p>
+  </Fragment>
+
+  <script>
+    let mode = 'receive';
+    let proc = { pct: 2.9, fixed: 0.30 };
+    const rates = {
+      stripe: { pct: 2.9, fixed: 0.30 },
+      paypal: { pct: 3.49, fixed: 0.49 },
+      square: { pct: 2.6, fixed: 0.10 },
+      custom: { pct: 2.9, fixed: 0.30 },
+    };
+
+    function setMode(m) {
+      mode = m;
+      document.getElementById('mode-receive-btn').classList.toggle('active', m === 'receive');
+      document.getElementById('mode-charge-btn').classList.toggle('active', m === 'charge');
+      document.getElementById('amount-label').textContent = m === 'receive' ? 'Amount you want to receive' : 'Amount you are charging';
+      document.getElementById('r1-label').textContent = m === 'receive' ? 'Charge your client' : 'You will receive';
+      document.getElementById('r3-label').textContent = m === 'receive' ? 'You receive' : 'Fee amount';
+      calc();
+    }
+    document.getElementById('mode-receive-btn').addEventListener('click', () => setMode('receive'));
+    document.getElementById('mode-charge-btn').addEventListener('click', () => setMode('charge'));
+
+    document.querySelectorAll('.proc-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const p = btn.getAttribute('data-proc');
+        document.querySelectorAll('.proc-btn').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('custom-fields').style.display = p === 'custom' ? 'block' : 'none';
+        proc = rates[p];
+        if (p !== 'custom') {
+          document.getElementById('custom-pct').value = proc.pct;
+          document.getElementById('custom-fixed').value = proc.fixed;
+        }
+        calc();
+      });
+    });
+
+    function fmt(n) { return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+
+    function calc() {
+      const pct = parseFloat(document.getElementById('custom-pct').value) || proc.pct;
+      const fixed = parseFloat(document.getElementById('custom-fixed').value) || proc.fixed;
+      const amount = parseFloat(document.getElementById('amount').value) || 0;
+
+      let charge, fee, receive;
+      if (mode === 'receive') {
+        charge = (amount + fixed) / (1 - pct / 100);
+        fee = charge - amount;
+        receive = amount;
+      } else {
+        fee = amount * (pct / 100) + fixed;
+        receive = amount - fee;
+        charge = amount;
+      }
+
+      document.getElementById('r-charge').textContent = fmt(mode === 'receive' ? charge : receive);
+      document.getElementById('r-fee').textContent = fmt(fee);
+      document.getElementById('r-receive').textContent = fmt(mode === 'receive' ? receive : charge);
+      document.getElementById('r-fee-sub').textContent = `${pct}% + ${fmt(fixed)}`;
+
+      const processors = [
+        { name: 'Stripe', pct: 2.9, fixed: 0.30 },
+        { name: 'PayPal', pct: 3.49, fixed: 0.49 },
+        { name: 'Square', pct: 2.6, fixed: 0.10 },
+        { name: 'Wise Business', pct: 0.5, fixed: 0.00 },
+      ];
+      const base = amount;
+      const rows = processors.map((p) => {
+        let r;
+        if (mode === 'receive') {
+          const c = (base + p.fixed) / (1 - p.pct / 100);
+          r = { fee: c - base, receive: base, charge: c };
+        } else {
+          const f = amount * (p.pct / 100) + p.fixed;
+          r = { fee: f, receive: amount - f, charge: amount };
+        }
+        return Object.assign({}, p, r);
+      });
+      const maxReceive = Math.max.apply(null, rows.map((r) => r.receive));
+      document.getElementById('comp-body').innerHTML = rows.map((r) => `
+        <tr${r.receive === maxReceive ? ' class="highlight-row"' : ''}>
+          <td>${r.name}${r.receive === maxReceive ? ' ✅' : ''}</td>
+          <td style="color:var(--muted);font-size:12px;">${r.pct}% + ${fmt(r.fixed)}</td>
+          <td class="mono">${fmt(r.fee)}</td>
+          <td class="mono">${fmt(r.receive)}</td>
+        </tr>`).join('');
+    }
+
+    document.addEventListener('input', calc);
+    document.addEventListener('rk:restored', calc);
+    window.addEventListener('load', calc);
+  </script>
+</ToolLayout>

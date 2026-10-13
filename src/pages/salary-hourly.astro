@@ -1,0 +1,195 @@
+---
+import ToolLayout from '../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: 'How many working hours are in a year?',
+    a: '2,080 for a standard 40-hour week over 52 weeks. After holidays and vacation, most people actually work 1,900-2,000 hours.' },
+  { q: 'How much is $30 an hour per year?',
+    a: 'About $62,400 per year at 2,080 hours, before taxes.' },
+  { q: 'How do I compare a salary with a freelance rate?',
+    a: 'Freelancers need a much higher hourly rate than the salary equivalent to cover unpaid hours, self-employment tax, benefits and expenses, often 1.5-2 times the salaried hourly rate.' },
+];
+
+const related = [
+  { label: 'Freelance Rate Calculator', path: '/freelance-rate' },
+  { label: '1099 vs W2 Calculator', path: '/1099-vs-w2' },
+  { label: 'Self-Employment Tax Calculator', path: '/self-employment-tax' },
+  { label: 'Form 2555 — Foreign Earned Income Exclusion', path: '/form-2555' },
+];
+---
+<ToolLayout
+  slug="salary-hourly"
+  lang="en"
+  title="Salary to Hourly Calculator — Convert Annual Salary"
+  description="Convert annual salary to hourly rate or hourly rate to annual salary. Accounts for work hours, paid time off, and holidays. Free salary converter."
+  pageTag="🔄 Free Converter"
+  h1="Salary ↔ Hourly Calculator"
+  pageSub="Convert annual salary to hourly rate — or hourly rate to annual salary. Accounts for PTO, holidays, and actual billable hours."
+  dateModified="2026-10-13"
+  guideTitle="How to convert annual salary to hourly pay"
+  faq={faq}
+  related={related}
+>
+  <div class="panel">
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="mode-salary-btn">💼 Annual Salary → Hourly</button>
+      <button class="mode-btn" id="mode-hourly-btn">⏱ Hourly Rate → Annual</button>
+    </div>
+
+    <div class="cur-row">
+      <button class="cur-btn active" data-sym="$">$ USD</button>
+      <button class="cur-btn" data-sym="€">€ EUR</button>
+      <button class="cur-btn" data-sym="£">£ GBP</button>
+      <button class="cur-btn" data-sym="A$">A$ AUD</button>
+      <button class="cur-btn" data-sym="C$">C$ CAD</button>
+    </div>
+
+    <div id="salary-inputs">
+      <div class="field"><label class="lbl">Annual Gross Salary</label><div class="input-wrap"><span class="ifix" id="sym1">$</span><input type="number" id="annual-salary" value="75000" min="0"></div></div>
+    </div>
+    <div id="hourly-inputs" style="display:none;">
+      <div class="field"><label class="lbl">Hourly Rate</label><div class="input-wrap"><span class="ifix" id="sym2">$</span><input type="number" id="hourly-rate" value="36" min="0" step="0.01"></div></div>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <div class="field"><label class="lbl">Hours per Day</label><div class="input-wrap"><input type="number" id="hrs-day" value="8" min="1" max="24"><span class="ifix ifix-r">hrs</span></div></div>
+        <div class="field"><label class="lbl">Days per Week</label><div class="input-wrap"><input type="number" id="days-wk" value="5" min="1" max="7"><span class="ifix ifix-r">days</span></div></div>
+      </div>
+      <div>
+        <div class="field"><label class="lbl">Paid Vacation Days / Year</label><div class="input-wrap"><input type="number" id="pto" value="15" min="0" max="365"><span class="ifix ifix-r">days</span></div></div>
+        <div class="field"><label class="lbl">Public Holidays / Year</label><div class="input-wrap"><input type="number" id="holidays" value="10" min="0" max="50"><span class="ifix ifix-r">days</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="results-row">
+    <div class="r-card primary"><div class="r-label" id="r1-label">Hourly Rate</div><div class="r-value" id="r-hourly">—</div><div class="r-sub">per hour worked</div></div>
+    <div class="r-card"><div class="r-label">Daily Rate</div><div class="r-value" id="r-daily">—</div><div class="r-sub" id="r-daily-sub">per day</div></div>
+    <div class="r-card"><div class="r-label">Weekly</div><div class="r-value" id="r-weekly">—</div><div class="r-sub">per week</div></div>
+    <div class="r-card green"><div class="r-label" id="r4-label">Annual Salary</div><div class="r-value" id="r-annual">—</div><div class="r-sub">gross per year</div></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Full Breakdown</div>
+    <table class="results-table">
+      <thead><tr><th>Period</th><th>Hours</th><th>Amount</th></tr></thead>
+      <tbody id="breakdown-body"></tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Your Working Year</div>
+    <table class="results-table">
+      <thead><tr><th>Item</th><th>Days</th></tr></thead>
+      <tbody id="workyear-body"></tbody>
+    </table>
+  </div>
+
+  <div class="info-box">
+    <strong>💡 Freelancer tip:</strong> If you're transitioning from employment to freelancing, your freelance rate should be <strong>1.5–2× your equivalent employee hourly rate</strong> — to account for self-employment taxes, benefits you lose, and time spent on non-billable work.
+    <br><br>Use our <a href="/freelance-rate" style="color:var(--blue);font-weight:600;">Freelance Rate Calculator →</a> to find your actual minimum rate.
+  </div>
+
+  <Fragment slot="guide">
+    <p>To convert a salary to an hourly rate, divide it by the hours you work in a year. A standard full-time year is 2,080 hours (40 hours x 52 weeks); to account for unpaid time off, use fewer weeks.</p>
+    <h3>Formula</h3>
+    <pre>Hourly rate = Annual salary / (Hours per week x Weeks per year)
+Standard: Annual salary / 2,080
+Monthly pay = Annual salary / 12</pre>
+    <h3>Example</h3>
+    <p>$75,000 per year / 2,080 hours = about $36.06 per hour, $6,250 per month, or $1,442 per week.</p>
+  </Fragment>
+
+  <script>
+    let mode = 'salary';
+    let sym = '$';
+
+    function setMode(m) {
+      mode = m;
+      document.getElementById('mode-salary-btn').classList.toggle('active', m === 'salary');
+      document.getElementById('mode-hourly-btn').classList.toggle('active', m === 'hourly');
+      document.getElementById('salary-inputs').style.display = m === 'salary' ? 'block' : 'none';
+      document.getElementById('hourly-inputs').style.display = m === 'hourly' ? 'block' : 'none';
+      calc();
+    }
+    document.getElementById('mode-salary-btn').addEventListener('click', () => setMode('salary'));
+    document.getElementById('mode-hourly-btn').addEventListener('click', () => setMode('hourly'));
+
+    document.querySelectorAll('.cur-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        sym = btn.getAttribute('data-sym') || '$';
+        document.querySelectorAll('.cur-btn').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('sym1').textContent = sym;
+        document.getElementById('sym2').textContent = sym;
+        calc();
+      });
+    });
+
+    function fmt(n) { return sym + Math.round(n).toLocaleString('en-US'); }
+    function fmtD(n) { return sym + n.toFixed(2); }
+
+    function calc() {
+      const hrsDay = +document.getElementById('hrs-day').value || 8;
+      const daysWk = +document.getElementById('days-wk').value || 5;
+      const pto = +document.getElementById('pto').value || 0;
+      const holidays = +document.getElementById('holidays').value || 0;
+
+      const weeksYear = 52;
+      const totalDays = weeksYear * daysWk;
+      const paidOffDays = pto + holidays;
+      const workDays = Math.max(1, totalDays - paidOffDays);
+      const workHrs = workDays * hrsDay;
+
+      let hourly, annual;
+      if (mode === 'salary') {
+        annual = +document.getElementById('annual-salary').value || 0;
+        hourly = annual / workHrs;
+      } else {
+        hourly = +document.getElementById('hourly-rate').value || 0;
+        annual = hourly * workHrs;
+      }
+
+      const daily = hourly * hrsDay;
+      const weekly = hourly * hrsDay * daysWk;
+      const monthly = annual / 12;
+
+      document.getElementById('r-hourly').textContent = fmtD(hourly);
+      document.getElementById('r-daily').textContent = fmt(daily);
+      document.getElementById('r-daily-sub').textContent = `${hrsDay}h day`;
+      document.getElementById('r-weekly').textContent = fmt(weekly);
+      document.getElementById('r-annual').textContent = fmt(annual);
+
+      document.getElementById('r1-label').textContent = mode === 'salary' ? 'Hourly Rate' : 'Annual Salary';
+      document.getElementById('r4-label').textContent = mode === 'salary' ? 'Annual Salary' : 'Hourly Rate';
+
+      if (mode === 'hourly') {
+        document.getElementById('r-hourly').textContent = fmt(annual);
+        document.getElementById('r-annual').textContent = fmtD(hourly);
+      }
+
+      document.getElementById('breakdown-body').innerHTML = [
+        { period: 'Hourly', hrs: 1, amt: hourly },
+        { period: 'Daily', hrs: hrsDay, amt: daily },
+        { period: 'Weekly', hrs: hrsDay * daysWk, amt: weekly },
+        { period: 'Bi-weekly', hrs: hrsDay * daysWk * 2, amt: weekly * 2 },
+        { period: 'Monthly', hrs: workHrs / 12, amt: monthly },
+        { period: 'Quarterly', hrs: workHrs / 4, amt: annual / 4 },
+        { period: 'Annual', hrs: workHrs, amt: annual },
+      ].map((r) => `<tr${r.period === 'Annual' ? ' class="highlight-row"' : ''}><td>${r.period}</td><td>${Math.round(r.hrs).toLocaleString()} hrs</td><td>${fmt(r.amt)}</td></tr>`).join('');
+
+      document.getElementById('workyear-body').innerHTML = [
+        { item: 'Total calendar work days', days: totalDays },
+        { item: 'Paid vacation days', days: pto },
+        { item: 'Public holidays', days: holidays },
+        { item: 'Actual working days', days: workDays },
+        { item: 'Total working hours/year', days: workHrs + ' hrs' },
+      ].map((r, i) => `<tr${i === 3 || i === 4 ? ' class="highlight-row"' : ''}><td>${r.item}</td><td>${typeof r.days === 'string' ? r.days : r.days.toLocaleString()}</td></tr>`).join('');
+    }
+
+    document.addEventListener('input', calc);
+    document.addEventListener('rk:restored', calc);
+    window.addEventListener('load', calc);
+  </script>
+</ToolLayout>
