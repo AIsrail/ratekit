@@ -1,0 +1,132 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: 'Как рассчитать НДС из суммы с налогом?',
+    a: 'Разделите сумму с налогом на (1 + ставка НДС), чтобы получить цену без налога; разница — это НДС. При ставке 20%: 120 / 1,2 = 100 без налога и 20 НДС.' },
+  { q: 'В чём разница между НДС и GST?',
+    a: 'Оба — это налоги на добавленную стоимость; название зависит от страны (VAT в ЕС и Великобритании, GST в Австралии, Канаде, Индии, Сингапуре). Расчёт одинаковый.' },
+  { q: 'Почему нельзя просто вычесть 20%, чтобы убрать НДС?',
+    a: 'Потому что НДС считается от суммы без налога, а не от суммы с налогом. Вычитание 20% из 120 даёт 96, но правильная сумма без налога — 100.' },
+];
+
+const related = [
+  { label: 'Маржа и наценка', path: '/ru/profit-margin' },
+  { label: 'Счёт-фактура онлайн', path: '/ru/invoice-generator' },
+  { label: 'Stripe & PayPal Fee Calculator', path: '/stripe-fee' },
+  { label: 'P&L Statement', path: '/pl-statement' },
+];
+
+const countries = [
+  { name: '🇬🇧 Великобритания', rate: 20 }, { name: '🇩🇪 Германия', rate: 19 }, { name: '🇫🇷 Франция', rate: 20 },
+  { name: '🇳🇱 Нидерланды', rate: 21 }, { name: '🇦🇺 Австралия GST', rate: 10 },
+  { name: '🇨🇦 Канада HST', rate: 13 }, { name: '🇮🇳 Индия GST', rate: 18 },
+  { name: '🇳🇿 Новая Зеландия', rate: 15 }, { name: '🇿🇦 ЮАР', rate: 15 },
+  { name: '🇸🇬 Сингапур', rate: 9 }, { name: '🇯🇵 Япония', rate: 10 }, { name: '🇸🇪 Швеция', rate: 25 },
+];
+---
+<ToolLayout
+  slug="vat-calculator"
+  lang="ru"
+  title="Калькулятор НДС / GST онлайн"
+  description="Добавьте или вычтите НДС/GST из любой суммы. Поддержка ставок всех стран и произвольного процента. Бесплатный калькулятор НДС для счетов."
+  pageTag="🌍 Глобальный инструмент"
+  pageTagColor="var(--blue)"
+  h1="Калькулятор НДС / GST"
+  pageSub="Добавьте или вычтите НДС/GST из любой суммы. Поддержка ставок всех основных стран и произвольного процента. Идеально для выставления счетов."
+  dateModified="2026-10-13"
+  guideTitle="Как добавить или вычесть НДС и GST"
+  faq={faq}
+  related={related}
+>
+  <div class="panel">
+    <div class="panel-title">Режим</div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="mode-add-btn">Добавить налог к цене</button>
+      <button class="mode-btn" id="mode-remove-btn">Вычесть налог из цены</button>
+    </div>
+    <div class="field">
+      <label class="lbl" id="amount-lbl">Цена (без налога)</label>
+      <div class="input-wrap"><span class="ifix">$</span><input type="number" id="amount" value="1000" min="0" step="0.01"></div>
+    </div>
+    <div class="field">
+      <label class="lbl">Ставка налога</label>
+      <div class="input-wrap"><input type="number" id="rate" value="20" min="0" max="100" step="0.1"><span class="ifix ifix-r">%</span></div>
+    </div>
+    <div class="field">
+      <label class="lbl">Быстрый выбор по стране</label>
+      <div class="rates-grid" id="rate-chips">
+        {countries.map((c, i) => (
+          <div class={`rate-chip${i === 0 ? ' active' : ''}`} data-rate={c.rate}>
+            <div class="country">{c.name}</div>
+            <div class="rate">{c.rate}%</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <div class="results-row">
+    <div class="r-card"><div class="r-label">Цена без налога</div><div class="r-value" id="r-excl">—</div><div class="r-sub">чистая сумма</div></div>
+    <div class="r-card primary"><div class="r-label">Сумма налога</div><div class="r-value" id="r-tax">—</div><div class="r-sub" id="r-tax-sub">НДС/GST</div></div>
+    <div class="r-card green"><div class="r-label">Цена с налогом</div><div class="r-value" id="r-incl">—</div><div class="r-sub">полная сумма</div></div>
+  </div>
+
+  <div class="info-box">
+    <strong>💡 Примечание:</strong> «Добавить налог» — введённая цена считается суммой без налога. «Вычесть налог» — введённая цена уже включает налог, и нужно найти сумму без него. Всегда проверяйте местные правила для корректного выставления счетов.
+  </div>
+
+  <Fragment slot="guide">
+    <p>НДС и GST — это налоги на потребление, добавляемые сверх чистой цены. Добавление налога умножает чистую цену на (1 + ставка); вычитание налога из суммы с налогом делит её на (1 + ставка). Простое вычитание процента — самая частая ошибка.</p>
+    <h3>Формула</h3>
+    <pre>Добавить НДС: Сумма с налогом = Сумма без налога × (1 + Ставка)
+Вычесть НДС: Сумма без налога = Сумма с налогом / (1 + Ставка)
+Сумма НДС = Сумма с налогом − Сумма без налога</pre>
+    <h3>Пример</h3>
+    <p>Цена без налога 100 € при ставке НДС 20%: с налогом = 120 €, НДС = 20 €. Цена с налогом 120 € при ставке 20%: без налога = 120 / 1,2 = 100 € (а не 96 €).</p>
+  </Fragment>
+
+  <script>
+    let mode = 'add';
+
+    document.querySelectorAll('.rate-chip').forEach((chip) => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.rate-chip').forEach((c) => c.classList.remove('active'));
+        chip.classList.add('active');
+        document.getElementById('rate').value = chip.getAttribute('data-rate');
+        calc();
+      });
+    });
+
+    function setMode(m) {
+      mode = m;
+      document.getElementById('mode-add-btn').classList.toggle('active', m === 'add');
+      document.getElementById('mode-remove-btn').classList.toggle('active', m === 'remove');
+      document.getElementById('amount-lbl').textContent = m === 'add' ? 'Цена (без налога)' : 'Цена (с налогом)';
+      calc();
+    }
+    document.getElementById('mode-add-btn').addEventListener('click', () => setMode('add'));
+    document.getElementById('mode-remove-btn').addEventListener('click', () => setMode('remove'));
+
+    function fmt(n) { return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+
+    function calc() {
+      const amount = parseFloat(document.getElementById('amount').value) || 0;
+      const rate = parseFloat(document.getElementById('rate').value) || 0;
+      let excl, tax, incl;
+      if (mode === 'add') {
+        excl = amount; tax = amount * rate / 100; incl = amount + tax;
+      } else {
+        incl = amount; excl = amount / (1 + rate / 100); tax = incl - excl;
+      }
+      document.getElementById('r-excl').textContent = fmt(excl);
+      document.getElementById('r-tax').textContent = fmt(tax);
+      document.getElementById('r-incl').textContent = fmt(incl);
+      document.getElementById('r-tax-sub').textContent = `ставка ${rate}%`;
+    }
+
+    document.addEventListener('input', calc);
+    document.addEventListener('rk:restored', calc);
+    window.addEventListener('load', calc);
+  </script>
+</ToolLayout>

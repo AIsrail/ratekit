@@ -1,0 +1,134 @@
+---
+import ToolLayout from '../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: 'What is the difference between margin and markup?',
+    a: 'Margin is profit divided by price; markup is profit divided by cost. The same $40 profit on a $100 price is a 40% margin but a 66.7% markup.' },
+  { q: 'What is a good profit margin for a small business?',
+    a: 'It varies by industry: services and software often run 20-40% or more, retail and restaurants 3-10% net. Compare with businesses in your sector.' },
+  { q: 'How do I set a price for a target margin?',
+    a: "Divide cost by (1 - target margin). For a 30% margin on a $70 cost: $70 / 0.7 = $100." },
+];
+
+const related = [
+  { label: 'Break-even Calculator', path: '/break-even' },
+  { label: 'VAT & GST Calculator', path: '/vat-calculator' },
+  { label: 'Profit & Loss Statement', path: '/pl-statement' },
+  { label: 'ROI Calculator', path: '/roi-calculator' },
+];
+---
+<ToolLayout
+  slug="profit-margin"
+  lang="en"
+  title="Profit Margin Calculator"
+  description="Calculate gross profit margin, net profit margin, and markup. Free profit margin calculator for e-commerce, retail, and business pricing."
+  pageTag="🛒 E-commerce & Retail"
+  pageTagColor="var(--amber)"
+  h1="Profit Margin Calculator"
+  pageSub="Calculate gross profit margin, net margin, and markup. Find your selling price from cost and desired margin, or vice versa."
+  dateModified="2026-10-13"
+  guideTitle="How to calculate profit margin and markup"
+  faq={faq}
+  related={related}
+>
+  <div class="panel">
+    <div class="panel-title">Calculate from</div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="mode-cost-btn">Cost + Revenue → Margin</button>
+      <button class="mode-btn" id="mode-margin-btn">Cost + Margin → Selling Price</button>
+    </div>
+    <div id="cost-mode">
+      <div class="field"><label class="lbl">Revenue / Selling Price</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="revenue" value="100" min="0" step="0.01"></div></div>
+      <div class="field"><label class="lbl">Cost of Goods (COGS)</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="cogs" value="40" min="0" step="0.01"></div></div>
+      <div class="field"><label class="lbl">Operating Expenses <span class="hint">(optional, for net margin)</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="opex" value="20" min="0" step="0.01"></div></div>
+    </div>
+    <div id="margin-mode" style="display:none;">
+      <div class="field"><label class="lbl">Cost of Goods (COGS)</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="cost2" value="40" min="0" step="0.01"></div></div>
+      <div class="field"><label class="lbl">Desired Gross Margin</label><div class="input-wrap"><input type="number" id="target-margin" value="60" min="0" max="100" step="0.1"><span class="ifix ifix-r">%</span></div></div>
+    </div>
+  </div>
+
+  <div class="results-row">
+    <div class="r-card primary"><div class="r-label" id="r1-lbl">Gross Margin</div><div class="r-value" id="r-margin">—</div><div class="r-sub" id="r1-sub">of revenue</div></div>
+    <div class="r-card"><div class="r-label" id="r2-lbl">Gross Profit</div><div class="r-value" id="r-profit">—</div><div class="r-sub" id="r2-sub">revenue − COGS</div></div>
+    <div class="r-card"><div class="r-label">Markup</div><div class="r-value" id="r-markup">—</div><div class="r-sub">above cost</div></div>
+    <div class="r-card green"><div class="r-label" id="r4-lbl">Net Margin</div><div class="r-value" id="r-net">—</div><div class="r-sub">after operating expenses</div></div>
+  </div>
+
+  <div class="bench-panel">
+    <div class="panel-title">Industry Benchmarks (Gross Margin)</div>
+    <div class="bench-row"><span class="bench-name">SaaS / Software</span><span class="bench-range" style="color:var(--green);">70–80%</span><div class="bench-bar-wrap"><div class="bench-bar" style="width:75%;background:var(--green);"></div></div></div>
+    <div class="bench-row"><span class="bench-name">Consulting / Services</span><span class="bench-range" style="color:var(--blue);">60–70%</span><div class="bench-bar-wrap"><div class="bench-bar" style="width:65%;background:var(--blue);"></div></div></div>
+    <div class="bench-row"><span class="bench-name">E-commerce / Retail</span><span class="bench-range" style="color:var(--amber);">30–50%</span><div class="bench-bar-wrap"><div class="bench-bar" style="width:40%;background:var(--amber);"></div></div></div>
+    <div class="bench-row"><span class="bench-name">Manufacturing</span><span class="bench-range" style="color:var(--amber);">25–35%</span><div class="bench-bar-wrap"><div class="bench-bar" style="width:30%;background:var(--amber);"></div></div></div>
+    <div class="bench-row"><span class="bench-name">Restaurants / Food</span><span class="bench-range" style="color:var(--red);">10–20%</span><div class="bench-bar-wrap"><div class="bench-bar" style="width:15%;background:var(--red);"></div></div></div>
+  </div>
+
+  <div class="info-box">
+    <strong>📐 Key difference:</strong> <strong>Margin</strong> = Profit / Revenue × 100 (e.g. 60% margin on $100 sale = $60 profit). <strong>Markup</strong> = Profit / Cost × 100 (e.g. 150% markup on $40 cost = $60 profit). Same number, different base.
+  </div>
+
+  <Fragment slot="guide">
+    <p>Profit margin shows what share of the selling price is profit; markup shows how much you added on top of cost. They describe the same price from different sides and are often confused: a 50% markup is only a 33% margin.</p>
+    <h3>Formula</h3>
+    <pre>Gross margin = (Price - Cost) / Price x 100%
+Markup = (Price - Cost) / Cost x 100%
+Price for a target margin = Cost / (1 - Margin)</pre>
+    <h3>Example</h3>
+    <p>Cost $60, price $100: margin = 40%, markup = 66.7%. To reach a 50% margin on a $60 cost, price at $60 / 0.5 = $120.</p>
+  </Fragment>
+
+  <script>
+    let mode = 'cost';
+
+    function setMode(m) {
+      mode = m;
+      document.getElementById('mode-cost-btn').classList.toggle('active', m === 'cost');
+      document.getElementById('mode-margin-btn').classList.toggle('active', m === 'margin');
+      document.getElementById('cost-mode').style.display = m === 'cost' ? 'block' : 'none';
+      document.getElementById('margin-mode').style.display = m === 'margin' ? 'block' : 'none';
+      calc();
+    }
+
+    function fmt(n) { return '$' + Math.abs(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+
+    function calc() {
+      if (mode === 'cost') {
+        const rev = +document.getElementById('revenue').value || 1;
+        const cogs = +document.getElementById('cogs').value || 0;
+        const opex = +document.getElementById('opex').value || 0;
+        const grossProfit = rev - cogs;
+        const grossMargin = grossProfit / rev * 100;
+        const markup = cogs > 0 ? grossProfit / cogs * 100 : 0;
+        const netProfit = grossProfit - opex;
+        const netMargin = netProfit / rev * 100;
+        document.getElementById('r-margin').textContent = grossMargin.toFixed(1) + '%';
+        document.getElementById('r-profit').textContent = fmt(grossProfit);
+        document.getElementById('r-markup').textContent = markup.toFixed(1) + '%';
+        document.getElementById('r-net').textContent = netMargin.toFixed(1) + '%';
+        document.getElementById('r4-lbl').textContent = 'Net Margin';
+        document.getElementById('r2-lbl').textContent = 'Gross Profit';
+        document.getElementById('r1-lbl').textContent = 'Gross Margin';
+      } else {
+        const cost = +document.getElementById('cost2').value || 1;
+        const margin = +document.getElementById('target-margin').value || 0;
+        const price = cost / (1 - margin / 100);
+        const profit = price - cost;
+        const markup = profit / cost * 100;
+        document.getElementById('r-margin').textContent = margin.toFixed(1) + '%';
+        document.getElementById('r-profit').textContent = fmt(price);
+        document.getElementById('r-markup').textContent = markup.toFixed(1) + '%';
+        document.getElementById('r-net').textContent = fmt(profit);
+        document.getElementById('r1-lbl').textContent = 'Target Margin';
+        document.getElementById('r2-lbl').textContent = 'Selling Price';
+        document.getElementById('r4-lbl').textContent = 'Gross Profit';
+      }
+    }
+
+    document.getElementById('mode-cost-btn').addEventListener('click', () => setMode('cost'));
+    document.getElementById('mode-margin-btn').addEventListener('click', () => setMode('margin'));
+    document.addEventListener('input', calc);
+    document.addEventListener('rk:restored', calc);
+    window.addEventListener('load', calc);
+  </script>
+</ToolLayout>

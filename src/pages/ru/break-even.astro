@@ -1,0 +1,197 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: 'Какие расходы постоянные, а какие переменные?',
+    a: 'Постоянные расходы не зависят от объёма продаж (аренда, зарплаты, софт). Переменные растут с каждой проданной единицей (материалы, комиссии платёжных систем, доставка).' },
+  { q: 'Как снизить точку безубыточности?',
+    a: 'Поднять цену, снизить переменные расходы на единицу или сократить постоянные расходы. Повышение цены обычно даёт наибольший эффект, потому что напрямую увеличивает маржинальный доход.' },
+  { q: 'Что такое запас прочности?',
+    a: 'Насколько текущие продажи выше точки безубыточности: (Фактические продажи − Продажи на безубыточности) / Фактические продажи. Показывает, насколько могут упасть продажи, прежде чем бизнес начнёт терять деньги.' },
+];
+
+const related = [
+  { label: 'Маржа и наценка', path: '/ru/profit-margin' },
+  { label: 'Burn Rate & Runway Calculator', path: '/burn-rate' },
+  { label: 'P&L Statement', path: '/pl-statement' },
+  { label: 'Калькулятор ROI', path: '/ru/roi-calculator' },
+];
+---
+<ToolLayout
+  slug="break-even"
+  lang="ru"
+  title="Калькулятор точки безубыточности"
+  description="Рассчитайте точку безубыточности в штуках и в деньгах. Узнайте, сколько нужно продать, чтобы покрыть постоянные и переменные расходы. Бесплатно."
+  pageTag="⚖️ Бизнес-инструмент"
+  pageTagColor="var(--amber)"
+  h1="Калькулятор точки безубыточности"
+  pageSub="Узнайте, сколько единиц нужно продать — или какую выручку получить, — чтобы покрыть все расходы и начать получать прибыль."
+  dateModified="2026-10-13"
+  guideTitle="Как рассчитать точку безубыточности"
+  faq={faq}
+  related={related}
+>
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-title">Постоянные расходы <span style="font-weight:400;color:var(--muted);font-size:10px;">(за месяц, не зависят от объёма)</span></div>
+      <div class="field"><label class="lbl">Аренда / офис</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="rent" value="3000" min="0"></div></div>
+      <div class="field"><label class="lbl">Зарплаты</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="salaries" value="15000" min="0"></div></div>
+      <div class="field"><label class="lbl">Софт и сервисы</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="software" value="1000" min="0"></div></div>
+      <div class="field"><label class="lbl">Маркетинг и реклама</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="marketing" value="3000" min="0"></div></div>
+      <div class="field"><label class="lbl">Прочие постоянные расходы</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="other" value="1000" min="0"></div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Цена и переменные расходы</div>
+      <div class="field"><label class="lbl">Цена за единицу / продажу</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="price" value="99" min="0.01" step="0.01"></div></div>
+      <div class="field"><label class="lbl">Переменные расходы на единицу <span class="hint">(себестоимость, доставка...)</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="vcost" value="30" min="0" step="0.01"></div></div>
+      <div class="field"><label class="lbl">Текущие продажи в месяц</label><div class="input-wrap"><input type="number" id="units" value="100" min="0"><span class="ifix ifix-r">шт.</span></div></div>
+      <div class="field"><label class="lbl">Целевая прибыль <span class="hint">(необязательно)</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="target" value="5000" min="0"></div></div>
+    </div>
+  </div>
+
+  <div class="results-row">
+    <div class="r-card highlight"><div class="r-label">Точка безубыточности, шт.</div><div class="r-value" id="r-beunits">—</div><div class="r-sub">единиц в месяц</div></div>
+    <div class="r-card"><div class="r-label">Выручка на безубыточности</div><div class="r-value" id="r-berev">—</div><div class="r-sub">нужная выручка в месяц</div></div>
+    <div class="r-card"><div class="r-label">Маржинальный доход</div><div class="r-value" id="r-cm">—</div><div class="r-sub" id="r-cm-sub">на единицу</div></div>
+    <div class="r-card"><div class="r-label">Текущая прибыль/убыток</div><div class="r-value" id="r-profit">—</div><div class="r-sub" id="r-profit-sub">при текущем объёме</div></div>
+  </div>
+
+  <div class="chart-panel">
+    <div class="chart-title">График выручки и расходов</div>
+    <canvas id="beChart"></canvas>
+  </div>
+
+  <div class="table-panel">
+    <div class="table-title">Анализ сценариев</div>
+    <table>
+      <thead><tr><th>Продано, шт.</th><th>Выручка</th><th>Переменные расходы</th><th>Постоянные расходы</th><th>Прибыль / убыток</th></tr></thead>
+      <tbody id="scenario-table"></tbody>
+    </table>
+  </div>
+
+  <div class="info-box">
+    <strong>📐 Формула:</strong> Точка безубыточности = Постоянные расходы / (Цена − Переменные расходы на единицу) &nbsp;·&nbsp; Маржинальный доход = Цена − Переменные расходы &nbsp;·&nbsp; Коэффициент маржи = Маржа / Цена
+  </div>
+
+  <Fragment slot="guide">
+    <p>Точка безубыточности — это объём продаж, при котором выручка ровно покрывает постоянные и переменные расходы: ни прибыли, ни убытка. Каждая единица, проданная сверх этого объёма, добавляет полный маржинальный доход к прибыли.</p>
+    <h3>Формула</h3>
+    <pre>Маржинальный доход на единицу = Цена − Переменные расходы на единицу
+Точка безубыточности (шт.) = Постоянные расходы / Маржинальный доход на единицу
+Выручка на безубыточности = Точка безубыточности × Цена</pre>
+    <h3>Пример</h3>
+    <p>Постоянные расходы $10 000 в месяц, цена $50, переменные расходы $30. Маржинальный доход = $20. Точка безубыточности = $10 000 / $20 = 500 единиц, или $25 000 выручки в месяц.</p>
+  </Fragment>
+
+  <script>
+    function fmt(n) { return '$' + Math.round(Math.abs(n)).toLocaleString('ru-RU'); }
+
+    function calc() {
+      const rent = +document.getElementById('rent').value || 0;
+      const sal = +document.getElementById('salaries').value || 0;
+      const sw = +document.getElementById('software').value || 0;
+      const mkt = +document.getElementById('marketing').value || 0;
+      const other = +document.getElementById('other').value || 0;
+      const price = +document.getElementById('price').value || 1;
+      const vcost = +document.getElementById('vcost').value || 0;
+      const units = +document.getElementById('units').value || 0;
+
+      const fixedTotal = rent + sal + sw + mkt + other;
+      const cm = price - vcost;
+      const cmRatio = price > 0 ? cm / price : 0;
+      const beUnits = cm > 0 ? Math.ceil(fixedTotal / cm) : Infinity;
+      const beRev = beUnits * price;
+      const currentRev = units * price;
+      const currentVC = units * vcost;
+      const profit = currentRev - currentVC - fixedTotal;
+
+      document.getElementById('r-beunits').textContent = beUnits === Infinity ? '∞' : beUnits.toLocaleString('ru-RU');
+      document.getElementById('r-berev').textContent = beUnits === Infinity ? '∞' : fmt(beRev);
+      document.getElementById('r-cm').textContent = fmt(cm);
+      document.getElementById('r-cm-sub').textContent = `Коэфф. маржи: ${(cmRatio * 100).toFixed(1)}%`;
+
+      const profitEl = document.getElementById('r-profit');
+      const profitCard = profitEl.closest('.r-card');
+      profitEl.textContent = (profit >= 0 ? '+' : '-') + fmt(profit);
+      profitCard.style.background = profit >= 0 ? 'var(--greenbg)' : 'var(--redbg)';
+      profitCard.style.borderColor = profit >= 0 ? '#6EE7B7' : '#FECACA';
+      profitEl.style.color = profit >= 0 ? 'var(--green)' : 'var(--red)';
+      document.getElementById('r-profit-sub').textContent = profit >= 0 ? '✅ Прибыльно' : '🚨 Убыток';
+
+      const maxUnits = Math.max(beUnits * 2, units * 2, 200);
+      const step = Math.max(1, Math.round(maxUnits / 8));
+      let rows = '';
+      for (let u = 0; u <= maxUnits; u += step) {
+        const rev = u * price;
+        const vc = u * vcost;
+        const p = rev - vc - fixedTotal;
+        const isBreakeven = u >= beUnits && (u - step) < beUnits;
+        rows += `<tr${isBreakeven ? ' class="breakeven-row"' : ''}>
+          <td class="mono">${u.toLocaleString('ru-RU')}${isBreakeven ? ' ⚖️' : ''}</td>
+          <td class="mono">$${Math.round(rev).toLocaleString('ru-RU')}</td>
+          <td class="mono">$${Math.round(vc).toLocaleString('ru-RU')}</td>
+          <td class="mono">$${Math.round(fixedTotal).toLocaleString('ru-RU')}</td>
+          <td class="mono ${p >= 0 ? 'profit' : 'loss'}">${p >= 0 ? '+' : '-'}$${Math.round(Math.abs(p)).toLocaleString('ru-RU')}</td>
+        </tr>`;
+      }
+      document.getElementById('scenario-table').innerHTML = rows;
+
+      drawChart(fixedTotal, cm, beUnits, units, price, vcost);
+    }
+
+    function drawChart(fixed, cm, beUnits, currentUnits, price, vcost) {
+      const canvas = document.getElementById('beChart');
+      const ctx = canvas.getContext('2d');
+      const W = canvas.offsetWidth || 600;
+      const H = 220;
+      canvas.width = W; canvas.height = H;
+      ctx.clearRect(0, 0, W, H);
+
+      const maxU = Math.max(beUnits * 1.8, currentUnits * 1.5, 10);
+      const maxRev = maxU * price;
+      const pad = { l: 60, r: 20, t: 20, b: 40 };
+      const cw = W - pad.l - pad.r;
+      const ch = H - pad.t - pad.b;
+
+      function xp(u) { return pad.l + (u / maxU) * cw; }
+      function yp(v) { return pad.t + ch - (v / maxRev) * ch; }
+
+      ctx.strokeStyle = '#E2E8F0'; ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = pad.t + (ch / 4) * i;
+        ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + cw, y); ctx.stroke();
+        const val = Math.round(maxRev * (1 - i / 4));
+        ctx.fillStyle = '#94A3B8'; ctx.font = '10px Plus Jakarta Sans'; ctx.textAlign = 'right';
+        ctx.fillText('$' + Math.round(val / 1000) + 'K', pad.l - 6, y + 4);
+      }
+
+      ctx.strokeStyle = '#DC2626'; ctx.lineWidth = 2; ctx.setLineDash([4, 4]);
+      ctx.beginPath(); ctx.moveTo(pad.l, yp(fixed)); ctx.lineTo(pad.l + cw, yp(fixed)); ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.strokeStyle = '#F97316'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(xp(0), yp(fixed)); ctx.lineTo(xp(maxU), yp(fixed + maxU * Math.abs(price - cm))); ctx.stroke();
+
+      ctx.strokeStyle = '#2563EB'; ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.moveTo(xp(0), yp(0)); ctx.lineTo(xp(maxU), yp(maxU * price)); ctx.stroke();
+
+      if (beUnits < maxU) {
+        const bx = xp(beUnits); const by = yp(beUnits * price);
+        ctx.fillStyle = '#059669'; ctx.beginPath(); ctx.arc(bx, by, 6, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#059669'; ctx.font = 'bold 11px Plus Jakarta Sans'; ctx.textAlign = 'center';
+        ctx.fillText('Безубыточность', bx, by - 12);
+      }
+
+      ctx.font = '11px Plus Jakarta Sans'; ctx.textAlign = 'left';
+      [['#2563EB', 'Выручка'], ['#F97316', 'Все расходы'], ['#DC2626', 'Постоянные']].forEach(([c, l], i) => {
+        ctx.fillStyle = c; ctx.fillRect(pad.l + i * 110, H - 14, 12, 3);
+        ctx.fillStyle = '#475569'; ctx.fillText(l, pad.l + i * 110 + 16, H - 10);
+      });
+    }
+
+    document.addEventListener('input', calc);
+    document.addEventListener('rk:restored', calc);
+    window.addEventListener('load', calc);
+    window.addEventListener('resize', calc);
+  </script>
+</ToolLayout>

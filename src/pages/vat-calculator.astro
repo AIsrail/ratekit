@@ -1,0 +1,132 @@
+---
+import ToolLayout from '../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: 'How do I calculate VAT from a gross amount?',
+    a: 'Divide the gross amount by (1 + VAT rate) to get the net price; the difference is the VAT. For 20% VAT: 120 / 1.2 = 100 net and 20 VAT.' },
+  { q: 'What is the difference between VAT and GST?',
+    a: 'Both are value-added consumption taxes; the name depends on the country (VAT in the EU and UK, GST in Australia, Canada, India, Singapore). The calculation is the same.' },
+  { q: "Why can't I just subtract 20% to remove VAT?",
+    a: 'Because VAT is calculated on the net price, not the gross. Subtracting 20% from 120 gives 96, but the correct net is 100.' },
+];
+
+const related = [
+  { label: 'Profit Margin Calculator', path: '/profit-margin' },
+  { label: 'Invoice Generator', path: '/invoice-generator' },
+  { label: 'Stripe & PayPal Fee Calculator', path: '/stripe-fee' },
+  { label: 'Profit & Loss Statement', path: '/pl-statement' },
+];
+
+const countries = [
+  { name: '🇬🇧 UK', rate: 20 }, { name: '🇩🇪 Germany', rate: 19 }, { name: '🇫🇷 France', rate: 20 },
+  { name: '🇳🇱 Netherlands', rate: 21 }, { name: '🇦🇺 Australia GST', rate: 10 },
+  { name: '🇨🇦 Canada HST', rate: 13 }, { name: '🇮🇳 India GST', rate: 18 },
+  { name: '🇳🇿 New Zealand', rate: 15 }, { name: '🇿🇦 South Africa', rate: 15 },
+  { name: '🇸🇬 Singapore', rate: 9 }, { name: '🇯🇵 Japan', rate: 10 }, { name: '🇸🇪 Sweden', rate: 25 },
+];
+---
+<ToolLayout
+  slug="vat-calculator"
+  lang="en"
+  title="VAT & GST Calculator"
+  description="Add or remove VAT and GST from any price. Supports all countries and custom rates. Free VAT calculator for invoicing and business."
+  pageTag="🌍 Global Tool"
+  pageTagColor="var(--blue)"
+  h1="VAT & GST Calculator"
+  pageSub="Add or remove VAT/GST from any price. Supports all major countries and custom rates. Perfect for invoicing."
+  dateModified="2026-10-13"
+  guideTitle="How to add or remove VAT and GST"
+  faq={faq}
+  related={related}
+>
+  <div class="panel">
+    <div class="panel-title">Mode</div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="mode-add-btn">Add tax to price</button>
+      <button class="mode-btn" id="mode-remove-btn">Remove tax from price</button>
+    </div>
+    <div class="field">
+      <label class="lbl" id="amount-lbl">Price (excl. tax)</label>
+      <div class="input-wrap"><span class="ifix">$</span><input type="number" id="amount" value="1000" min="0" step="0.01"></div>
+    </div>
+    <div class="field">
+      <label class="lbl">Tax Rate</label>
+      <div class="input-wrap"><input type="number" id="rate" value="20" min="0" max="100" step="0.1"><span class="ifix ifix-r">%</span></div>
+    </div>
+    <div class="field">
+      <label class="lbl">Quick select by country</label>
+      <div class="rates-grid" id="rate-chips">
+        {countries.map((c, i) => (
+          <div class={`rate-chip${i === 0 ? ' active' : ''}`} data-rate={c.rate}>
+            <div class="country">{c.name}</div>
+            <div class="rate">{c.rate}%</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <div class="results-row">
+    <div class="r-card"><div class="r-label">Price excl. tax</div><div class="r-value" id="r-excl">—</div><div class="r-sub">net amount</div></div>
+    <div class="r-card primary"><div class="r-label">Tax amount</div><div class="r-value" id="r-tax">—</div><div class="r-sub" id="r-tax-sub">VAT/GST</div></div>
+    <div class="r-card green"><div class="r-label">Price incl. tax</div><div class="r-value" id="r-incl">—</div><div class="r-sub">gross amount</div></div>
+  </div>
+
+  <div class="info-box">
+    <strong>💡 Note:</strong> "Add tax" means your entered price is the net (pre-tax) price. "Remove tax" means your price already includes tax and you want to find the net amount. Always check local regulations for correct invoicing.
+  </div>
+
+  <Fragment slot="guide">
+    <p>VAT and GST are consumption taxes added on top of the net price. Adding tax multiplies the net price by (1 + rate); removing tax from a gross price divides by (1 + rate). Simply subtracting the rate is the most common mistake.</p>
+    <h3>Formula</h3>
+    <pre>Add VAT: Gross = Net x (1 + Rate)
+Remove VAT: Net = Gross / (1 + Rate)
+VAT amount = Gross - Net</pre>
+    <h3>Example</h3>
+    <p>Net price 100 EUR at 20% VAT: gross = 120 EUR, VAT = 20 EUR. Gross price 120 EUR including 20% VAT: net = 120 / 1.2 = 100 EUR (not 96 EUR).</p>
+  </Fragment>
+
+  <script>
+    let mode = 'add';
+
+    document.querySelectorAll('.rate-chip').forEach((chip) => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.rate-chip').forEach((c) => c.classList.remove('active'));
+        chip.classList.add('active');
+        document.getElementById('rate').value = chip.getAttribute('data-rate');
+        calc();
+      });
+    });
+
+    function setMode(m) {
+      mode = m;
+      document.getElementById('mode-add-btn').classList.toggle('active', m === 'add');
+      document.getElementById('mode-remove-btn').classList.toggle('active', m === 'remove');
+      document.getElementById('amount-lbl').textContent = m === 'add' ? 'Price (excl. tax)' : 'Price (incl. tax)';
+      calc();
+    }
+    document.getElementById('mode-add-btn').addEventListener('click', () => setMode('add'));
+    document.getElementById('mode-remove-btn').addEventListener('click', () => setMode('remove'));
+
+    function fmt(n) { return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+
+    function calc() {
+      const amount = parseFloat(document.getElementById('amount').value) || 0;
+      const rate = parseFloat(document.getElementById('rate').value) || 0;
+      let excl, tax, incl;
+      if (mode === 'add') {
+        excl = amount; tax = amount * rate / 100; incl = amount + tax;
+      } else {
+        incl = amount; excl = amount / (1 + rate / 100); tax = incl - excl;
+      }
+      document.getElementById('r-excl').textContent = fmt(excl);
+      document.getElementById('r-tax').textContent = fmt(tax);
+      document.getElementById('r-incl').textContent = fmt(incl);
+      document.getElementById('r-tax-sub').textContent = `${rate}% rate`;
+    }
+
+    document.addEventListener('input', calc);
+    document.addEventListener('rk:restored', calc);
+    window.addEventListener('load', calc);
+  </script>
+</ToolLayout>

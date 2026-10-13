@@ -15,6 +15,8 @@ interface Props {
   description: string;
   /** small uppercase tag above the H1, e.g. "💰 Planning Tool" */
   pageTag: string;
+  /** CSS color for pageTag, e.g. "var(--amber)" or "var(--blue)" — defaults to green */
+  pageTagColor?: string;
   h1: string;
   pageSub: string;
   /** ISO date, e.g. '2026-10-13' — surfaced in JSON-LD and in the byline */
@@ -27,7 +29,7 @@ interface Props {
 }
 
 const {
-  slug, lang, title, description, pageTag, h1, pageSub,
+  slug, lang, title, description, pageTag, pageTagColor, h1, pageSub,
   dateModified, guideTitle, faq, related, ogType = 'article',
 } = Astro.props;
 
@@ -101,7 +103,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop
 .page-header{background:var(--white);border-bottom:1px solid var(--border);padding:48px 48px 40px;}
 .breadcrumb{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:16px;}
 .breadcrumb a{color:var(--blue);}
-.page-tag{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:10px;}
+.page-tag{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--page-tag-color, var(--green));margin-bottom:10px;}
 h1{font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:700;letter-spacing:-.02em;line-height:1.15;margin-bottom:10px;}
 .page-sub{font-size:15px;color:var(--mid);max-width:560px;}
 main{padding:40px 48px 64px;max-width:900px;}
@@ -139,6 +141,42 @@ input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-in
 .bench-table th,.bench-table td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);}
 .bench-table th{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
 .bench-table td:last-child,.bench-table th:last-child{text-align:right;font-family:var(--mono);}
+
+/* ── Reusable tool widgets (shared across multiple calculators) ── */
+.mode-toggle{display:flex;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:24px;}
+.mode-btn{flex:1;padding:10px;background:transparent;border:none;font-family:var(--font);font-size:13px;font-weight:500;color:var(--mid);cursor:pointer;transition:all .15s;}
+.mode-btn.active{background:var(--blue);color:white;}
+select{flex:1;background:transparent;border:none;outline:none;color:var(--ink);font-family:var(--font);font-size:14px;padding:10px 12px;cursor:pointer;}
+
+.bench-panel{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:20px;}
+.bench-row{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid var(--border);}
+.bench-row:last-child{border-bottom:none;}
+.bench-name{font-size:13px;color:var(--mid);width:180px;flex-shrink:0;}
+.bench-range{font-family:var(--mono);font-size:12px;font-weight:600;width:70px;flex-shrink:0;}
+.bench-bar-wrap{flex:1;height:5px;background:var(--bg);border-radius:99px;overflow:hidden;}
+.bench-bar{height:100%;border-radius:99px;}
+
+.rates-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:4px;}
+.rate-chip{background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;cursor:pointer;transition:all .15s;font-size:13px;}
+.rate-chip:hover{border-color:var(--blue);}
+.rate-chip.active{border-color:var(--blue);background:var(--bluebg);color:var(--blue);}
+.rate-chip .country{font-weight:600;font-size:12px;}
+.rate-chip .rate{font-family:var(--mono);font-size:11px;color:var(--muted);}
+
+.chart-panel{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:20px;}
+.chart-title{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.chart-panel canvas{width:100%;height:220px;display:block;}
+
+.table-panel{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:20px;}
+.table-title{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.table-panel table{width:100%;border-collapse:collapse;font-size:13px;}
+.table-panel thead th{text-align:left;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:8px 12px;background:var(--bg);border-bottom:1px solid var(--border);}
+.table-panel tbody td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--mid);}
+.table-panel tbody td.mono{font-family:var(--mono);}
+.table-panel tbody td.profit{color:var(--green);font-weight:600;}
+.table-panel tbody td.loss{color:var(--red);font-weight:600;}
+.table-panel tbody tr.breakeven-row td{background:#FFFBEB;font-weight:600;}
+.table-panel tbody tr:last-child td{border-bottom:none;}
 footer{background:var(--ink);padding:28px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;}
 .flogo{font-size:16px;font-weight:700;color:white;}.flogo span{color:var(--blue);}
 .fcopy{font-size:12px;color:rgba(255,255,255,.3);}
@@ -228,7 +266,7 @@ footer{background:var(--ink);padding:28px 48px;display:flex;justify-content:spac
 
 <div class="page-header">
   <div class="breadcrumb"><a href={lang === 'en' ? '/' : '/ru/'}>{breadcrumbHome}</a> › {h1}</div>
-  <div class="page-tag">{pageTag}</div>
+  <div class="page-tag" style={pageTagColor ? `--page-tag-color:${pageTagColor}` : undefined}>{pageTag}</div>
   <h1>{h1}</h1>
   <p class="page-sub">{pageSub}</p>
 </div>

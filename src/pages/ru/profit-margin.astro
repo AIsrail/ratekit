@@ -1,0 +1,134 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: 'В чём разница между маржой и наценкой?',
+    a: 'Маржа — это прибыль, делённая на цену продажи; наценка — прибыль, делённая на себестоимость. Одна и та же прибыль $40 при цене $100 — это 40% маржи, но 66,7% наценки.' },
+  { q: 'Какая маржа считается хорошей для малого бизнеса?',
+    a: 'Зависит от отрасли: услуги и софт часто дают 20-40% и выше, розница и рестораны — 3-10% чистой маржи. Сравнивайте с компаниями своей отрасли.' },
+  { q: 'Как установить цену для целевой маржи?',
+    a: 'Разделите себестоимость на (1 − целевая маржа). Для маржи 30% при себестоимости $70: $70 / 0,7 = $100.' },
+];
+
+const related = [
+  { label: 'Точка безубыточности', path: '/ru/break-even' },
+  { label: 'Калькулятор НДС / GST', path: '/ru/vat-calculator' },
+  { label: 'P&L Statement', path: '/pl-statement' },
+  { label: 'Калькулятор ROI', path: '/ru/roi-calculator' },
+];
+---
+<ToolLayout
+  slug="profit-margin"
+  lang="ru"
+  title="Калькулятор маржи и наценки онлайн"
+  description="Рассчитайте валовую маржу, чистую маржу и наценку. Бесплатный калькулятор маржи для e-commerce, розницы и ценообразования."
+  pageTag="🛒 E-commerce и розница"
+  pageTagColor="var(--amber)"
+  h1="Калькулятор маржи и наценки"
+  pageSub="Рассчитайте валовую маржу, чистую маржу и наценку. Найдите цену продажи по себестоимости и желаемой марже — или наоборот."
+  dateModified="2026-10-13"
+  guideTitle="Как рассчитать маржу и наценку"
+  faq={faq}
+  related={related}
+>
+  <div class="panel">
+    <div class="panel-title">Рассчитать из</div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="mode-cost-btn">Себестоимость + выручка → Маржа</button>
+      <button class="mode-btn" id="mode-margin-btn">Себестоимость + маржа → Цена продажи</button>
+    </div>
+    <div id="cost-mode">
+      <div class="field"><label class="lbl">Выручка / цена продажи</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="revenue" value="100" min="0" step="0.01"></div></div>
+      <div class="field"><label class="lbl">Себестоимость товара (COGS)</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="cogs" value="40" min="0" step="0.01"></div></div>
+      <div class="field"><label class="lbl">Операционные расходы <span class="hint">(необязательно, для чистой маржи)</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="opex" value="20" min="0" step="0.01"></div></div>
+    </div>
+    <div id="margin-mode" style="display:none;">
+      <div class="field"><label class="lbl">Себестоимость товара (COGS)</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="cost2" value="40" min="0" step="0.01"></div></div>
+      <div class="field"><label class="lbl">Желаемая валовая маржа</label><div class="input-wrap"><input type="number" id="target-margin" value="60" min="0" max="100" step="0.1"><span class="ifix ifix-r">%</span></div></div>
+    </div>
+  </div>
+
+  <div class="results-row">
+    <div class="r-card primary"><div class="r-label" id="r1-lbl">Валовая маржа</div><div class="r-value" id="r-margin">—</div><div class="r-sub" id="r1-sub">от выручки</div></div>
+    <div class="r-card"><div class="r-label" id="r2-lbl">Валовая прибыль</div><div class="r-value" id="r-profit">—</div><div class="r-sub" id="r2-sub">выручка − себестоимость</div></div>
+    <div class="r-card"><div class="r-label">Наценка</div><div class="r-value" id="r-markup">—</div><div class="r-sub">сверх себестоимости</div></div>
+    <div class="r-card green"><div class="r-label" id="r4-lbl">Чистая маржа</div><div class="r-value" id="r-net">—</div><div class="r-sub">после операционных расходов</div></div>
+  </div>
+
+  <div class="bench-panel">
+    <div class="panel-title">Ориентиры по отраслям (валовая маржа)</div>
+    <div class="bench-row"><span class="bench-name">SaaS / софт</span><span class="bench-range" style="color:var(--green);">70–80%</span><div class="bench-bar-wrap"><div class="bench-bar" style="width:75%;background:var(--green);"></div></div></div>
+    <div class="bench-row"><span class="bench-name">Консалтинг / услуги</span><span class="bench-range" style="color:var(--blue);">60–70%</span><div class="bench-bar-wrap"><div class="bench-bar" style="width:65%;background:var(--blue);"></div></div></div>
+    <div class="bench-row"><span class="bench-name">E-commerce / розница</span><span class="bench-range" style="color:var(--amber);">30–50%</span><div class="bench-bar-wrap"><div class="bench-bar" style="width:40%;background:var(--amber);"></div></div></div>
+    <div class="bench-row"><span class="bench-name">Производство</span><span class="bench-range" style="color:var(--amber);">25–35%</span><div class="bench-bar-wrap"><div class="bench-bar" style="width:30%;background:var(--amber);"></div></div></div>
+    <div class="bench-row"><span class="bench-name">Рестораны / общепит</span><span class="bench-range" style="color:var(--red);">10–20%</span><div class="bench-bar-wrap"><div class="bench-bar" style="width:15%;background:var(--red);"></div></div></div>
+  </div>
+
+  <div class="info-box">
+    <strong>📐 Ключевое отличие:</strong> <strong>Маржа</strong> = Прибыль / Выручка × 100 (например, маржа 60% при продаже за $100 = $60 прибыли). <strong>Наценка</strong> = Прибыль / Себестоимость × 100 (например, наценка 150% при себестоимости $40 = $60 прибыли). Число похожее, база разная.
+  </div>
+
+  <Fragment slot="guide">
+    <p>Маржа показывает, какая доля цены продажи — это прибыль; наценка показывает, сколько вы добавили сверх себестоимости. Это одна и та же цена, но с разных сторон, и их часто путают: наценка 50% — это маржа всего 33%.</p>
+    <h3>Формула</h3>
+    <pre>Валовая маржа = (Цена − Себестоимость) / Цена × 100%
+Наценка = (Цена − Себестоимость) / Себестоимость × 100%
+Цена для целевой маржи = Себестоимость / (1 − Маржа)</pre>
+    <h3>Пример</h3>
+    <p>Себестоимость $60, цена $100: маржа = 40%, наценка = 66,7%. Чтобы получить маржу 50% при себестоимости $60, ставьте цену $60 / 0,5 = $120.</p>
+  </Fragment>
+
+  <script>
+    let mode = 'cost';
+
+    function setMode(m) {
+      mode = m;
+      document.getElementById('mode-cost-btn').classList.toggle('active', m === 'cost');
+      document.getElementById('mode-margin-btn').classList.toggle('active', m === 'margin');
+      document.getElementById('cost-mode').style.display = m === 'cost' ? 'block' : 'none';
+      document.getElementById('margin-mode').style.display = m === 'margin' ? 'block' : 'none';
+      calc();
+    }
+
+    function fmt(n) { return '$' + Math.abs(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+
+    function calc() {
+      if (mode === 'cost') {
+        const rev = +document.getElementById('revenue').value || 1;
+        const cogs = +document.getElementById('cogs').value || 0;
+        const opex = +document.getElementById('opex').value || 0;
+        const grossProfit = rev - cogs;
+        const grossMargin = grossProfit / rev * 100;
+        const markup = cogs > 0 ? grossProfit / cogs * 100 : 0;
+        const netProfit = grossProfit - opex;
+        const netMargin = netProfit / rev * 100;
+        document.getElementById('r-margin').textContent = grossMargin.toFixed(1) + '%';
+        document.getElementById('r-profit').textContent = fmt(grossProfit);
+        document.getElementById('r-markup').textContent = markup.toFixed(1) + '%';
+        document.getElementById('r-net').textContent = netMargin.toFixed(1) + '%';
+        document.getElementById('r4-lbl').textContent = 'Чистая маржа';
+        document.getElementById('r2-lbl').textContent = 'Валовая прибыль';
+        document.getElementById('r1-lbl').textContent = 'Валовая маржа';
+      } else {
+        const cost = +document.getElementById('cost2').value || 1;
+        const margin = +document.getElementById('target-margin').value || 0;
+        const price = cost / (1 - margin / 100);
+        const profit = price - cost;
+        const markup = profit / cost * 100;
+        document.getElementById('r-margin').textContent = margin.toFixed(1) + '%';
+        document.getElementById('r-profit').textContent = fmt(price);
+        document.getElementById('r-markup').textContent = markup.toFixed(1) + '%';
+        document.getElementById('r-net').textContent = fmt(profit);
+        document.getElementById('r1-lbl').textContent = 'Целевая маржа';
+        document.getElementById('r2-lbl').textContent = 'Цена продажи';
+        document.getElementById('r4-lbl').textContent = 'Валовая прибыль';
+      }
+    }
+
+    document.getElementById('mode-cost-btn').addEventListener('click', () => setMode('cost'));
+    document.getElementById('mode-margin-btn').addEventListener('click', () => setMode('margin'));
+    document.addEventListener('input', calc);
+    document.addEventListener('rk:restored', calc);
+    window.addEventListener('load', calc);
+  </script>
+</ToolLayout>
