@@ -6,3 +6,9 @@ resumelink-local/
 resumelink-*.md
 add-descriptions.py
 promo-drafts.md
+
+# local working notes, not site content
+*.md
+!README.md
+resumelink-local/
+add-descriptions.py
