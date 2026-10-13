@@ -1,0 +1,7 @@
+# Cloudflare Pages redirects
+# Route static HTML pages (make URLs clean without .html extension)
+/budget-calculator /budget-calculator.html 200
+/ru/budget-calculator /ru/budget-calculator.html 200
+
+# Catch-all for SPA or other routes
+/* /index.html 200
