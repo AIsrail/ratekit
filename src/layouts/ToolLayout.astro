@@ -94,7 +94,7 @@ const ldGraph = {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style is:global>
-:root{--bg:#F8F9FC;--white:#FFFFFF;--border:#E2E8F0;--ink:#0F172A;--mid:#475569;--muted:#94A3B8;--blue:#2563EB;--blue2:#1D4ED8;--bluebg:#EFF6FF;--green:#059669;--greenbg:#ECFDF5;--amber:#D97706;--red:#DC2626;--redbg:#FEF2F2;--font:'Plus Jakarta Sans',sans-serif;--mono:'JetBrains Mono',monospace;}
+:root{--bg:#F8F9FC;--white:#FFFFFF;--border:#E2E8F0;--ink:#0F172A;--mid:#475569;--muted:#94A3B8;--blue:#2563EB;--blue2:#1D4ED8;--bluebg:#EFF6FF;--green:#059669;--greenbg:#ECFDF5;--amber:#D97706;--red:#DC2626;--redbg:#FEF2F2;--purple:#7C3AED;--purplebg:#F5F3FF;--font:'Plus Jakarta Sans',sans-serif;--mono:'JetBrains Mono',monospace;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh;}
 a{text-decoration:none;color:inherit;}
@@ -221,6 +221,39 @@ select{flex:1;background:transparent;border:none;outline:none;color:var(--ink);f
 .results-table tr.highlight-row td:not(:first-child){color:var(--green);font-weight:600;}
 .warn-box{background:#FFFBEB;border:1px solid #FDE68A;border-radius:10px;padding:16px 20px;font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:20px;}
 .warn-box strong{color:var(--amber);}
+
+.amort-panel{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:20px;overflow-x:auto;}
+.amort-panel table{width:100%;border-collapse:collapse;font-size:12px;min-width:500px;}
+.amort-panel thead th{text-align:left;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:8px 10px;background:var(--bg);border-bottom:1px solid var(--border);}
+.amort-panel tbody td{padding:8px 10px;border-bottom:1px solid var(--border);color:var(--mid);}
+.amort-panel tbody td.mono{font-family:var(--mono);color:var(--ink);}
+.amort-panel tbody tr:last-child td{border-bottom:none;}
+
+.ratio-panel{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:32px;margin-bottom:20px;text-align:center;}
+.ratio-value{font-family:var(--mono);font-size:clamp(3rem,8vw,5rem);font-weight:700;line-height:1;margin-bottom:8px;transition:color .3s;}
+.ratio-label{font-size:14px;color:var(--mid);margin-bottom:16px;}
+.ratio-verdict{display:inline-block;font-size:13px;font-weight:600;padding:6px 16px;border-radius:99px;}
+.metrics-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.m-card{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:20px;}
+.m-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.m-value{font-family:var(--mono);font-size:1.5rem;font-weight:600;color:var(--ink);line-height:1;}
+.m-sub{font-size:11px;color:var(--muted);margin-top:6px;}
+.bench-panel .bench-range{width:80px;}
+.bench-panel .bench-label{font-size:13px;color:var(--mid);width:180px;flex-shrink:0;}
+.bench-panel .bench-verdict{font-size:11px;font-weight:600;padding:3px 10px;border-radius:4px;}
+@media(max-width:600px){.metrics-row{grid-template-columns:1fr 1fr;}}
+
+.eligibility-panel{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px;}
+.check-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.check-row:last-child{border-bottom:none;}
+.check-icon{font-size:18px;width:24px;flex-shrink:0;}
+.check-label{flex:1;color:var(--mid);}
+.check-status{font-weight:600;font-size:12px;}
+.breakdown-panel{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:20px;}
+.breakdown-panel .bd-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.breakdown-panel .bd-row:last-child{border-bottom:none;font-weight:700;}
+.breakdown-panel .bd-label{color:var(--mid);}
+.breakdown-panel .bd-value{font-family:var(--mono);color:var(--ink);}
 .table-panel tbody tr:last-child td{border-bottom:none;}
 footer{background:var(--ink);padding:28px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;}
 .flogo{font-size:16px;font-weight:700;color:white;}.flogo span{color:var(--blue);}

@@ -1,0 +1,226 @@
+---
+import ToolLayout from '../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: 'Who can use Form 2555?',
+    a: 'US citizens and resident aliens with foreign earned income and a tax home abroad who meet either the bona fide residence test or the physical presence test.' },
+  { q: 'Does the FEIE remove self-employment tax?',
+    a: 'No. The exclusion applies to income tax only; self-employed expats still owe US self-employment tax unless a totalization agreement applies.' },
+  { q: 'FEIE or Foreign Tax Credit: which is better?',
+    a: 'In low-tax countries the FEIE usually saves more; in high-tax countries the Foreign Tax Credit (Form 1116) is often better. Some expats combine both.' },
+];
+
+const related = [
+  { label: 'Self-Employment Tax Calculator', path: '/self-employment-tax' },
+  { label: '1099 vs W2 Calculator', path: '/1099-vs-w2' },
+  { label: 'Salary ↔ Hourly Calculator', path: '/salary-hourly' },
+  { label: 'Freelance Rate Calculator', path: '/freelance-rate' },
+];
+---
+<ToolLayout
+  slug="form-2555"
+  lang="en"
+  title="Form 2555 Calculator — Foreign Earned Income Exclusion 2026"
+  description="Calculate your IRS Form 2555 Foreign Earned Income Exclusion (FEIE) for 2026. Find out how much US expats can exclude from taxable income. Free calculator."
+  pageTag="🇺🇸 US Expat Tax · 2026"
+  pageTagColor="var(--red)"
+  h1="Form 2555 — Foreign Earned Income Exclusion"
+  pageSub="Find out how much of your foreign income you can exclude from US taxes in 2026. Free estimator for Americans living abroad."
+  dateModified="2026-10-13"
+  guideTitle="How the Foreign Earned Income Exclusion (Form 2555) works"
+  faq={faq}
+  related={related}
+>
+  <div class="info-box">
+    <strong>What is Form 2555?</strong> US citizens and resident aliens living abroad may exclude up to <strong>$132,900</strong> (tax year 2026, per IRS) of foreign earned income from US taxable income using the Foreign Earned Income Exclusion (FEIE). You must pass either the <strong>Bona Fide Residence Test</strong> or the <strong>Physical Presence Test</strong> to qualify.
+  </div>
+
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-title">Your Situation</div>
+      <div class="field">
+        <label class="lbl">Qualifying Test</label>
+        <div class="mode-toggle">
+          <button class="mode-btn active" id="test-bfr-btn">Bona Fide Residence</button>
+          <button class="mode-btn" id="test-ppt-btn">Physical Presence</button>
+        </div>
+      </div>
+      <div class="field" id="bfr-field">
+        <label class="lbl">Years as Bona Fide Resident abroad</label>
+        <div class="input-wrap"><input type="number" id="bfr-years" value="2" min="0"><span class="ifix ifix-r">years</span></div>
+      </div>
+      <div class="field" id="ppt-field" style="display:none;">
+        <label class="lbl">Days outside US in 2026 <span class="hint">(need 330+)</span></label>
+        <div class="input-wrap"><input type="number" id="ppt-days" value="340" min="0" max="366"><span class="ifix ifix-r">days</span></div>
+      </div>
+      <div class="field">
+        <label class="lbl">Country of Residence</label>
+        <div class="input-wrap">
+          <select id="country">
+            <option>Kyrgyzstan</option><option>Germany</option><option>France</option>
+            <option>United Kingdom</option><option>Canada</option><option>Australia</option>
+            <option>Singapore</option><option>UAE</option><option>Netherlands</option>
+            <option>Spain</option><option>Portugal</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label class="lbl">Filing Status</label>
+        <div class="input-wrap">
+          <select id="filing">
+            <option value="single">Single</option>
+            <option value="married">Married Filing Jointly</option>
+            <option value="mfs">Married Filing Separately</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Income & Housing</div>
+      <div class="field"><label class="lbl">Foreign Earned Income (wages/self-employment)</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="income" value="90000" min="0"></div></div>
+      <div class="field"><label class="lbl">Foreign Housing Costs (annual) <span class="hint">optional</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="housing" value="0" min="0"></div></div>
+      <div class="field"><label class="lbl">Days in Tax Year <span class="hint">(366 for leap year)</span></label><div class="input-wrap"><input type="number" id="days-year" value="365" min="1" max="366"><span class="ifix ifix-r">days</span></div></div>
+      <div class="field"><label class="lbl">Days worked abroad in 2026</label><div class="input-wrap"><input type="number" id="days-abroad" value="365" min="0" max="366"><span class="ifix ifix-r">days</span></div></div>
+    </div>
+  </div>
+
+  <div class="eligibility-panel">
+    <div class="panel-title">Eligibility Check</div>
+    <div class="check-row">
+      <span class="check-icon" id="chk1-icon">⏳</span>
+      <span class="check-label" id="chk1-label">Qualifying test status</span>
+      <span class="check-status" id="chk1-status">—</span>
+    </div>
+    <div class="check-row">
+      <span class="check-icon" id="chk2-icon">⏳</span>
+      <span class="check-label">Tax home must be in a foreign country</span>
+      <span class="check-status" id="chk2-status">—</span>
+    </div>
+    <div class="check-row">
+      <span class="check-icon" id="chk3-icon">⏳</span>
+      <span class="check-label">Income must be earned income (wages/self-employment)</span>
+      <span class="check-status" id="chk3-status">—</span>
+    </div>
+  </div>
+
+  <div class="results-row" style="grid-template-columns:repeat(3,1fr);">
+    <div class="r-card primary"><div class="r-label">FEIE Amount</div><div class="r-value" id="r-feie">—</div><div class="r-sub">excluded from US tax</div></div>
+    <div class="r-card"><div class="r-label">Taxable Income</div><div class="r-value" id="r-taxable">—</div><div class="r-sub">after exclusion</div></div>
+    <div class="r-card"><div class="r-label">Est. Tax Savings</div><div class="r-value" id="r-savings">—</div><div class="r-sub">vs. no exclusion</div></div>
+  </div>
+
+  <div class="breakdown-panel">
+    <div class="panel-title">Calculation Breakdown</div>
+    <div class="bd-row"><span class="bd-label">2026 FEIE Limit</span><span class="bd-value" id="bd-limit">$132,900</span></div>
+    <div class="bd-row"><span class="bd-label">Pro-rata Factor (days abroad / days in year)</span><span class="bd-value" id="bd-prorate">—</span></div>
+    <div class="bd-row"><span class="bd-label">Prorated FEIE Limit</span><span class="bd-value" id="bd-prorated">—</span></div>
+    <div class="bd-row"><span class="bd-label">Your Foreign Earned Income</span><span class="bd-value" id="bd-income">—</span></div>
+    <div class="bd-row"><span class="bd-label">Housing Exclusion (if applicable)</span><span class="bd-value" id="bd-housing">—</span></div>
+    <div class="bd-row"><span class="bd-label">Total Exclusion Claimed</span><span class="bd-value" id="bd-total-excl">—</span></div>
+    <div class="bd-row"><span class="bd-label" style="color:var(--ink);font-weight:700;">Remaining Taxable Foreign Income</span><span class="bd-value" id="bd-remaining" style="color:var(--ink);">—</span></div>
+  </div>
+
+  <div class="warn-box">
+    <strong>⚠️ Important Disclaimer:</strong> This calculator provides estimates only and is for informational purposes. US expat tax law is complex and changes annually. FEIE limits, housing exclusion amounts, and qualification rules vary by situation. Always consult a qualified US expat tax professional (CPA or Enrolled Agent) before filing. Do not rely on this tool for actual tax filing.
+  </div>
+
+  <Fragment slot="guide">
+    <p>US citizens and resident aliens living abroad can exclude foreign earned income from US income tax, up to an annual limit set by the IRS, by filing Form 2555. You qualify through the bona fide residence test or the physical presence test (330 full days abroad in any 12-month period).</p>
+    <h3>Formula</h3>
+    <pre>Excluded income = min(Foreign earned income, Annual FEIE limit x Qualifying days / Days in year)
+Physical presence test: 330 full days outside the US in a 12-month period</pre>
+    <h3>Example</h3>
+    <p>If you qualify for the whole year and earn less than the annual limit, all of your foreign wages can be excluded from US income tax. If you qualify for only part of the year, the limit is prorated by qualifying days.</p>
+  </Fragment>
+
+  <script>
+    const FEIE_LIMIT_2026 = 132900;
+    let testType = 'bfr';
+
+    function setTest(t) {
+      testType = t;
+      document.getElementById('test-bfr-btn').classList.toggle('active', t === 'bfr');
+      document.getElementById('test-ppt-btn').classList.toggle('active', t === 'ppt');
+      document.getElementById('bfr-field').style.display = t === 'bfr' ? 'block' : 'none';
+      document.getElementById('ppt-field').style.display = t === 'ppt' ? 'block' : 'none';
+      calc();
+    }
+    document.getElementById('test-bfr-btn').addEventListener('click', () => setTest('bfr'));
+    document.getElementById('test-ppt-btn').addEventListener('click', () => setTest('ppt'));
+
+    function fmt(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
+
+    function calc() {
+      const income = +document.getElementById('income').value || 0;
+      const housing = +document.getElementById('housing').value || 0;
+      const daysYear = +document.getElementById('days-year').value || 365;
+      const daysAbroad = +document.getElementById('days-abroad').value || 0;
+      const pptDays = +document.getElementById('ppt-days').value || 0;
+      const bfrYears = +document.getElementById('bfr-years').value || 0;
+
+      let qualifies = false;
+      let testLabel = '';
+      let testStatus = '';
+
+      if (testType === 'bfr') {
+        qualifies = bfrYears >= 1;
+        testLabel = `Bona Fide Residence Test: ${bfrYears} year(s) abroad`;
+        testStatus = qualifies ? '✅ Passes' : '❌ Need 1+ full year';
+      } else {
+        qualifies = pptDays >= 330;
+        testLabel = `Physical Presence Test: ${pptDays} days outside US`;
+        testStatus = qualifies ? '✅ Passes (330+ days)' : `❌ Need ${330 - pptDays} more days`;
+      }
+
+      document.getElementById('chk1-icon').textContent = qualifies ? '✅' : '❌';
+      document.getElementById('chk1-label').textContent = testLabel;
+      document.getElementById('chk1-status').textContent = testStatus;
+      document.getElementById('chk1-status').style.color = qualifies ? 'var(--green)' : 'var(--red)';
+
+      document.getElementById('chk2-icon').textContent = '✅';
+      document.getElementById('chk2-status').textContent = 'Assumed — verify with tax professional';
+      document.getElementById('chk2-status').style.color = 'var(--amber)';
+
+      document.getElementById('chk3-icon').textContent = income > 0 ? '✅' : '⚠️';
+      document.getElementById('chk3-status').textContent = income > 0 ? 'Earned income entered' : 'Enter earned income above';
+      document.getElementById('chk3-status').style.color = income > 0 ? 'var(--green)' : 'var(--amber)';
+
+      if (!qualifies) {
+        document.getElementById('r-feie').textContent = '$0';
+        document.getElementById('r-taxable').textContent = fmt(income);
+        document.getElementById('r-savings').textContent = '$0';
+        return;
+      }
+
+      const prorata = Math.min(1, daysAbroad / daysYear);
+      const proratedLimit = FEIE_LIMIT_2026 * prorata;
+
+      const housingBase = FEIE_LIMIT_2026 * 0.16 * prorata;
+      const housingExcl = Math.max(0, Math.min(housing - housingBase, proratedLimit * 0.3));
+
+      const feie = Math.min(income, proratedLimit - housingExcl);
+      const totalExcl = feie + housingExcl;
+      const taxable = Math.max(0, income - totalExcl);
+
+      const savings = feie * 0.24;
+
+      document.getElementById('r-feie').textContent = fmt(feie);
+      document.getElementById('r-taxable').textContent = fmt(taxable);
+      document.getElementById('r-savings').textContent = fmt(savings);
+
+      document.getElementById('bd-limit').textContent = fmt(FEIE_LIMIT_2026);
+      document.getElementById('bd-prorate').textContent = (prorata * 100).toFixed(1) + '% (' + daysAbroad + '/' + daysYear + ' days)';
+      document.getElementById('bd-prorated').textContent = fmt(proratedLimit);
+      document.getElementById('bd-income').textContent = fmt(income);
+      document.getElementById('bd-housing').textContent = housingExcl > 0 ? fmt(housingExcl) : 'N/A';
+      document.getElementById('bd-total-excl').textContent = fmt(totalExcl);
+      document.getElementById('bd-remaining').textContent = fmt(taxable);
+    }
+
+    document.addEventListener('input', calc);
+    document.addEventListener('change', calc);
+    document.addEventListener('rk:restored', calc);
+    window.addEventListener('load', calc);
+  </script>
+</ToolLayout>

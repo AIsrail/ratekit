@@ -1,0 +1,139 @@
+---
+import ToolLayout from '../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: 'What is a good LTV to CAC ratio?',
+    a: 'About 3:1 is the common benchmark. Below 1:1 you lose money on each customer; far above 5:1 may mean you are under-investing in growth.' },
+  { q: 'What is a good CAC payback period?',
+    a: 'For SaaS, under 12 months is healthy and under 6 months is excellent.' },
+  { q: 'Should LTV use revenue or gross margin?',
+    a: 'Gross margin. Revenue-based LTV overstates value because it ignores the cost of serving the customer.' },
+];
+
+const related = [
+  { label: 'Burn Rate & Runway Calculator', path: '/burn-rate' },
+  { label: 'ROI Calculator', path: '/roi-calculator' },
+  { label: 'Profit Margin Calculator', path: '/profit-margin' },
+  { label: 'SAFE Note Equity Calculator', path: '/safe-calculator' },
+];
+---
+<ToolLayout
+  slug="ltv-cac"
+  lang="en"
+  title="LTV:CAC Calculator"
+  description="Calculate Customer Lifetime Value (LTV) and Customer Acquisition Cost (CAC). Find out if your unit economics are healthy. Free tool for SaaS and startups."
+  pageTag="📈 Growth Tool"
+  pageTagColor="var(--purple)"
+  h1="LTV : CAC Calculator"
+  pageSub="Calculate your Customer Lifetime Value and Customer Acquisition Cost. Find out if your unit economics are healthy and sustainable."
+  dateModified="2026-10-13"
+  guideTitle="How to calculate LTV, CAC and the LTV:CAC ratio"
+  faq={faq}
+  related={related}
+>
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-title">Customer Lifetime Value (LTV)</div>
+      <div class="field"><label class="lbl">Average Revenue per Customer <span class="hint">(monthly)</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="arpu" value="99" min="0"></div></div>
+      <div class="field"><label class="lbl">Gross Margin <span class="hint">(after COGS)</span></label><div class="input-wrap"><input type="number" id="margin" value="70" min="0" max="100"><span class="ifix ifix-r">%</span></div></div>
+      <div class="field"><label class="lbl">Monthly Churn Rate <span class="hint">(% who cancel)</span></label><div class="input-wrap"><input type="number" id="churn" value="3" min="0.1" max="100" step="0.1"><span class="ifix ifix-r">%/mo</span></div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Customer Acquisition Cost (CAC)</div>
+      <div class="field"><label class="lbl">Monthly Sales & Marketing Spend</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="spend" value="20000" min="0"></div></div>
+      <div class="field"><label class="lbl">New Customers Acquired <span class="hint">(per month)</span></label><div class="input-wrap"><input type="number" id="newcust" value="50" min="1"></div></div>
+      <div class="field"><label class="lbl">Sales Cycle Length <span class="hint">(optional)</span></label><div class="input-wrap"><input type="number" id="cycle" value="1" min="1" max="24"><span class="ifix ifix-r">months</span></div></div>
+    </div>
+  </div>
+
+  <div class="ratio-panel">
+    <div class="ratio-value" id="ratio-val">—</div>
+    <div class="ratio-label">LTV : CAC Ratio</div>
+    <div class="ratio-verdict" id="ratio-verdict"></div>
+  </div>
+
+  <div class="metrics-row">
+    <div class="m-card"><div class="m-label">Customer LTV</div><div class="m-value" id="m-ltv">—</div><div class="m-sub">lifetime value</div></div>
+    <div class="m-card"><div class="m-label">CAC</div><div class="m-value" id="m-cac">—</div><div class="m-sub">to acquire 1 customer</div></div>
+    <div class="m-card"><div class="m-label">CAC Payback</div><div class="m-value" id="m-payback">—</div><div class="m-sub">months to recover CAC</div></div>
+    <div class="m-card"><div class="m-label">Avg. Customer Life</div><div class="m-value" id="m-life">—</div><div class="m-sub">months before churn</div></div>
+  </div>
+
+  <div class="bench-panel">
+    <div class="panel-title">Industry Benchmarks</div>
+    <div class="bench-row">
+      <span class="bench-range" style="color:var(--red);">&lt; 1:1</span>
+      <div class="bench-bar-wrap"><div class="bench-bar" style="width:25%;background:var(--red);"></div></div>
+      <span class="bench-label">Losing money on every customer</span>
+      <span class="bench-verdict" style="background:var(--redbg);color:var(--red);">Critical</span>
+    </div>
+    <div class="bench-row">
+      <span class="bench-range" style="color:var(--amber);">1:1 – 3:1</span>
+      <div class="bench-bar-wrap"><div class="bench-bar" style="width:50%;background:var(--amber);"></div></div>
+      <span class="bench-label">Marginal — needs improvement</span>
+      <span class="bench-verdict" style="background:#FFFBEB;color:var(--amber);">Below target</span>
+    </div>
+    <div class="bench-row">
+      <span class="bench-range" style="color:var(--green);">3:1 – 5:1</span>
+      <div class="bench-bar-wrap"><div class="bench-bar" style="width:75%;background:var(--green);"></div></div>
+      <span class="bench-label">Healthy — SaaS gold standard</span>
+      <span class="bench-verdict" style="background:var(--greenbg);color:var(--green);">✅ Healthy</span>
+    </div>
+    <div class="bench-row">
+      <span class="bench-range" style="color:var(--blue);">&gt; 5:1</span>
+      <div class="bench-bar-wrap"><div class="bench-bar" style="width:100%;background:var(--blue);"></div></div>
+      <span class="bench-label">Excellent — may be under-investing in growth</span>
+      <span class="bench-verdict" style="background:var(--bluebg);color:var(--blue);">Excellent</span>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <strong>💡 Formula:</strong> LTV = (ARPU × Gross Margin %) / Monthly Churn Rate &nbsp;·&nbsp; CAC = Monthly S&M Spend / New Customers &nbsp;·&nbsp; Payback = CAC / (ARPU × Gross Margin %)
+  </div>
+
+  <Fragment slot="guide">
+    <p>LTV (customer lifetime value) is the gross profit a customer generates over their lifetime; CAC (customer acquisition cost) is what you spend to win one customer. The LTV:CAC ratio shows whether growth is profitable; 3:1 is the widely used benchmark.</p>
+    <h3>Formula</h3>
+    <pre>LTV = Monthly revenue per customer x Gross margin / Monthly churn rate
+CAC = Sales and marketing spend / New customers acquired
+CAC payback (months) = CAC / (Monthly revenue per customer x Gross margin)</pre>
+    <h3>Example</h3>
+    <p>$100 per month per customer, 80% gross margin, 4% monthly churn: LTV = $100 x 0.8 / 0.04 = $2,000. $30,000 spend brings 50 customers: CAC = $600. LTV:CAC = 3.3:1, payback 7.5 months.</p>
+  </Fragment>
+
+  <script>
+    function fmt(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
+
+    function calc() {
+      const arpu = +document.getElementById('arpu').value || 0;
+      const margin = +document.getElementById('margin').value || 0;
+      const churn = +document.getElementById('churn').value || 1;
+      const spend = +document.getElementById('spend').value || 0;
+      const newcust = +document.getElementById('newcust').value || 1;
+
+      const ltv = (arpu * (margin / 100)) / (churn / 100);
+      const cac = spend / newcust;
+      const ratio = cac > 0 ? ltv / cac : 0;
+      const payback = (arpu * (margin / 100)) > 0 ? cac / (arpu * (margin / 100)) : 0;
+      const life = 1 / (churn / 100);
+
+      document.getElementById('m-ltv').textContent = fmt(ltv);
+      document.getElementById('m-cac').textContent = fmt(cac);
+      document.getElementById('m-payback').textContent = payback.toFixed(1) + ' mo';
+      document.getElementById('m-life').textContent = life.toFixed(1) + ' mo';
+
+      const rv = document.getElementById('ratio-val');
+      const vd = document.getElementById('ratio-verdict');
+      rv.textContent = ratio.toFixed(1) + ':1';
+
+      if (ratio < 1) { rv.style.color = 'var(--red)'; vd.style.cssText = 'background:var(--redbg);color:var(--red);'; vd.textContent = '🚨 Losing money — fix unit economics urgently'; }
+      else if (ratio < 3) { rv.style.color = 'var(--amber)'; vd.style.cssText = 'background:#FFFBEB;color:var(--amber);'; vd.textContent = '⚠️ Below target — reduce CAC or increase retention'; }
+      else if (ratio <= 5) { rv.style.color = 'var(--green)'; vd.style.cssText = 'background:var(--greenbg);color:var(--green);'; vd.textContent = '✅ Healthy — great unit economics'; }
+      else { rv.style.color = 'var(--blue)'; vd.style.cssText = 'background:var(--bluebg);color:var(--blue);'; vd.textContent = '🚀 Excellent — consider investing more in growth'; }
+    }
+
+    document.addEventListener('input', calc);
+    document.addEventListener('rk:restored', calc);
+    window.addEventListener('load', calc);
+  </script>
+</ToolLayout>

@@ -1,0 +1,113 @@
+---
+import ToolLayout from '../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: 'What is the difference between interest rate and APR?',
+    a: 'The interest rate is the cost of borrowing the principal; APR also includes origination and other fees, expressed as a yearly rate. Compare loans by APR.' },
+  { q: 'How can I lower my monthly loan payment?',
+    a: 'Choose a longer term, negotiate a lower rate, or borrow less. A longer term lowers payments but increases total interest paid.' },
+  { q: 'What is a factor rate?',
+    a: 'Some short-term lenders quote a factor (for example 1.2) instead of an interest rate: you repay 1.2 times the amount borrowed. Converted to APR, factor-rate loans are often very expensive.' },
+];
+
+const related = [
+  { label: 'ROI Calculator', path: '/roi-calculator' },
+  { label: 'Break-even Calculator', path: '/break-even' },
+  { label: 'Burn Rate & Runway Calculator', path: '/burn-rate' },
+  { label: 'Profit Margin Calculator', path: '/profit-margin' },
+];
+---
+<ToolLayout
+  slug="loan-calculator"
+  lang="en"
+  title="Business Loan & APR Calculator"
+  description="Calculate monthly payments, total interest, and true APR for business loans. Compare loan options side by side. Free loan calculator for entrepreneurs."
+  pageTag="🏦 Finance Tool"
+  pageTagColor="var(--amber)"
+  h1="Business Loan & APR Calculator"
+  pageSub="Calculate monthly payments, total interest cost, and true APR. See the full amortization schedule for any business loan."
+  dateModified="2026-10-13"
+  guideTitle="How business loan payments and APR are calculated"
+  faq={faq}
+  related={related}
+>
+  <div class="panel">
+    <div class="field"><label class="lbl">Loan Amount</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="principal" value="100000" min="0"></div></div>
+    <div class="field"><label class="lbl">Annual Interest Rate (APR)</label><div class="input-wrap"><input type="number" id="rate" value="8.5" min="0" max="100" step="0.1"><span class="ifix ifix-r">%</span></div></div>
+    <div class="field"><label class="lbl">Loan Term</label><div class="input-wrap"><input type="number" id="term" value="60" min="1" max="360"><span class="ifix ifix-r">months</span></div></div>
+    <div class="field"><label class="lbl">Origination Fee <span class="hint">(optional)</span></label><div class="input-wrap"><input type="number" id="fee" value="0" min="0" max="10" step="0.1"><span class="ifix ifix-r">%</span></div></div>
+  </div>
+
+  <div class="results-row">
+    <div class="r-card primary"><div class="r-label">Monthly Payment</div><div class="r-value" id="r-monthly">—</div><div class="r-sub">principal + interest</div></div>
+    <div class="r-card red"><div class="r-label">Total Interest</div><div class="r-value" id="r-interest">—</div><div class="r-sub">total cost of borrowing</div></div>
+    <div class="r-card"><div class="r-label">Total Repayment</div><div class="r-value" id="r-total">—</div><div class="r-sub">principal + all interest</div></div>
+    <div class="r-card"><div class="r-label">True APR</div><div class="r-value" id="r-apr">—</div><div class="r-sub">incl. origination fee</div></div>
+  </div>
+
+  <div class="amort-panel">
+    <div class="panel-title">Amortization Schedule (first 12 months)</div>
+    <table>
+      <thead><tr><th>#</th><th>Payment</th><th>Principal</th><th>Interest</th><th>Balance</th></tr></thead>
+      <tbody id="amort-body"></tbody>
+    </table>
+  </div>
+
+  <div class="info-box">
+    <strong>💡 Tip:</strong> The true cost of a loan includes origination fees, not just the interest rate. A loan with a lower rate but high fees can cost more than a higher-rate loan with no fees. Always compare <strong>total repayment amounts</strong>, not just monthly payments.
+  </div>
+
+  <Fragment slot="guide">
+    <p>Most term loans are amortized: each monthly payment is the same, with the interest share falling and the principal share rising over time. APR adds fees to the interest rate so you can compare offers with different fee structures.</p>
+    <h3>Formula</h3>
+    <pre>Monthly payment = P x r / (1 - (1 + r)^(-n))
+P = loan amount, r = annual rate / 12, n = number of monthly payments
+Total interest = Payment x n - P</pre>
+    <h3>Example</h3>
+    <p>$50,000 at 10% for 5 years: r = 0.833%, n = 60. Monthly payment is about $1,062; total interest is about $13,700.</p>
+  </Fragment>
+
+  <script>
+    function fmt(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
+
+    function calc() {
+      const P = +document.getElementById('principal').value || 0;
+      const annualRate = +document.getElementById('rate').value || 0;
+      const n = +document.getElementById('term').value || 1;
+      const feePct = +document.getElementById('fee').value || 0;
+      const r = annualRate / 100 / 12;
+      let monthly;
+      if (r === 0) { monthly = P / n; }
+      else { monthly = P * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1); }
+      const totalRepay = monthly * n;
+      const totalInterest = totalRepay - P;
+      const trueAPR = annualRate + (feePct / n * 12);
+
+      document.getElementById('r-monthly').textContent = fmt(monthly);
+      document.getElementById('r-interest').textContent = fmt(totalInterest);
+      document.getElementById('r-total').textContent = fmt(totalRepay);
+      document.getElementById('r-apr').textContent = trueAPR.toFixed(2) + '%';
+
+      let balance = P;
+      let rows = '';
+      for (let i = 1; i <= Math.min(12, n); i++) {
+        const interest = balance * r;
+        const principal = monthly - interest;
+        balance -= principal;
+        rows += `<tr>
+          <td>${i}</td>
+          <td class="mono">${fmt(monthly)}</td>
+          <td class="mono">${fmt(principal)}</td>
+          <td class="mono">${fmt(interest)}</td>
+          <td class="mono">${fmt(Math.max(0, balance))}</td>
+        </tr>`;
+      }
+      if (n > 12) rows += `<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:12px;">... ${n - 12} more months</td></tr>`;
+      document.getElementById('amort-body').innerHTML = rows;
+    }
+
+    document.addEventListener('input', calc);
+    document.addEventListener('rk:restored', calc);
+    window.addEventListener('load', calc);
+  </script>
+</ToolLayout>
