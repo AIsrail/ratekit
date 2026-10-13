@@ -1,0 +1,208 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: 'Это бесплатно?', a: 'Да — полностью бесплатно, без регистрации, без сохранения данных. Результат виден только в вашей вкладке браузера.' },
+  { q: 'Как считаются очки?', a: 'Каждый правильный ответ — 10 очков. Если ответите верно на все 10 вопросов — бонус +20 очков за идеальный раунд. Если время на вопрос вышло — засчитывается как ошибка.' },
+  { q: 'Устный счёт правда помогает в бизнесе?', a: 'Да. Умение прикинуть маржу, скидку или runway в уме — хотя бы приблизительно — помогает быстрее замечать плохие цифры до того, как вы на них что-то решите. Для серьёзных расчётов это не заменит настоящий калькулятор, но развивает интуицию к числам.' },
+  { q: 'Результат слабый — где потренироваться по-настоящему?', a: 'Каждый вопрос в квизе основан на реальном калькуляторе RateKit. Загляните в похожие инструменты ниже — там та же математика разобрана медленно, по шагам, с формулами.' },
+];
+
+const related = [
+  { label: 'Калькулятор ставки фрилансера', path: '/ru/freelance-rate' },
+  { label: 'Калькулятор ROI', path: '/ru/roi-calculator' },
+  { label: 'Маржа и наценка', path: '/ru/profit-margin' },
+  { label: 'Точка безубыточности', path: '/ru/break-even' },
+];
+---
+<ToolLayout
+  slug="math-quiz"
+  lang="ru"
+  title="Квиз на устный счёт — проверьте деловую математику"
+  description="Бесплатный 60-секундный квиз на устный счёт для фаундеров и фрилансеров: маржа, ROI, скидки, точка безубыточности. Без калькулятора — для тренировки ума."
+  pageTag="🎮 Игра для мозга"
+  pageTagColor="var(--violet)"
+  h1="Квиз: устный счёт"
+  pageSub="10 быстрых вопросов на деловую математику. Успейте до того, как закончится время — калькулятор запрещён."
+  dateModified="2026-10-13"
+  guideTitle="Зачем тренировать устный счёт?"
+  faq={faq}
+  related={related}
+>
+  <div class="panel quiz-panel">
+    <div id="quiz-start" class="quiz-start">
+      <div class="quiz-emoji">🧠</div>
+      <h2 class="quiz-h2">Готовы проверить деловую смекалку?</h2>
+      <p class="quiz-lead">10 вопросов · ~10 секунд на каждый · маржа, ROI, скидки, точка безубыточности и другое.</p>
+      <button class="quiz-btn" id="start-btn">Начать квиз →</button>
+    </div>
+
+    <div id="quiz-play" class="quiz-play" hidden>
+      <div class="quiz-progress">
+        <span>Вопрос <span id="q-num">1</span> / <span id="q-total">10</span></span>
+        <span class="quiz-score">Очки: <span id="q-score">0</span></span>
+      </div>
+      <div class="timer-track"><div class="timer-fill" id="timer-fill"></div></div>
+      <div class="quiz-question" id="q-text">Загрузка…</div>
+      <div class="quiz-options" id="q-options"></div>
+    </div>
+
+    <div id="quiz-end" class="quiz-end" hidden>
+      <div class="quiz-emoji" id="end-emoji">🎉</div>
+      <div class="quiz-grade" id="end-grade">Отлично!</div>
+      <p class="quiz-lead" id="end-sub">Вот ваш результат.</p>
+      <div class="quiz-stats">
+        <div><div class="quiz-stat-val" id="end-correct">0/10</div><div class="quiz-stat-label">Верно</div></div>
+        <div><div class="quiz-stat-val" id="end-points">0</div><div class="quiz-stat-label">Очков</div></div>
+      </div>
+      <div class="quiz-end-btns">
+        <button class="quiz-btn" id="retry-btn">Сыграть ещё раз</button>
+        <a class="quiz-btn secondary" href="/ru">Все калькуляторы</a>
+      </div>
+    </div>
+  </div>
+
+  <Fragment slot="guide">
+    <p>Счёт в уме — навык, который легко теряется без практики. Фаундеры и фрилансеры, способные прикинуть маржу, цепочку скидок или runway в голове — хотя бы приблизительно — быстрее замечают невыгодную сделку или неправильную цену, чем те, кто за каждой мелочью тянется к калькулятору. Короткие игры на устный счёт вроде этой — лёгкий способ держать этот навык в тонусе.</p>
+    <p>Ни один вопрос не требует ничего сложнее арифметики, которую вы уже знаете. Если вопрос поставил в тупик — это сигнал, а не приговор: похожие калькуляторы ниже разбирают ту же формулу медленно, по шагам.</p>
+  </Fragment>
+</ToolLayout>
+
+<style>
+.quiz-panel{text-align:left;}
+.quiz-start,.quiz-end{text-align:center;padding:12px 0 8px;}
+.quiz-emoji{font-size:48px;margin-bottom:10px;line-height:1;}
+.quiz-h2{font-size:1.3rem;font-weight:700;letter-spacing:-.01em;margin-bottom:8px;}
+.quiz-lead{font-size:14px;color:var(--mid);margin-bottom:22px;}
+.quiz-btn{background:linear-gradient(135deg,var(--blue),var(--violet));color:#fff;border:none;padding:13px 28px;border-radius:99px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all .18s var(--ease);box-shadow:var(--shadow-glow);}
+.quiz-btn:hover{transform:translateY(-2px);filter:brightness(1.06);}
+.quiz-btn.secondary{background:var(--white);color:var(--mid);border:1.5px solid var(--border);box-shadow:none;text-decoration:none;display:inline-flex;align-items:center;}
+.quiz-btn.secondary:hover{border-color:var(--blue);color:var(--blue);background:var(--bluebg);transform:translateY(-2px);}
+.quiz-end-btns{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:4px;}
+
+.quiz-progress{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-size:12.5px;font-weight:600;color:var(--muted);}
+.quiz-score{color:var(--blue);}
+.timer-track{height:6px;background:var(--bg);border-radius:99px;overflow:hidden;margin-bottom:26px;}
+.timer-fill{height:100%;width:100%;background:linear-gradient(90deg,var(--blue),var(--violet));border-radius:99px;transition:width .1s linear;}
+.quiz-question{font-size:19px;font-weight:700;letter-spacing:-.01em;margin-bottom:22px;line-height:1.4;}
+.quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.quiz-opt{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:16px;font-family:var(--font);font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;transition:all .15s var(--ease);text-align:left;}
+.quiz-opt:hover:not(:disabled){border-color:var(--blue);background:var(--bluebg);transform:translateY(-1px);}
+.quiz-opt:disabled{cursor:default;}
+.quiz-opt.correct{border-color:var(--green);background:var(--greenbg);color:var(--green);}
+.quiz-opt.wrong{border-color:var(--red);background:var(--redbg);color:var(--red);}
+
+.quiz-stats{display:flex;justify-content:center;gap:32px;margin:18px 0 28px;}
+.quiz-stat-val{font-family:var(--mono);font-size:1.8rem;font-weight:700;color:var(--ink);}
+.quiz-stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:4px;}
+@media(max-width:600px){.quiz-options{grid-template-columns:1fr;}}
+</style>
+
+<script>
+var QUESTIONS = [
+  { q: 'Товар за $80 с наценкой 25%. Новая цена?', opts: ['$100', '$95', '$105', '$84'], correct: 0 },
+  { q: 'Вы продаёте товар за $150, себестоимость $120. Какая маржа?', opts: ['25%', '20%', '30%', '15%'], correct: 1 },
+  { q: 'Постоянные расходы $2000/мес, прибыль с единицы $50. Сколько единиц до точки безубыточности?', opts: ['50', '20', '40', '35'], correct: 2 },
+  { q: 'Выручка выросла с $40 000 до $50 000. Какой темп роста?', opts: ['20%', '10%', '15%', '25%'], correct: 3 },
+  { q: 'Вы вложили $2000, получили обратно $2600. Какой ROI?', opts: ['20%', '60%', '30%', '15%'], correct: 2 },
+  { q: 'Сколько будет 15% от $60?', opts: ['9', '8', '10', '7.5'], correct: 0 },
+  { q: 'Burn rate $10 000/мес, на счету $45 000. Какой runway?', opts: ['3 месяца', '5 месяцев', '6 месяцев', '4.5 месяца'], correct: 3 },
+  { q: 'Цена $200, скидка 7%, затем ещё 7% от новой цены. Итоговая цена ближе всего к?', opts: ['$186', '$160', '$180', '$173'], correct: 3 },
+  { q: 'Фрилансер хочет $80 000/год после расходов $10 000 и налога 20%. Какая примерно нужна выручка?', opts: ['$96 000', '$100 000', '$112 500', '$90 000'], correct: 2 },
+  { q: 'LTV клиента $600, CAC $150. Какое соотношение LTV:CAC?', opts: ['2:1', '3:1', '4:1', '6:1'], correct: 2 },
+];
+var TIME_PER_Q = 10000;
+var state = { idx: 0, score: 0, correct: 0, order: [], timerStart: 0, raf: null, locked: false };
+
+function shuffledOrder() {
+  var arr = QUESTIONS.map(function (_, i) { return i; });
+  for (var i = arr.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+  }
+  return arr;
+}
+
+function $(id) { return document.getElementById(id); }
+
+function startQuiz() {
+  state = { idx: 0, score: 0, correct: 0, order: shuffledOrder(), timerStart: 0, raf: null, locked: false };
+  $('quiz-start').hidden = true;
+  $('quiz-end').hidden = true;
+  $('quiz-play').hidden = false;
+  $('q-total').textContent = QUESTIONS.length;
+  showQuestion();
+}
+
+function showQuestion() {
+  if (state.idx >= state.order.length) { return endQuiz(); }
+  state.locked = false;
+  var q = QUESTIONS[state.order[state.idx]];
+  $('q-num').textContent = state.idx + 1;
+  $('q-score').textContent = state.score;
+  $('q-text').textContent = q.q;
+  var wrap = $('q-options');
+  wrap.innerHTML = '';
+  q.opts.forEach(function (opt, i) {
+    var btn = document.createElement('button');
+    btn.className = 'quiz-opt';
+    btn.textContent = opt;
+    btn.addEventListener('click', function () { handleAnswer(i, btn); });
+    wrap.appendChild(btn);
+  });
+  state.timerStart = performance.now();
+  tickTimer();
+}
+
+function tickTimer() {
+  var fill = $('timer-fill');
+  function frame(now) {
+    if (state.locked) return;
+    var elapsed = now - state.timerStart;
+    var pct = Math.max(0, 1 - elapsed / TIME_PER_Q);
+    fill.style.width = (pct * 100) + '%';
+    if (pct <= 0) { handleAnswer(-1, null); return; }
+    state.raf = requestAnimationFrame(frame);
+  }
+  state.raf = requestAnimationFrame(frame);
+}
+
+function handleAnswer(i, btnEl) {
+  if (state.locked) return;
+  state.locked = true;
+  if (state.raf) cancelAnimationFrame(state.raf);
+  var q = QUESTIONS[state.order[state.idx]];
+  var buttons = $('q-options').querySelectorAll('.quiz-opt');
+  buttons.forEach(function (b) { b.disabled = true; });
+  if (buttons[q.correct]) buttons[q.correct].classList.add('correct');
+  if (i !== q.correct && i >= 0 && buttons[i]) buttons[i].classList.add('wrong');
+  if (i === q.correct) {
+    state.score += 10;
+    state.correct += 1;
+  }
+  setTimeout(function () {
+    state.idx += 1;
+    showQuestion();
+  }, 650);
+}
+
+function endQuiz() {
+  $('quiz-play').hidden = true;
+  $('quiz-end').hidden = false;
+  var perfect = state.correct === QUESTIONS.length;
+  var finalScore = state.score + (perfect ? 20 : 0);
+  $('end-correct').textContent = state.correct + '/' + QUESTIONS.length;
+  $('end-points').textContent = finalScore;
+  var grade, sub, emoji;
+  if (state.correct >= 9) { grade = 'Гений счёта'; emoji = '🧠'; sub = 'Серьёзно сильно — калькулятор вам почти не нужен.'; }
+  else if (state.correct >= 7) { grade = 'Острый ум'; emoji = '💪'; sub = 'Хорошая интуиция. Чуть практики — и вы неудержимы.'; }
+  else if (state.correct >= 5) { grade = 'Неплохо'; emoji = '🙂'; sub = 'Неплохой результат — калькуляторы ниже быстро это подтянут.'; }
+  else { grade = 'Пора потренироваться'; emoji = '🤓'; sub = 'Все с чего-то начинают — попробуйте похожие инструменты ниже.'; }
+  $('end-grade').textContent = grade;
+  $('end-sub').textContent = sub;
+  $('end-emoji').textContent = emoji;
+}
+
+$('start-btn') && $('start-btn').addEventListener('click', startQuiz);
+$('retry-btn') && $('retry-btn').addEventListener('click', startQuiz);
+</script>

@@ -3,7 +3,7 @@
 // this is what let budget-calculator ship without appearing in menus or the grid
 // (see REBUILD_PLAN.md, audit 2026-10-13).
 
-export type Section = 'freelancers' | 'business' | 'startups';
+export type Section = 'freelancers' | 'business' | 'startups' | 'fun';
 export type Accent = 'blue' | 'violet' | 'green' | 'amber' | 'red';
 
 interface LangEntry {
@@ -33,6 +33,7 @@ export const sectionLabel: Record<Section, { en: string; ru: string }> = {
   freelancers: { en: 'Freelancers', ru: 'Фрилансерам' },
   business: { en: 'Business & Startups', ru: 'Бизнес и стартапы' },
   startups: { en: 'Startups', ru: 'Стартапы' },
+  fun: { en: 'Just for Fun', ru: 'Для удовольствия' },
 };
 
 export const tools: Tool[] = [
@@ -134,6 +135,15 @@ export const tools: Tool[] = [
     en: { label: 'LTV : CAC', path: '/ltv-cac', cardTitle: 'LTV : CAC Calculator',
       desc: 'Calculate your Customer Lifetime Value and Customer Acquisition Cost. Find out if your unit economics are healthy and how to improve them.',
       tags: ['SaaS', 'Growth', 'Marketing'] } },
+
+  // ── Just for fun ──
+  { slug: 'math-quiz', icon: '🧠', section: 'fun', accent: 'violet',
+    en: { label: 'Mental Math Quiz', path: '/math-quiz', cardTitle: 'Mental Math Challenge',
+      desc: 'Test your mental math and business-sense in a fast 60-second quiz. No calculator allowed — keep your brain sharp.',
+      tags: ['Game', 'Brain Training', 'Fun'], badge: '🎮 New' },
+    ru: { label: 'Квиз на устный счёт', path: '/ru/math-quiz', cardTitle: 'Квиз: быстрый устный счёт',
+      desc: 'Проверьте устный счёт и деловую смекалку за 60 секунд. Без калькулятора — для тренировки ума.',
+      tags: ['Игра', 'Тренировка ума', 'Развлечение'], badge: '🎮 Новое' } },
 ];
 
 export function toolBySlug(slug: string): Tool | undefined {

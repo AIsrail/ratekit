@@ -1,0 +1,208 @@
+---
+import ToolLayout from '../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: 'Is this quiz free?', a: 'Yes — completely free, no signup, no data stored. Your score only lives in your browser tab.' },
+  { q: 'How is the score calculated?', a: 'Each correct answer is worth 10 points. Answer all 10 questions correctly for a 20-point perfect-round bonus. Running out of time on a question counts as a miss.' },
+  { q: 'Does practicing mental math actually help in business?', a: 'Yes. Being able to sanity-check a margin, a discount, or a runway estimate in your head — even roughly — helps you catch bad numbers before you act on them. It will not replace a real calculator for anything that matters, but it builds number intuition.' },
+  { q: 'I got a low score — where should I practice for real?', a: 'Every question in this quiz is based on a real RateKit calculator. Check the related tools below to work through the actual math slowly, with formulas shown.' },
+];
+
+const related = [
+  { label: 'Freelance Rate Calculator', path: '/freelance-rate' },
+  { label: 'ROI Calculator', path: '/roi-calculator' },
+  { label: 'Profit Margin Calculator', path: '/profit-margin' },
+  { label: 'Break-even Calculator', path: '/break-even' },
+];
+---
+<ToolLayout
+  slug="math-quiz"
+  lang="en"
+  title="Mental Math Quiz — Test Your Business Math Skills"
+  description="A free 60-second mental math quiz for founders and freelancers: margins, ROI, discounts, break-even. No calculator allowed — keep your brain sharp."
+  pageTag="🎮 Brain Game"
+  pageTagColor="var(--violet)"
+  h1="Mental Math Challenge"
+  pageSub="10 quick business-math questions. Beat the clock, no calculator allowed. Think you've got it?"
+  dateModified="2026-10-13"
+  guideTitle="Why practice mental math?"
+  faq={faq}
+  related={related}
+>
+  <div class="panel quiz-panel">
+    <div id="quiz-start" class="quiz-start">
+      <div class="quiz-emoji">🧠</div>
+      <h2 class="quiz-h2">Ready to test your business brain?</h2>
+      <p class="quiz-lead">10 questions · ~10 seconds each · margins, ROI, discounts, break-even and more.</p>
+      <button class="quiz-btn" id="start-btn">Start Challenge →</button>
+    </div>
+
+    <div id="quiz-play" class="quiz-play" hidden>
+      <div class="quiz-progress">
+        <span>Question <span id="q-num">1</span> / <span id="q-total">10</span></span>
+        <span class="quiz-score">Score: <span id="q-score">0</span></span>
+      </div>
+      <div class="timer-track"><div class="timer-fill" id="timer-fill"></div></div>
+      <div class="quiz-question" id="q-text">Loading…</div>
+      <div class="quiz-options" id="q-options"></div>
+    </div>
+
+    <div id="quiz-end" class="quiz-end" hidden>
+      <div class="quiz-emoji" id="end-emoji">🎉</div>
+      <div class="quiz-grade" id="end-grade">Nice work!</div>
+      <p class="quiz-lead" id="end-sub">Here's how you did.</p>
+      <div class="quiz-stats">
+        <div><div class="quiz-stat-val" id="end-correct">0/10</div><div class="quiz-stat-label">Correct</div></div>
+        <div><div class="quiz-stat-val" id="end-points">0</div><div class="quiz-stat-label">Points</div></div>
+      </div>
+      <div class="quiz-end-btns">
+        <button class="quiz-btn" id="retry-btn">Play again</button>
+        <a class="quiz-btn secondary" href="/">Browse all calculators</a>
+      </div>
+    </div>
+  </div>
+
+  <Fragment slot="guide">
+    <p>Numeracy is a use-it-or-lose-it skill. Founders and freelancers who can estimate a margin, a discount stack, or a runway number in their head — even roughly — catch bad deals and bad pricing faster than people who reach for a calculator for everything. Quick mental-math games like this one are a light, low-stakes way to keep that muscle warm.</p>
+    <p>None of these questions require anything beyond arithmetic you already know. If a question stumps you, that's a signal, not a verdict — the related calculators below work through the exact same formulas slowly, with every step shown.</p>
+  </Fragment>
+</ToolLayout>
+
+<style>
+.quiz-panel{text-align:left;}
+.quiz-start,.quiz-end{text-align:center;padding:12px 0 8px;}
+.quiz-emoji{font-size:48px;margin-bottom:10px;line-height:1;}
+.quiz-h2{font-size:1.3rem;font-weight:700;letter-spacing:-.01em;margin-bottom:8px;}
+.quiz-lead{font-size:14px;color:var(--mid);margin-bottom:22px;}
+.quiz-btn{background:linear-gradient(135deg,var(--blue),var(--violet));color:#fff;border:none;padding:13px 28px;border-radius:99px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all .18s var(--ease);box-shadow:var(--shadow-glow);}
+.quiz-btn:hover{transform:translateY(-2px);filter:brightness(1.06);}
+.quiz-btn.secondary{background:var(--white);color:var(--mid);border:1.5px solid var(--border);box-shadow:none;text-decoration:none;display:inline-flex;align-items:center;}
+.quiz-btn.secondary:hover{border-color:var(--blue);color:var(--blue);background:var(--bluebg);transform:translateY(-2px);}
+.quiz-end-btns{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:4px;}
+
+.quiz-progress{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-size:12.5px;font-weight:600;color:var(--muted);}
+.quiz-score{color:var(--blue);}
+.timer-track{height:6px;background:var(--bg);border-radius:99px;overflow:hidden;margin-bottom:26px;}
+.timer-fill{height:100%;width:100%;background:linear-gradient(90deg,var(--blue),var(--violet));border-radius:99px;transition:width .1s linear;}
+.quiz-question{font-size:19px;font-weight:700;letter-spacing:-.01em;margin-bottom:22px;line-height:1.4;}
+.quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.quiz-opt{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:16px;font-family:var(--font);font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;transition:all .15s var(--ease);text-align:left;}
+.quiz-opt:hover:not(:disabled){border-color:var(--blue);background:var(--bluebg);transform:translateY(-1px);}
+.quiz-opt:disabled{cursor:default;}
+.quiz-opt.correct{border-color:var(--green);background:var(--greenbg);color:var(--green);}
+.quiz-opt.wrong{border-color:var(--red);background:var(--redbg);color:var(--red);}
+
+.quiz-stats{display:flex;justify-content:center;gap:32px;margin:18px 0 28px;}
+.quiz-stat-val{font-family:var(--mono);font-size:1.8rem;font-weight:700;color:var(--ink);}
+.quiz-stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:4px;}
+@media(max-width:600px){.quiz-options{grid-template-columns:1fr;}}
+</style>
+
+<script>
+var QUESTIONS = [
+  { q: 'An $80 item is marked up 25%. What\'s the new price?', opts: ['$100', '$95', '$105', '$84'], correct: 0 },
+  { q: 'You sell a product for $150 that costs $120 to make. What\'s your profit margin?', opts: ['25%', '20%', '30%', '15%'], correct: 1 },
+  { q: 'Fixed costs are $2,000/month, each unit profits $50. How many units to break even?', opts: ['50', '20', '40', '35'], correct: 2 },
+  { q: 'Revenue grew from $40,000 to $50,000. What\'s the growth rate?', opts: ['20%', '10%', '15%', '25%'], correct: 3 },
+  { q: 'You invest $2,000 and get back $2,600. What\'s your ROI?', opts: ['20%', '60%', '30%', '15%'], correct: 2 },
+  { q: 'What is 15% of $60?', opts: ['9', '8', '10', '7.5'], correct: 0 },
+  { q: 'Burn rate is $10,000/month, cash on hand is $45,000. What\'s your runway?', opts: ['3 months', '5 months', '6 months', '4.5 months'], correct: 3 },
+  { q: 'A $200 price gets a 7% discount, then another 7% off that. Final price is closest to?', opts: ['$186', '$160', '$180', '$173'], correct: 3 },
+  { q: 'A freelancer wants $80,000/year after $10,000 expenses, taxed at 20%. Roughly what gross revenue is needed?', opts: ['$96,000', '$100,000', '$112,500', '$90,000'], correct: 2 },
+  { q: 'Your LTV is $600 and CAC is $150. What\'s your LTV:CAC ratio?', opts: ['2:1', '3:1', '4:1', '6:1'], correct: 2 },
+];
+var TIME_PER_Q = 10000;
+var state = { idx: 0, score: 0, correct: 0, order: [], timerStart: 0, raf: null, locked: false };
+
+function shuffledOrder() {
+  var arr = QUESTIONS.map(function (_, i) { return i; });
+  for (var i = arr.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+  }
+  return arr;
+}
+
+function $(id) { return document.getElementById(id); }
+
+function startQuiz() {
+  state = { idx: 0, score: 0, correct: 0, order: shuffledOrder(), timerStart: 0, raf: null, locked: false };
+  $('quiz-start').hidden = true;
+  $('quiz-end').hidden = true;
+  $('quiz-play').hidden = false;
+  $('q-total').textContent = QUESTIONS.length;
+  showQuestion();
+}
+
+function showQuestion() {
+  if (state.idx >= state.order.length) { return endQuiz(); }
+  state.locked = false;
+  var q = QUESTIONS[state.order[state.idx]];
+  $('q-num').textContent = state.idx + 1;
+  $('q-score').textContent = state.score;
+  $('q-text').textContent = q.q;
+  var wrap = $('q-options');
+  wrap.innerHTML = '';
+  q.opts.forEach(function (opt, i) {
+    var btn = document.createElement('button');
+    btn.className = 'quiz-opt';
+    btn.textContent = opt;
+    btn.addEventListener('click', function () { handleAnswer(i, btn); });
+    wrap.appendChild(btn);
+  });
+  state.timerStart = performance.now();
+  tickTimer();
+}
+
+function tickTimer() {
+  var fill = $('timer-fill');
+  function frame(now) {
+    if (state.locked) return;
+    var elapsed = now - state.timerStart;
+    var pct = Math.max(0, 1 - elapsed / TIME_PER_Q);
+    fill.style.width = (pct * 100) + '%';
+    if (pct <= 0) { handleAnswer(-1, null); return; }
+    state.raf = requestAnimationFrame(frame);
+  }
+  state.raf = requestAnimationFrame(frame);
+}
+
+function handleAnswer(i, btnEl) {
+  if (state.locked) return;
+  state.locked = true;
+  if (state.raf) cancelAnimationFrame(state.raf);
+  var q = QUESTIONS[state.order[state.idx]];
+  var buttons = $('q-options').querySelectorAll('.quiz-opt');
+  buttons.forEach(function (b) { b.disabled = true; });
+  if (buttons[q.correct]) buttons[q.correct].classList.add('correct');
+  if (i !== q.correct && i >= 0 && buttons[i]) buttons[i].classList.add('wrong');
+  if (i === q.correct) {
+    state.score += 10;
+    state.correct += 1;
+  }
+  setTimeout(function () {
+    state.idx += 1;
+    showQuestion();
+  }, 650);
+}
+
+function endQuiz() {
+  $('quiz-play').hidden = true;
+  $('quiz-end').hidden = false;
+  var perfect = state.correct === QUESTIONS.length;
+  var finalScore = state.score + (perfect ? 20 : 0);
+  $('end-correct').textContent = state.correct + '/' + QUESTIONS.length;
+  $('end-points').textContent = finalScore;
+  var grade, sub, emoji;
+  if (state.correct >= 9) { grade = 'Math Wizard'; emoji = '🧠'; sub = 'Seriously sharp — you barely need a calculator.'; }
+  else if (state.correct >= 7) { grade = 'Sharp Mind'; emoji = '💪'; sub = 'Solid instincts. A little practice and you\'re unstoppable.'; }
+  else if (state.correct >= 5) { grade = 'Decent Effort'; emoji = '🙂'; sub = 'Not bad — the calculators below will sharpen this fast.'; }
+  else { grade = 'Time to Practice'; emoji = '🤓'; sub = 'Everyone starts somewhere — try the related tools below.'; }
+  $('end-grade').textContent = grade;
+  $('end-sub').textContent = sub;
+  $('end-emoji').textContent = emoji;
+}
+
+$('start-btn') && $('start-btn').addEventListener('click', startQuiz);
+$('retry-btn') && $('retry-btn').addEventListener('click', startQuiz);
+</script>

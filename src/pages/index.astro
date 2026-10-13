@@ -98,10 +98,15 @@ h1 em{font-style:normal;background:linear-gradient(135deg,var(--blue),var(--viol
 .tools-section{padding:72px 48px 88px;max-width:1280px;margin:0 auto;}
 .section-label{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:28px;}
 .tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;}
-.tool-card{position:relative;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;transition:border-color .2s var(--ease),box-shadow .25s var(--ease),transform .25s var(--ease);display:flex;flex-direction:column;box-shadow:var(--shadow-xs);}
-.tool-card:hover{border-color:transparent;box-shadow:var(--shadow-lg);transform:translateY(-3px);}
+.tool-card{position:relative;overflow:hidden;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;transition:border-color .2s var(--ease),box-shadow .25s var(--ease),transform .25s var(--ease);display:flex;flex-direction:column;box-shadow:var(--shadow-xs);animation:rk-card-in .5s var(--ease) backwards;}
+.tool-card::after{content:'';position:absolute;inset:0;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.55) 50%,transparent 60%);transform:translateX(-120%);transition:transform .7s var(--ease);pointer-events:none;}
+.tool-card:hover{border-color:transparent;box-shadow:var(--shadow-lg);transform:translateY(-5px);}
+.tool-card:hover::after{transform:translateX(120%);}
+@keyframes rk-card-in{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+@media(prefers-reduced-motion:reduce){.tool-card{animation:none;}}
 .card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;}
-.card-icon{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:21px;}
+.card-icon{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:21px;transition:transform .35s var(--ease);}
+.tool-card:hover .card-icon{transform:scale(1.12) rotate(-6deg);}
 .card-icon.blue{background:var(--bluebg);} .card-icon.violet{background:var(--violetbg);} .card-icon.green{background:var(--greenbg);} .card-icon.amber{background:var(--amberbg);} .card-icon.red{background:var(--redbg);}
 .card-title{font-size:17px;font-weight:700;color:var(--ink);margin-bottom:8px;letter-spacing:-.01em;}
 .card-desc{font-size:14px;color:var(--mid);line-height:1.65;flex:1;margin-bottom:20px;}
@@ -110,6 +115,14 @@ h1 em{font-style:normal;background:linear-gradient(135deg,var(--blue),var(--viol
 .card-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--blue);transition:gap .18s var(--ease);}
 .tool-card:hover .card-link{gap:10px;}
 .popular-badge{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--amber);background:var(--amberbg);padding:4px 9px;border-radius:99px;border:1px solid #FDE68A;white-space:nowrap;}
+
+.suggest-card{border:2px dashed rgba(123,92,250,.35);background:linear-gradient(175deg,var(--violetbg),var(--white) 65%);}
+.suggest-card:hover{border-color:rgba(123,92,250,.55);}
+.suggest-lead{font-size:14px;color:var(--mid);line-height:1.6;margin-bottom:16px;}
+.idea-input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-family:var(--font);font-size:13px;color:var(--ink);resize:vertical;margin-bottom:12px;background:var(--white);transition:border-color .15s var(--ease);}
+.idea-input:focus{outline:none;border-color:var(--violet);}
+.idea-btn{align-self:flex-start;background:linear-gradient(135deg,var(--blue),var(--violet));color:#fff;border:none;padding:9px 18px;border-radius:99px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .18s var(--ease);}
+.idea-btn:hover{filter:brightness(1.07);transform:translateY(-1px);}
 
 @media(max-width:768px){.hero{padding:56px 20px 44px;}.tools-section{padding:40px 20px 56px;}}
 </style>
@@ -134,8 +147,8 @@ h1 em{font-style:normal;background:linear-gradient(135deg,var(--blue),var(--viol
 <section class="tools-section">
   <div class="section-label">All tools — {tools.length} tools</div>
   <div class="tools-grid">
-    {tools.map((t) => (
-      <a href={t.en.path} class="tool-card">
+    {tools.map((t, i) => (
+      <a href={t.en.path} class="tool-card" style={`animation-delay:${Math.min(i * 40, 400)}ms`}>
         <div class="card-header">
           <div class={`card-icon ${t.accent}`}>{t.icon}</div>
           {t.en.badge && <span class="popular-badge">{t.en.badge}</span>}
@@ -146,9 +159,30 @@ h1 em{font-style:normal;background:linear-gradient(135deg,var(--blue),var(--viol
         <span class="card-link">Open calculator →</span>
       </a>
     ))}
+    <div class="tool-card suggest-card" style={`animation-delay:${Math.min(tools.length * 40, 400)}ms`}>
+      <div class="card-header">
+        <div class="card-icon violet">💡</div>
+      </div>
+      <div class="card-title">Got an idea for a calculator?</div>
+      <p class="suggest-lead">Tell us what tool you wish existed — we read every suggestion and build the good ones.</p>
+      <textarea id="idea-input" class="idea-input" rows="2" placeholder="e.g. a calculator for…"></textarea>
+      <button class="idea-btn" id="idea-btn" type="button">Send idea →</button>
+    </div>
   </div>
 </section>
 
 <Footer lang="en" />
+
+<script>
+  var ideaBtn = document.getElementById('idea-btn');
+  ideaBtn && ideaBtn.addEventListener('click', function () {
+    var input = document.getElementById('idea-input');
+    var text = input && input.value.trim();
+    if (!text) { input && input.focus(); return; }
+    var subject = encodeURIComponent('RateKit tool idea');
+    var body = encodeURIComponent(text + '\n\n— sent from ratekit.org');
+    window.location.href = 'mailto:connect4fund@gmail.com?subject=' + subject + '&body=' + body;
+  });
+</script>
 </body>
 </html>
