@@ -26,6 +26,8 @@ export async function onRequest(context) {
       { path: "/api/safe", methods: ["GET", "POST"], summary: "SAFE note conversion, investor ownership %, founder dilution." },
       { path: "/api/burn-rate", methods: ["GET", "POST"], summary: "Startup net/gross burn rate and cash runway in months." },
       { path: "/api/ltv-cac", methods: ["GET", "POST"], summary: "Customer LTV, CAC, LTV:CAC ratio, CAC payback period." },
+      { path: "/api/pl-statement", methods: ["GET", "POST"], summary: "Gross profit, EBITDA, and net profit from a simple P&L breakdown." },
+      { path: "/api/invoice", methods: ["GET", "POST"], summary: "Invoice subtotal, tax, and total from line items or a precomputed subtotal." },
       { path: "/api/rates", methods: ["GET"], summary: "Live FX (USD/EUR/CNY/JPY/GBP vs. visitor's local currency) and crypto (BTC/ETH/SOL/XRP/DOGE vs USD) rates, geolocated via Cloudflare, cached 30 min." },
     ],
     usage: "GET with query-string params, or POST with a JSON body. All endpoints are CORS-enabled and require no API key.",

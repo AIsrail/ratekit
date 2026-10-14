@@ -3,7 +3,7 @@
 > RateKit (ratekit.org) is a set of free, no-signup business calculators for founders, startups and freelancers: freelance rate, Stripe/PayPal fees, VAT/GST, ROI, profit margin, break-even, burn rate and runway, LTV:CAC, SAFE equity, business loans, salary-to-hourly, US self-employment tax, 1099 vs W-2, Form 2555 (FEIE), invoice generator and P&L statement. All calculations run in the browser. Each tool page explains the formula, a worked example and FAQs.
 
 ## API for agents
-Every calculator on this site (except the AI-based Deal Coach and the hand-built Invoice Generator/P&L Statement forms) is also available as a free, no-auth JSON endpoint — call them directly instead of re-deriving the formulas in your own context. GET with query params or POST with a JSON body; responses are plain JSON with no wrapper needed. Full machine-readable spec: [openapi.json](https://ratekit.org/openapi.json). Directory: [GET /api](https://ratekit.org/api).
+Every calculator on this site except the AI-based Deal Coach is also available as a free, no-auth JSON endpoint — call them directly instead of re-deriving the formulas in your own context. GET with query params or POST with a JSON body; responses are plain JSON with no wrapper needed. Full machine-readable spec: [openapi.json](https://ratekit.org/openapi.json). Directory: [GET /api](https://ratekit.org/api).
 - `GET/POST /api/roi?investment=&returns=&months=` — ROI, annualized ROI, payback period.
 - `GET/POST /api/break-even?price=&variableCost=&fixedCosts=&units=&targetProfit=` — break-even units/revenue, contribution margin.
 - `GET/POST /api/freelance-rate?targetIncome=&expenses=&taxRatePct=&hoursPerDay=&daysPerWeek=&vacationWeeks=&nonBillablePct=` — minimum hourly/daily rate.
@@ -19,6 +19,8 @@ Every calculator on this site (except the AI-based Deal Coach and the hand-built
 - `GET/POST /api/safe?investment=&premoney=&newRound=&safeType=cap|discount|both&valCap=&discount=` — SAFE note conversion and dilution.
 - `GET/POST /api/burn-rate?cash=&grossBurn=&revenue=&growth=` — net/gross burn rate and cash runway.
 - `GET/POST /api/ltv-cac?arpu=&margin=&churn=&spend=&newCustomers=` — LTV, CAC, LTV:CAC ratio, payback period.
+- `GET/POST /api/pl-statement?revenue=&cogs=&opex=&depreciation=&interest=&tax=` — gross profit, EBITDA, net profit.
+- `GET/POST /api/invoice?subtotal=&taxRatePct=` (or POST `{items:[{qty,rate}], taxRatePct}`) — invoice subtotal, tax, total.
 - `GET /api/rates` — live FX (USD/EUR/CNY/JPY/GBP vs. the caller's geolocated local currency) and crypto (BTC/ETH/SOL/XRP/DOGE vs USD) rates, cached 30 minutes.
 
 ## Glossary
@@ -76,3 +78,26 @@ Plain-English definitions for 20 business/finance terms, each linked to the calc
 - [Счёт-фактура онлайн](https://ratekit.org/ru/invoice-generator)
 - [Калькулятор бюджета и кассовых потоков](https://ratekit.org/ru/budget-calculator)
 - [Квиз: устный счёт](https://ratekit.org/ru/math-quiz)
+
+## Russian Glossary (русский глоссарий)
+Directory: [GET /ru/glossary](https://ratekit.org/ru/glossary).
+- [ROI (рентабельность инвестиций)](https://ratekit.org/ru/glossary/roi): ROI показывает, сколько прибыли принесла инвестиция относительно её стоимости, в процентах.
+- [Точка безубыточности](https://ratekit.org/ru/glossary/break-even-point): Точка безубыточности — это объём продаж (в единицах или выручке), при котором выручка равна всем затратам, а прибыль равна нулю.
+- [Маржинальная прибыль (Contribution Margin)](https://ratekit.org/ru/glossary/contribution-margin): Маржинальная прибыль — это выручка с одной единицы продажи за вычетом только переменных затрат на неё — сумма, которая «вносит вклад» в покрытие постоянных затрат и прибыли.
+- [Наценка vs. Маржа](https://ratekit.org/ru/glossary/markup-vs-margin): Наценка — это прибыль в процентах от себестоимости; маржа — та же прибыль в процентах от цены продажи. Для одной и той же продажи это всегда разные числа.
+- [Burn Rate (скорость сжигания денег)](https://ratekit.org/ru/glossary/burn-rate): Burn rate — это сколько денег компания тратит в месяц, обычно делится на gross burn (общие расходы) и net burn (расходы минус выручка).
+- [Runway стартапа](https://ratekit.org/ru/glossary/runway): Runway — это сколько месяцев компания может работать при текущем burn rate, прежде чем остаток денег обнулится.
+- [CAC (стоимость привлечения клиента)](https://ratekit.org/ru/glossary/cac): CAC — это полная стоимость продаж и маркетинга на привлечение одного нового клиента: общие затраты делятся на число привлечённых клиентов.
+- [LTV (пожизненная ценность клиента)](https://ratekit.org/ru/glossary/ltv): LTV — это общая валовая прибыль, которую бизнес ожидает получить от клиента за всё время, пока тот остаётся клиентом.
+- [Соотношение LTV:CAC](https://ratekit.org/ru/glossary/ltv-cac-ratio): Соотношение LTV:CAC сравнивает, сколько стоит клиент (LTV), с тем, сколько стоит его привлечь (CAC); 3:1 — широко принятый ориентир здоровой экономики для SaaS.
+- [SAFE (конвертируемый заём для стартапов)](https://ratekit.org/ru/glossary/safe-note): SAFE (Simple Agreement for Future Equity) — инструмент привлечения инвестиций для стартапов, где инвестор даёт деньги сейчас в обмен на долю в компании при будущем раунде с оценкой, а не получает акции сразу.
+- [Размытие доли (Dilution)](https://ratekit.org/ru/glossary/equity-dilution): Размытие — это снижение процента владения существующего акционера, которое происходит, когда компания выпускает новые акции для новых инвесторов.
+- [НДС / GST (налог на добавленную стоимость)](https://ratekit.org/ru/glossary/vat-gst): НДС (или GST) — это налог на потребление, добавляемый на каждом этапе производства и собираемый продавцом, в конечном счёте его платит конечный потребитель.
+- [Self-Employment Tax (налог на самозанятость в США)](https://ratekit.org/ru/glossary/self-employment-tax): Американский self-employment tax — это налог 15,3% на социальное страхование и медицину, который платят фрилансеры и независимые подрядчики вместо налогов, которые обычно делит пополам работодатель.
+- [FEIE (исключение иностранного трудового дохода)](https://ratekit.org/ru/glossary/feie): FEIE позволяет гражданам США, живущим за рубежом и соответствующим требованиям, исключить установленную сумму иностранного дохода из федерального подоходного налога США каждый год.
+- [APR (годовая процентная ставка)](https://ratekit.org/ru/glossary/apr): APR — это годовая стоимость заимствования денег в процентах, включающая и процентную ставку, и большинство разовых комиссий — правильное число для сравнения кредитов с разной структурой комиссий.
+- [Амортизация кредита](https://ratekit.org/ru/glossary/amortization): Амортизация — это процесс погашения кредита равными периодическими платежами, где каждый платёж покрывает проценты за период плюс растущую долю основного долга.
+- [EBITDA](https://ratekit.org/ru/glossary/ebitda): EBITDA (прибыль до вычета процентов, налогов, износа и амортизации) — показатель базовой операционной прибыльности компании, очищенный от финансовых и учётных решений.
+- [Оплачиваемые и неоплачиваемые часы](https://ratekit.org/ru/glossary/billable-hours): Оплачиваемые часы — это время, за которое клиент платит напрямую; неоплачиваемые часы покрывают всё остальное, что фрилансер или агентство делает, чтобы бизнес работал.
+- [Комиссии платёжных систем](https://ratekit.org/ru/glossary/payment-processing-fees): Платёжные системы вроде Stripe и PayPal берут процент плюс небольшую фиксированную комиссию с каждой карточной транзакции, что уменьшает сумму, которую реально получает продавец.
+- [Прогноз денежного потока](https://ratekit.org/ru/glossary/cash-flow-forecast): Прогноз денежного потока показывает, сколько денег будет у бизнеса в будущие месяцы, исходя из ожидаемой выручки, затрат и стартового остатка на счету.

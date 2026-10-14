@@ -323,6 +323,32 @@
         "responses": { "200": { "description": "LTV:CAC result", "content": { "application/json": { "schema": { "type": "object" } } } } }
       }
     },
+    "/api/pl-statement": {
+      "get": {
+        "summary": "Gross profit, EBITDA, and net profit from a simple P&L breakdown",
+        "operationId": "calculatePlStatement",
+        "parameters": [
+          { "name": "revenue", "in": "query", "required": true, "schema": { "type": "number" } },
+          { "name": "cogs", "in": "query", "required": false, "schema": { "type": "number", "default": 0 } },
+          { "name": "opex", "in": "query", "required": false, "schema": { "type": "number", "default": 0 } },
+          { "name": "depreciation", "in": "query", "required": false, "schema": { "type": "number", "default": 0 } },
+          { "name": "interest", "in": "query", "required": false, "schema": { "type": "number", "default": 0 } },
+          { "name": "tax", "in": "query", "required": false, "schema": { "type": "number", "default": 0 } }
+        ],
+        "responses": { "200": { "description": "P&L result", "content": { "application/json": { "schema": { "type": "object" } } } } }
+      }
+    },
+    "/api/invoice": {
+      "get": {
+        "summary": "Invoice subtotal, tax, and total",
+        "operationId": "calculateInvoice",
+        "parameters": [
+          { "name": "subtotal", "in": "query", "required": false, "schema": { "type": "number" }, "description": "Precomputed subtotal. Alternative to POSTing an 'items' array of {qty, rate}." },
+          { "name": "taxRatePct", "in": "query", "required": false, "schema": { "type": "number", "default": 0 } }
+        ],
+        "responses": { "200": { "description": "Invoice totals result", "content": { "application/json": { "schema": { "type": "object" } } } } }
+      }
+    },
     "/api/rates": {
       "get": {
         "summary": "Live FX and crypto rates, geolocated to the caller's local currency",

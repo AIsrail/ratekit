@@ -60,6 +60,9 @@ const ldGraph = {
 <meta name="twitter:title" content={title}>
 <meta name="twitter:description" content={description}>
 <link rel="canonical" href={canonical}>
+<link rel="alternate" hreflang="en" href={canonical}>
+{entry.ru && <link rel="alternate" hreflang="ru" href={`https://ratekit.org/ru/glossary/${entry.slug}`}>}
+<link rel="alternate" hreflang="x-default" href={canonical}>
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta property="og:locale" content="en_US">
 
@@ -95,7 +98,7 @@ article p{font-size:15.5px;line-height:1.75;color:var(--mid);margin-bottom:18px;
 </style>
 </head>
 <body>
-<Nav lang="en" altLangPath="/ru" />
+<Nav lang="en" altLangPath={entry.ru ? `/ru/glossary/${entry.slug}` : '/ru'} />
 
 <div class="page-header">
   <div class="breadcrumb"><a href="/">RateKit</a> › <a href="/glossary">Glossary</a> › {entry.term}</div>

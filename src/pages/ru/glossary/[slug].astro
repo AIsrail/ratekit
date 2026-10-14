@@ -1,0 +1,133 @@
+---
+import Nav from '../../../components/Nav.astro';
+import Footer from '../../../components/Footer.astro';
+import { glossary, type GlossaryTerm } from '../../../data/glossary';
+import '../../../styles/base.css';
+
+export function getStaticPaths() {
+  return glossary.filter((g) => g.ru).map((g) => ({ params: { slug: g.slug }, props: { entry: g } }));
+}
+
+interface Props { entry: GlossaryTerm }
+const { entry } = Astro.props;
+const ru = entry.ru!;
+
+const title = `${ru.term} — определение и формула | Глоссарий RateKit`;
+const description = ru.shortDef;
+const canonical = `https://ratekit.org/ru/glossary/${entry.slug}`;
+
+const ldGraph = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'DefinedTerm',
+      name: ru.term,
+      description: ru.shortDef,
+      inDefinedTermSet: 'https://ratekit.org/ru/glossary',
+      url: canonical,
+      inLanguage: 'ru',
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'RateKit', item: 'https://ratekit.org/ru' },
+        { '@type': 'ListItem', position: 2, name: 'Глоссарий', item: 'https://ratekit.org/ru/glossary' },
+        { '@type': 'ListItem', position: 3, name: ru.term, item: canonical },
+      ],
+    },
+  ],
+};
+---
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{title}</title>
+<meta name="description" content={description}>
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon-180x180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+<meta property="og:type" content="article">
+<meta property="og:url" content={canonical}>
+<meta property="og:title" content={title}>
+<meta property="og:description" content={description}>
+<meta property="og:image" content="https://ratekit.org/og-image.png">
+<meta property="og:site_name" content="RateKit — Business Calculators">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content={title}>
+<meta name="twitter:description" content={description}>
+<link rel="canonical" href={canonical}>
+<link rel="alternate" hreflang="en" href={`https://ratekit.org/glossary/${entry.slug}`}>
+<link rel="alternate" hreflang="ru" href={canonical}>
+<link rel="alternate" hreflang="x-default" href={`https://ratekit.org/glossary/${entry.slug}`}>
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta property="og:locale" content="ru_RU">
+
+<script type="application/ld+json" set:html={JSON.stringify(ldGraph)} />
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-JZZPXY8N1E"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-JZZPXY8N1E');
+</script>
+
+<style>
+.page-header{position:relative;background:var(--white);border-bottom:1px solid var(--border-soft);padding:48px 48px 40px;overflow:hidden;}
+.page-header::before{content:'';position:absolute;top:-120px;right:-80px;width:360px;height:360px;background:radial-gradient(circle,rgba(55,86,249,.08),rgba(123,92,250,.05) 55%,transparent 72%);pointer-events:none;}
+.breadcrumb{position:relative;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:18px;flex-wrap:wrap;}
+.breadcrumb a{color:var(--blue);}
+.page-tag{position:relative;display:inline-flex;align-items:center;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--violet);background:var(--violetbg);padding:5px 12px;border-radius:99px;margin-bottom:14px;}
+h1{position:relative;font-size:clamp(1.65rem,3.5vw,2.5rem);font-weight:700;letter-spacing:-.025em;line-height:1.12;margin-bottom:10px;}
+.page-sub{position:relative;font-size:15px;color:var(--mid);max-width:620px;}
+main{padding:40px 48px 64px;max-width:760px;margin:0 auto;}
+.formula-box{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin:0 0 28px;font-family:var(--mono);font-size:14px;color:var(--ink);}
+.formula-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-family:var(--font);}
+article p{font-size:15.5px;line-height:1.75;color:var(--mid);margin-bottom:18px;}
+.related-wrap{margin-top:40px;padding-top:28px;border-top:1px solid var(--border-soft);}
+.related-wrap h2{font-size:1.05rem;font-weight:700;margin-bottom:14px;}
+.rk-related{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:0;}
+.rk-related a{display:inline-block;padding:7px 14px;border:1px solid var(--border);border-radius:999px;text-decoration:none;color:var(--mid);font-size:.88rem;transition:all .18s var(--ease);}
+.rk-related a:hover{border-color:var(--blue);color:var(--blue);background:var(--bluebg);}
+.glossary-back{display:inline-flex;align-items:center;gap:6px;margin-top:40px;font-size:13px;color:var(--blue);font-weight:600;}
+@media(max-width:768px){.page-header,main{padding-left:20px;padding-right:20px;}}
+</style>
+</head>
+<body>
+<Nav lang="ru" altLangPath={`/glossary/${entry.slug}`} />
+
+<div class="page-header">
+  <div class="breadcrumb"><a href="/ru">RateKit</a> › <a href="/ru/glossary">Глоссарий</a> › {ru.term}</div>
+  <div class="page-tag">📖 {ru.category}</div>
+  <h1>{ru.term}</h1>
+  <p class="page-sub">{ru.shortDef}</p>
+</div>
+
+<main>
+  {ru.formula && (
+    <div class="formula-box">
+      <div class="formula-label">Формула</div>
+      {ru.formula}
+    </div>
+  )}
+  <article>
+    {ru.body.map((para) => <p>{para}</p>)}
+  </article>
+
+  <div class="related-wrap">
+    <h2>Похожие калькуляторы</h2>
+    <ul class="rk-related">
+      {ru.relatedTools.map((r) => <li><a href={r.path}>{r.label}</a></li>)}
+    </ul>
+    <a class="glossary-back" href="/ru/glossary">← Весь глоссарий</a>
+  </div>
+</main>
+
+<Footer lang="ru" />
+</body>
+</html>
