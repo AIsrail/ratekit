@@ -174,6 +174,162 @@
           }
         }
       }
+    },
+    "/api/budget": {
+      "get": {
+        "summary": "12-month cash flow forecast, runway, revenue scenarios",
+        "operationId": "calculateBudget",
+        "parameters": [
+          { "name": "revenue", "in": "query", "required": true, "schema": { "type": "number" }, "description": "Monthly revenue." },
+          { "name": "costs", "in": "query", "required": true, "schema": { "type": "number" }, "description": "Monthly fixed + variable costs." },
+          { "name": "startingCash", "in": "query", "required": false, "schema": { "type": "number", "default": 0 } }
+        ],
+        "responses": { "200": { "description": "Budget forecast result", "content": { "application/json": { "schema": { "type": "object" } } } } }
+      }
+    },
+    "/api/salary-hourly": {
+      "get": {
+        "summary": "Convert annual salary to hourly rate or vice versa",
+        "operationId": "calculateSalaryHourly",
+        "parameters": [
+          { "name": "mode", "in": "query", "required": false, "schema": { "type": "string", "enum": ["salary", "hourly"], "default": "salary" } },
+          { "name": "annualSalary", "in": "query", "required": false, "schema": { "type": "number" }, "description": "Required when mode=salary." },
+          { "name": "hourlyRate", "in": "query", "required": false, "schema": { "type": "number" }, "description": "Required when mode=hourly." },
+          { "name": "hoursPerDay", "in": "query", "required": false, "schema": { "type": "number", "default": 8 } },
+          { "name": "daysPerWeek", "in": "query", "required": false, "schema": { "type": "number", "default": 5 } },
+          { "name": "ptoDays", "in": "query", "required": false, "schema": { "type": "number", "default": 15 } },
+          { "name": "holidays", "in": "query", "required": false, "schema": { "type": "number", "default": 10 } }
+        ],
+        "responses": { "200": { "description": "Salary/hourly conversion result", "content": { "application/json": { "schema": { "type": "object" } } } } }
+      }
+    },
+    "/api/stripe-fee": {
+      "get": {
+        "summary": "Stripe/PayPal/Square/Wise processing fees, with processor comparison",
+        "operationId": "calculateStripeFee",
+        "parameters": [
+          { "name": "amount", "in": "query", "required": true, "schema": { "type": "number" } },
+          { "name": "mode", "in": "query", "required": false, "schema": { "type": "string", "enum": ["receive", "charge"], "default": "receive" } },
+          { "name": "processor", "in": "query", "required": false, "schema": { "type": "string", "enum": ["stripe", "paypal", "square", "wise", "custom"], "default": "stripe" } },
+          { "name": "pct", "in": "query", "required": false, "schema": { "type": "number" }, "description": "Override percentage fee (processor=custom)." },
+          { "name": "fixed", "in": "query", "required": false, "schema": { "type": "number" }, "description": "Override fixed fee (processor=custom)." }
+        ],
+        "responses": { "200": { "description": "Processing fee result", "content": { "application/json": { "schema": { "type": "object" } } } } }
+      }
+    },
+    "/api/self-employment-tax": {
+      "get": {
+        "summary": "US self-employment tax (15.3%), quarterly estimated payments",
+        "operationId": "calculateSelfEmploymentTax",
+        "parameters": [
+          { "name": "income", "in": "query", "required": true, "schema": { "type": "number" } },
+          { "name": "expenses", "in": "query", "required": false, "schema": { "type": "number", "default": 0 } },
+          { "name": "filing", "in": "query", "required": false, "schema": { "type": "string", "enum": ["single", "married", "hoh"], "default": "single" } }
+        ],
+        "responses": { "200": { "description": "SE tax result", "content": { "application/json": { "schema": { "type": "object" } } } } }
+      }
+    },
+    "/api/1099-vs-w2": {
+      "get": {
+        "summary": "Compare 1099 contractor vs W2 employee take-home pay",
+        "operationId": "calculate1099VsW2",
+        "parameters": [
+          { "name": "w2Salary", "in": "query", "required": true, "schema": { "type": "number" } },
+          { "name": "cIncome", "in": "query", "required": true, "schema": { "type": "number" }, "description": "1099 contractor annual income." },
+          { "name": "w2Health", "in": "query", "required": false, "schema": { "type": "number", "default": 6000 } },
+          { "name": "w2Match", "in": "query", "required": false, "schema": { "type": "number", "default": 4000 }, "description": "Employer 401k match." },
+          { "name": "w2Perks", "in": "query", "required": false, "schema": { "type": "number", "default": 3000 } },
+          { "name": "w2YourK", "in": "query", "required": false, "schema": { "type": "number", "default": 6000 }, "description": "Your own 401k contribution." },
+          { "name": "cExpenses", "in": "query", "required": false, "schema": { "type": "number", "default": 10000 } },
+          { "name": "cHealth", "in": "query", "required": false, "schema": { "type": "number", "default": 8000 } },
+          { "name": "cRetirement", "in": "query", "required": false, "schema": { "type": "number", "default": 10000 } },
+          { "name": "cOther", "in": "query", "required": false, "schema": { "type": "number", "default": 3000 } },
+          { "name": "filing", "in": "query", "required": false, "schema": { "type": "string", "enum": ["single", "married"], "default": "single" } },
+          { "name": "stateTax", "in": "query", "required": false, "schema": { "type": "number", "default": 5 }, "description": "State income tax rate, percent." }
+        ],
+        "responses": { "200": { "description": "1099 vs W2 comparison result", "content": { "application/json": { "schema": { "type": "object" } } } } }
+      }
+    },
+    "/api/form-2555": {
+      "get": {
+        "summary": "US Foreign Earned Income Exclusion (FEIE) estimate",
+        "operationId": "calculateForm2555",
+        "parameters": [
+          { "name": "income", "in": "query", "required": true, "schema": { "type": "number" }, "description": "Foreign earned income." },
+          { "name": "testType", "in": "query", "required": false, "schema": { "type": "string", "enum": ["bfr", "ppt"], "default": "bfr" } },
+          { "name": "bfrYears", "in": "query", "required": false, "schema": { "type": "number", "default": 2 } },
+          { "name": "pptDays", "in": "query", "required": false, "schema": { "type": "number", "default": 340 } },
+          { "name": "housing", "in": "query", "required": false, "schema": { "type": "number", "default": 0 } },
+          { "name": "daysYear", "in": "query", "required": false, "schema": { "type": "number", "default": 365 } },
+          { "name": "daysAbroad", "in": "query", "required": false, "schema": { "type": "number", "default": 365 } }
+        ],
+        "responses": { "200": { "description": "FEIE result", "content": { "application/json": { "schema": { "type": "object" } } } } }
+      }
+    },
+    "/api/loan": {
+      "get": {
+        "summary": "Business loan monthly payment, total interest, true APR",
+        "operationId": "calculateLoan",
+        "parameters": [
+          { "name": "principal", "in": "query", "required": true, "schema": { "type": "number" } },
+          { "name": "rate", "in": "query", "required": true, "schema": { "type": "number" }, "description": "Annual interest rate, percent." },
+          { "name": "term", "in": "query", "required": true, "schema": { "type": "number" }, "description": "Loan term in months." },
+          { "name": "fee", "in": "query", "required": false, "schema": { "type": "number", "default": 0 }, "description": "Origination fee, percent." }
+        ],
+        "responses": { "200": { "description": "Loan result", "content": { "application/json": { "schema": { "type": "object" } } } } }
+      }
+    },
+    "/api/safe": {
+      "get": {
+        "summary": "SAFE note conversion, investor ownership %, founder dilution",
+        "operationId": "calculateSafe",
+        "parameters": [
+          { "name": "investment", "in": "query", "required": true, "schema": { "type": "number" } },
+          { "name": "premoney", "in": "query", "required": true, "schema": { "type": "number" }, "description": "Next round pre-money valuation." },
+          { "name": "newRound", "in": "query", "required": true, "schema": { "type": "number" }, "description": "New investment raised in the priced round." },
+          { "name": "safeType", "in": "query", "required": false, "schema": { "type": "string", "enum": ["cap", "discount", "both"], "default": "cap" } },
+          { "name": "valCap", "in": "query", "required": false, "schema": { "type": "number", "default": 5000000 }, "description": "Post-money valuation cap." },
+          { "name": "discount", "in": "query", "required": false, "schema": { "type": "number", "default": 20 } },
+          { "name": "shares", "in": "query", "required": false, "schema": { "type": "number", "default": 10000000 }, "description": "Existing pre-round shares." },
+          { "name": "optPool", "in": "query", "required": false, "schema": { "type": "number", "default": 10 }, "description": "New option pool, percent." }
+        ],
+        "responses": { "200": { "description": "SAFE conversion result", "content": { "application/json": { "schema": { "type": "object" } } } } }
+      }
+    },
+    "/api/burn-rate": {
+      "get": {
+        "summary": "Startup net/gross burn rate and cash runway in months",
+        "operationId": "calculateBurnRate",
+        "parameters": [
+          { "name": "cash", "in": "query", "required": true, "schema": { "type": "number" } },
+          { "name": "grossBurn", "in": "query", "required": true, "schema": { "type": "number" }, "description": "Total monthly expenses." },
+          { "name": "revenue", "in": "query", "required": false, "schema": { "type": "number", "default": 0 } },
+          { "name": "growth", "in": "query", "required": false, "schema": { "type": "number", "default": 0 }, "description": "Monthly revenue growth, percent." }
+        ],
+        "responses": { "200": { "description": "Burn rate / runway result", "content": { "application/json": { "schema": { "type": "object" } } } } }
+      }
+    },
+    "/api/ltv-cac": {
+      "get": {
+        "summary": "Customer LTV, CAC, LTV:CAC ratio, CAC payback period",
+        "operationId": "calculateLtvCac",
+        "parameters": [
+          { "name": "arpu", "in": "query", "required": true, "schema": { "type": "number" }, "description": "Average monthly revenue per customer." },
+          { "name": "margin", "in": "query", "required": true, "schema": { "type": "number" }, "description": "Gross margin, percent." },
+          { "name": "churn", "in": "query", "required": true, "schema": { "type": "number" }, "description": "Monthly churn rate, percent." },
+          { "name": "spend", "in": "query", "required": true, "schema": { "type": "number" }, "description": "Monthly sales & marketing spend." },
+          { "name": "newCustomers", "in": "query", "required": true, "schema": { "type": "number" }, "description": "New customers acquired per month." }
+        ],
+        "responses": { "200": { "description": "LTV:CAC result", "content": { "application/json": { "schema": { "type": "object" } } } } }
+      }
+    },
+    "/api/rates": {
+      "get": {
+        "summary": "Live FX and crypto rates, geolocated to the caller's local currency",
+        "operationId": "getRates",
+        "parameters": [],
+        "responses": { "200": { "description": "FX + crypto rates", "content": { "application/json": { "schema": { "type": "object" } } } } }
+      }
     }
   }
 }

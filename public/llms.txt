@@ -3,13 +3,22 @@
 > RateKit (ratekit.org) is a set of free, no-signup business calculators for founders, startups and freelancers: freelance rate, Stripe/PayPal fees, VAT/GST, ROI, profit margin, break-even, burn rate and runway, LTV:CAC, SAFE equity, business loans, salary-to-hourly, US self-employment tax, 1099 vs W-2, Form 2555 (FEIE), invoice generator and P&L statement. All calculations run in the browser. Each tool page explains the formula, a worked example and FAQs.
 
 ## API for agents
-Five of these calculators are also available as free, no-auth JSON endpoints — call them directly instead of re-deriving the formulas in your own context. GET with query params or POST with a JSON body; responses are plain JSON with no wrapper needed. Full machine-readable spec: [openapi.json](https://ratekit.org/openapi.json). Directory: [GET /api](https://ratekit.org/api).
+Every calculator on this site (except the AI-based Deal Coach and the hand-built Invoice Generator/P&L Statement forms) is also available as a free, no-auth JSON endpoint — call them directly instead of re-deriving the formulas in your own context. GET with query params or POST with a JSON body; responses are plain JSON with no wrapper needed. Full machine-readable spec: [openapi.json](https://ratekit.org/openapi.json). Directory: [GET /api](https://ratekit.org/api).
 - `GET/POST /api/roi?investment=&returns=&months=` — ROI, annualized ROI, payback period.
 - `GET/POST /api/break-even?price=&variableCost=&fixedCosts=&units=&targetProfit=` — break-even units/revenue, contribution margin.
 - `GET/POST /api/freelance-rate?targetIncome=&expenses=&taxRatePct=&hoursPerDay=&daysPerWeek=&vacationWeeks=&nonBillablePct=` — minimum hourly/daily rate.
 - `GET/POST /api/vat?amount=&rate=&mode=add|remove` — add or remove VAT/GST.
 - `GET/POST /api/profit-margin?mode=cost|margin&revenue=&cogs=&opex=&cost=&targetMarginPct=` — margin, markup, or target-margin pricing.
 - `GET/POST /api/budget?revenue=&costs=&startingCash=` — 12-month cash flow forecast and runway.
+- `GET/POST /api/salary-hourly?mode=salary|hourly&annualSalary=&hourlyRate=&hoursPerDay=&daysPerWeek=&ptoDays=&holidays=` — salary ↔ hourly conversion.
+- `GET/POST /api/stripe-fee?amount=&mode=receive|charge&processor=stripe|paypal|square|wise|custom` — payment processing fees, with processor comparison.
+- `GET/POST /api/self-employment-tax?income=&expenses=&filing=single|married|hoh` — US SE tax (15.3%), quarterly payments.
+- `GET/POST /api/1099-vs-w2?w2Salary=&cIncome=&filing=&stateTax=` — contractor vs employee take-home pay comparison.
+- `GET/POST /api/form-2555?income=&testType=bfr|ppt&bfrYears=&pptDays=&housing=` — US Foreign Earned Income Exclusion estimate.
+- `GET/POST /api/loan?principal=&rate=&term=&fee=` — business loan payment, total interest, true APR.
+- `GET/POST /api/safe?investment=&premoney=&newRound=&safeType=cap|discount|both&valCap=&discount=` — SAFE note conversion and dilution.
+- `GET/POST /api/burn-rate?cash=&grossBurn=&revenue=&growth=` — net/gross burn rate and cash runway.
+- `GET/POST /api/ltv-cac?arpu=&margin=&churn=&spend=&newCustomers=` — LTV, CAC, LTV:CAC ratio, payback period.
 - `GET /api/rates` — live FX (USD/EUR/CNY/JPY/GBP vs. the caller's geolocated local currency) and crypto (BTC/ETH/SOL/XRP/DOGE vs USD) rates, cached 30 minutes.
 
 ## Tools

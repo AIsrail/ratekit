@@ -58,3 +58,23 @@ export const ATTRIBUTION = {
   name: "RateKit",
   url: "https://ratekit.org",
 };
+
+// Simplified 2026 US federal income tax brackets, mirrors the client-side calc() in
+// self-employment-tax.astro and 1099-vs-w2.astro exactly (including "hoh" falling back
+// to the single-filer brackets, same as those pages) — for estimation only.
+export function calcFedTax2026(taxable, filing) {
+  const brackets = filing === "married"
+    ? [[0, 0.10, 24800], [24800, 0.12, 100800], [100800, 0.22, 211400], [211400, 0.24, 403550], [403550, 0.32, 512450], [512450, 0.35, 768700], [768700, 0.37, Infinity]]
+    : [[0, 0.10, 12400], [12400, 0.12, 50400], [50400, 0.22, 105700], [105700, 0.24, 201775], [201775, 0.32, 256225], [256225, 0.35, 640600], [640600, 0.37, Infinity]];
+  let tax = 0;
+  for (const [min, rate, max] of brackets) {
+    if (taxable <= min) break;
+    tax += Math.min(taxable, max) * rate - min * rate;
+    if (taxable <= max) break;
+  }
+  return Math.max(0, tax);
+}
+
+export function stdDeduction2026(filing) {
+  return filing === "married" ? 32200 : 16100;
+}
