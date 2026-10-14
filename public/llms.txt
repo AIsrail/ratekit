@@ -22,6 +22,7 @@ Five of these calculators are also available as free, no-auth JSON endpoints —
 - [Free Invoice Generator](https://ratekit.org/invoice-generator): Create professional invoices instantly. Download as PDF. Free invoice generator for freelancers and small businesses. No signup required.
 - [Business Loan & APR Calculator](https://ratekit.org/loan-calculator): Calculate monthly payments, total interest, and true APR for business loans. Compare loan options side by side. Free loan calculator for entrepreneurs.
 - [LTV:CAC Calculator](https://ratekit.org/ltv-cac): Calculate Customer Lifetime Value (LTV) and Customer Acquisition Cost (CAC). Find out if your unit economics are healthy. Free tool for SaaS and startups.
+- [Mental Math Quiz](https://ratekit.org/math-quiz): A free 60-second mental math quiz covering margin, ROI, break-even, runway and more. Not a calculator — a scored brain-training game that links back to the related calculators.
 - [P&L Statement (Profit & Loss)](https://ratekit.org/pl-statement): Build your Profit & Loss statement online. Auto-calculates gross profit, EBITDA, and net profit. Free P&L tool for businesses and startups.
 - [Profit Margin Calculator](https://ratekit.org/profit-margin): Calculate gross profit margin, net profit margin, and markup. Free profit margin calculator for e-commerce, retail, and business pricing.
 - [ROI Calculator — Return on Investment](https://ratekit.org/roi-calculator): Calculate Return on Investment (ROI), annualized ROI, and payback period. Free ROI calculator for marketing, business investments, and projects.
@@ -33,10 +34,11 @@ Five of these calculators are also available as free, no-auth JSON endpoints —
 
 ## Russian (русская версия)
 - [RateKit на русском](https://ratekit.org/ru): бесплатные бизнес-калькуляторы для фрилансеров и стартапов.
-- [Калькулятор ставки фрилансера](https://ratekit.org/rufreelance-rate)
-- [Калькулятор ROI](https://ratekit.org/ruroi-calculator)
-- [Точка безубыточности](https://ratekit.org/rubreak-even)
-- [Маржа и наценка](https://ratekit.org/ruprofit-margin)
-- [Калькулятор НДС / GST](https://ratekit.org/ruvat-calculator)
-- [Счёт-фактура онлайн](https://ratekit.org/ruinvoice-generator)
-- [Калькулятор бюджета и кассовых потоков](https://ratekit.org/rubudget-calculator)
+- [Калькулятор ставки фрилансера](https://ratekit.org/ru/freelance-rate)
+- [Калькулятор ROI](https://ratekit.org/ru/roi-calculator)
+- [Точка безубыточности](https://ratekit.org/ru/break-even)
+- [Маржа и наценка](https://ratekit.org/ru/profit-margin)
+- [Калькулятор НДС / GST](https://ratekit.org/ru/vat-calculator)
+- [Счёт-фактура онлайн](https://ratekit.org/ru/invoice-generator)
+- [Калькулятор бюджета и кассовых потоков](https://ratekit.org/ru/budget-calculator)
+- [Квиз: устный счёт](https://ratekit.org/ru/math-quiz)
