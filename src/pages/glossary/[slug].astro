@@ -1,0 +1,129 @@
+---
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import { glossary, type GlossaryTerm } from '../../data/glossary';
+import '../../styles/base.css';
+
+export function getStaticPaths() {
+  return glossary.map((g) => ({ params: { slug: g.slug }, props: { entry: g } }));
+}
+
+interface Props { entry: GlossaryTerm }
+const { entry } = Astro.props;
+
+const title = `${entry.term} — Definition & Formula | RateKit Glossary`;
+const description = entry.shortDef;
+const canonical = `https://ratekit.org/glossary/${entry.slug}`;
+const dateModified = '2026-10-14';
+
+const ldGraph = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'DefinedTerm',
+      name: entry.term,
+      description: entry.shortDef,
+      inDefinedTermSet: 'https://ratekit.org/glossary',
+      url: canonical,
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'RateKit', item: 'https://ratekit.org/' },
+        { '@type': 'ListItem', position: 2, name: 'Glossary', item: 'https://ratekit.org/glossary' },
+        { '@type': 'ListItem', position: 3, name: entry.term, item: canonical },
+      ],
+    },
+  ],
+};
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{title}</title>
+<meta name="description" content={description}>
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon-180x180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+<meta property="og:type" content="article">
+<meta property="og:url" content={canonical}>
+<meta property="og:title" content={title}>
+<meta property="og:description" content={description}>
+<meta property="og:image" content="https://ratekit.org/og-image.png">
+<meta property="og:site_name" content="RateKit — Business Calculators">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content={title}>
+<meta name="twitter:description" content={description}>
+<link rel="canonical" href={canonical}>
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta property="og:locale" content="en_US">
+
+<script type="application/ld+json" set:html={JSON.stringify(ldGraph)} />
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-JZZPXY8N1E"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-JZZPXY8N1E');
+</script>
+
+<style>
+.page-header{position:relative;background:var(--white);border-bottom:1px solid var(--border-soft);padding:48px 48px 40px;overflow:hidden;}
+.page-header::before{content:'';position:absolute;top:-120px;right:-80px;width:360px;height:360px;background:radial-gradient(circle,rgba(55,86,249,.08),rgba(123,92,250,.05) 55%,transparent 72%);pointer-events:none;}
+.breadcrumb{position:relative;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:18px;flex-wrap:wrap;}
+.breadcrumb a{color:var(--blue);}
+.page-tag{position:relative;display:inline-flex;align-items:center;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--violet);background:var(--violetbg);padding:5px 12px;border-radius:99px;margin-bottom:14px;}
+h1{position:relative;font-size:clamp(1.65rem,3.5vw,2.5rem);font-weight:700;letter-spacing:-.025em;line-height:1.12;margin-bottom:10px;}
+.page-sub{position:relative;font-size:15px;color:var(--mid);max-width:620px;}
+main{padding:40px 48px 64px;max-width:760px;margin:0 auto;}
+.formula-box{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin:0 0 28px;font-family:var(--mono);font-size:14px;color:var(--ink);}
+.formula-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-family:var(--font);}
+article p{font-size:15.5px;line-height:1.75;color:var(--mid);margin-bottom:18px;}
+.related-wrap{margin-top:40px;padding-top:28px;border-top:1px solid var(--border-soft);}
+.related-wrap h2{font-size:1.05rem;font-weight:700;margin-bottom:14px;}
+.rk-related{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:0;}
+.rk-related a{display:inline-block;padding:7px 14px;border:1px solid var(--border);border-radius:999px;text-decoration:none;color:var(--mid);font-size:.88rem;transition:all .18s var(--ease);}
+.rk-related a:hover{border-color:var(--blue);color:var(--blue);background:var(--bluebg);}
+.glossary-back{display:inline-flex;align-items:center;gap:6px;margin-top:40px;font-size:13px;color:var(--blue);font-weight:600;}
+@media(max-width:768px){.page-header,main{padding-left:20px;padding-right:20px;}}
+</style>
+</head>
+<body>
+<Nav lang="en" altLangPath="/ru" />
+
+<div class="page-header">
+  <div class="breadcrumb"><a href="/">RateKit</a> › <a href="/glossary">Glossary</a> › {entry.term}</div>
+  <div class="page-tag">📖 {entry.category}</div>
+  <h1>{entry.term}</h1>
+  <p class="page-sub">{entry.shortDef}</p>
+</div>
+
+<main>
+  {entry.formula && (
+    <div class="formula-box">
+      <div class="formula-label">Formula</div>
+      {entry.formula}
+    </div>
+  )}
+  <article>
+    {entry.body.map((para) => <p>{para}</p>)}
+  </article>
+
+  <div class="related-wrap">
+    <h2>Related calculators</h2>
+    <ul class="rk-related">
+      {entry.relatedTools.map((r) => <li><a href={r.path}>{r.label}</a></li>)}
+    </ul>
+    <a class="glossary-back" href="/glossary">← Back to the full glossary</a>
+  </div>
+</main>
+
+<Footer lang="en" />
+</body>
+</html>

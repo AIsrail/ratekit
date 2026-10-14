@@ -21,6 +21,29 @@ Every calculator on this site (except the AI-based Deal Coach and the hand-built
 - `GET/POST /api/ltv-cac?arpu=&margin=&churn=&spend=&newCustomers=` — LTV, CAC, LTV:CAC ratio, payback period.
 - `GET /api/rates` — live FX (USD/EUR/CNY/JPY/GBP vs. the caller's geolocated local currency) and crypto (BTC/ETH/SOL/XRP/DOGE vs USD) rates, cached 30 minutes.
 
+## Glossary
+Plain-English definitions for 20 business/finance terms, each linked to the calculator that uses it. Directory: [GET /glossary](https://ratekit.org/glossary).
+- [ROI (Return on Investment)](https://ratekit.org/glossary/roi): ROI measures how much profit an investment generated relative to its cost, expressed as a percentage.
+- [Break-Even Point](https://ratekit.org/glossary/break-even-point): The break-even point is the sales volume — in units or revenue — at which total revenue equals total costs, so profit is exactly zero.
+- [Contribution Margin](https://ratekit.org/glossary/contribution-margin): Contribution margin is the revenue left from one unit of sale after subtracting only the variable costs tied to that unit — the amount it "contributes" toward covering fixed costs and profit.
+- [Markup vs. Margin](https://ratekit.org/glossary/markup-vs-margin): Markup is profit expressed as a percentage of cost; margin is the same profit expressed as a percentage of selling price. They always give different numbers for the same sale.
+- [Burn Rate](https://ratekit.org/glossary/burn-rate): Burn rate is how much cash a company spends per month, usually split into gross burn (total spending) and net burn (spending minus revenue).
+- [Startup Runway](https://ratekit.org/glossary/runway): Runway is how many months a company can keep operating at its current burn rate before its cash balance hits zero.
+- [Customer Acquisition Cost (CAC)](https://ratekit.org/glossary/cac): CAC is the total sales and marketing cost to acquire one new customer, calculated by dividing total spend by the number of customers acquired.
+- [Customer Lifetime Value (LTV)](https://ratekit.org/glossary/ltv): LTV is the total gross profit a business expects to earn from a customer over the entire time they remain a customer.
+- [LTV:CAC Ratio](https://ratekit.org/glossary/ltv-cac-ratio): The LTV:CAC ratio compares what a customer is worth (LTV) to what it costs to acquire them (CAC); 3:1 is the widely cited healthy benchmark for SaaS businesses.
+- [SAFE Note](https://ratekit.org/glossary/safe-note): A SAFE (Simple Agreement for Future Equity) is a startup fundraising instrument where an investor gives money now in exchange for equity at a future priced round, instead of receiving shares immediately.
+- [Equity Dilution](https://ratekit.org/glossary/equity-dilution): Dilution is the reduction in an existing shareholder's ownership percentage that happens when a company issues new shares to new investors.
+- [VAT / GST (Value Added Tax)](https://ratekit.org/glossary/vat-gst): VAT (or GST) is a consumption tax added at each stage of production and collected by the seller, ultimately paid by the end consumer.
+- [Self-Employment Tax](https://ratekit.org/glossary/self-employment-tax): US self-employment tax is a 15.3% tax covering Social Security and Medicare, paid by freelancers and independent contractors in place of the payroll taxes an employer would normally split with an employee.
+- [FEIE (Foreign Earned Income Exclusion)](https://ratekit.org/glossary/feie): The FEIE lets qualifying US citizens living abroad exclude a set amount of foreign-earned income from US federal income tax each year.
+- [APR (Annual Percentage Rate)](https://ratekit.org/glossary/apr): APR is the yearly cost of borrowing money, expressed as a percentage, including both the interest rate and most upfront fees — making it the right number for comparing loans with different fee structures.
+- [Loan Amortization](https://ratekit.org/glossary/amortization): Amortization is the process of paying off a loan through equal periodic payments, where each payment covers that period's interest plus a growing share of the principal.
+- [EBITDA](https://ratekit.org/glossary/ebitda): EBITDA (Earnings Before Interest, Taxes, Depreciation, and Amortization) is a measure of a company's core operating profitability, stripped of financing and accounting decisions.
+- [Billable vs. Non-Billable Hours](https://ratekit.org/glossary/billable-hours): Billable hours are time spent on work a client directly pays for; non-billable hours cover everything else a freelancer or agency does to keep the business running.
+- [Payment Processing Fees](https://ratekit.org/glossary/payment-processing-fees): Payment processors like Stripe and PayPal charge a percentage plus a small fixed fee on every card transaction, which reduces what a seller actually receives from a sale.
+- [Cash Flow Forecast](https://ratekit.org/glossary/cash-flow-forecast): A cash flow forecast projects how much cash a business will have on hand in future months, based on expected revenue, costs, and the starting cash balance.
+
 ## Tools
 - [1099 vs W2 Calculator 2026 — Should You Be a Contractor?](https://ratekit.org/1099-vs-w2): Compare 1099 contractor vs W2 employee compensation. Calculate take-home pay, taxes, and benefits to decide which is better for you. Free 2026 calculator.
 - [About RateKit](https://ratekit.org/about): RateKit is a collection of free business calculators for founders, freelancers and entrepreneurs. No signup, no data stored.

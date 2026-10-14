@@ -1,0 +1,107 @@
+---
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import { glossary, glossaryCategories } from '../../data/glossary';
+import '../../styles/base.css';
+
+const title = 'Business & Finance Glossary — RateKit';
+const description = `Plain-English definitions for ${glossary.length} business and finance terms — ROI, burn rate, CAC, LTV, SAFE notes, VAT, APR and more — each linked to the free calculator that uses it.`;
+
+const ldGraph = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'DefinedTermSet',
+      name: 'RateKit Business & Finance Glossary',
+      description,
+      url: 'https://ratekit.org/glossary',
+      hasDefinedTerm: glossary.map((g) => ({
+        '@type': 'DefinedTerm',
+        name: g.term,
+        description: g.shortDef,
+        url: `https://ratekit.org/glossary/${g.slug}`,
+      })),
+    },
+  ],
+};
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{title}</title>
+<meta name="description" content={description}>
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ratekit.org/glossary">
+<meta property="og:title" content={title}>
+<meta property="og:description" content={description}>
+<meta property="og:image" content="https://ratekit.org/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://ratekit.org/glossary">
+<meta name="robots" content="index, follow, max-image-preview:large">
+
+<script type="application/ld+json" set:html={JSON.stringify(ldGraph)} />
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-JZZPXY8N1E"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-JZZPXY8N1E');
+</script>
+
+<style>
+.hero{position:relative;padding:72px 48px 48px;text-align:center;background:var(--white);border-bottom:1px solid var(--border-soft);overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-220px;left:50%;transform:translateX(-50%);width:800px;height:520px;background:radial-gradient(ellipse at center,rgba(55,86,249,.09),rgba(123,92,250,.06) 45%,transparent 72%);pointer-events:none;}
+.hero-inner{position:relative;max-width:640px;margin:0 auto;}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--violet);background:var(--violetbg);padding:7px 16px;border-radius:99px;margin-bottom:24px;}
+h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;letter-spacing:-.03em;line-height:1.1;color:var(--ink);margin-bottom:16px;}
+.hero-sub{font-size:16px;color:var(--mid);max-width:560px;margin:0 auto;}
+
+.glossary-section{padding:56px 48px 80px;max-width:1000px;margin:0 auto;}
+.cat-block{margin-bottom:40px;}
+.cat-title{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;}
+.term-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;}
+.term-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;transition:all .18s var(--ease);box-shadow:var(--shadow-xs);}
+.term-card:hover{border-color:var(--blue);box-shadow:var(--shadow-sm);transform:translateY(-2px);}
+.term-name{font-size:14.5px;font-weight:700;color:var(--ink);margin-bottom:6px;}
+.term-def{font-size:12.5px;color:var(--mid);line-height:1.55;}
+@media(max-width:768px){.hero{padding:48px 20px 36px;}.glossary-section{padding:40px 20px 56px;}}
+</style>
+</head>
+<body>
+<Nav lang="en" altLangPath="/ru" />
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">📖 Glossary</div>
+    <h1>Business & Finance Terms, Explained Simply</h1>
+    <p class="hero-sub">{glossary.length} plain-English definitions — each one linked to the free calculator that puts it to use.</p>
+  </div>
+</div>
+
+<section class="glossary-section">
+  {glossaryCategories.map((cat) => (
+    <div class="cat-block">
+      <div class="cat-title">{cat}</div>
+      <div class="term-grid">
+        {glossary.filter((g) => g.category === cat).map((g) => (
+          <a class="term-card" href={`/glossary/${g.slug}`}>
+            <div class="term-name">{g.term}</div>
+            <p class="term-def">{g.shortDef}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  ))}
+</section>
+
+<Footer lang="en" />
+</body>
+</html>
