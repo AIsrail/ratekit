@@ -9,6 +9,8 @@ Five of these calculators are also available as free, no-auth JSON endpoints —
 - `GET/POST /api/freelance-rate?targetIncome=&expenses=&taxRatePct=&hoursPerDay=&daysPerWeek=&vacationWeeks=&nonBillablePct=` — minimum hourly/daily rate.
 - `GET/POST /api/vat?amount=&rate=&mode=add|remove` — add or remove VAT/GST.
 - `GET/POST /api/profit-margin?mode=cost|margin&revenue=&cogs=&opex=&cost=&targetMarginPct=` — margin, markup, or target-margin pricing.
+- `GET/POST /api/budget?revenue=&costs=&startingCash=` — 12-month cash flow forecast and runway.
+- `GET /api/rates` — live FX (USD/EUR/CNY/JPY/GBP vs. the caller's geolocated local currency) and crypto (BTC/ETH/SOL/XRP/DOGE vs USD) rates, cached 30 minutes.
 
 ## Tools
 - [1099 vs W2 Calculator 2026 — Should You Be a Contractor?](https://ratekit.org/1099-vs-w2): Compare 1099 contractor vs W2 employee compensation. Calculate take-home pay, taxes, and benefits to decide which is better for you. Free 2026 calculator.

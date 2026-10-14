@@ -16,6 +16,8 @@ export async function onRequest(context) {
       { path: "/api/freelance-rate", methods: ["GET", "POST"], summary: "Minimum freelance hourly/daily rate." },
       { path: "/api/vat", methods: ["GET", "POST"], summary: "Add or remove VAT/GST from a price." },
       { path: "/api/profit-margin", methods: ["GET", "POST"], summary: "Gross/net margin, markup, target-margin pricing." },
+      { path: "/api/budget", methods: ["GET", "POST"], summary: "12-month cash flow forecast, runway, revenue scenarios." },
+      { path: "/api/rates", methods: ["GET"], summary: "Live FX (USD/EUR/CNY/JPY/GBP vs. visitor's local currency) and crypto (BTC/ETH/SOL/XRP/DOGE vs USD) rates, geolocated via Cloudflare, cached 30 min." },
     ],
     usage: "GET with query-string params, or POST with a JSON body. All endpoints are CORS-enabled and require no API key.",
   });

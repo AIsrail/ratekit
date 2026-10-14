@@ -126,7 +126,21 @@ h1 em{font-style:normal;background:linear-gradient(135deg,var(--blue),var(--viol
 .idea-btn{align-self:flex-start;background:linear-gradient(135deg,var(--blue),var(--violet));color:#fff;border:none;padding:9px 18px;border-radius:99px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .18s var(--ease);}
 .idea-btn:hover{filter:brightness(1.07);transform:translateY(-1px);}
 
-@media(max-width:768px){.hero{padding:56px 20px 44px;}.tools-section{padding:40px 20px 56px;}}
+.rates-section{padding:0 48px;max-width:1280px;margin:-22px auto 0;position:relative;z-index:2;}
+.rates-bar{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);padding:16px 24px;display:flex;align-items:center;gap:22px;flex-wrap:wrap;}
+.rates-group{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.rates-label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap;display:flex;align-items:center;gap:6px;}
+.rates-updated{font-size:10px;color:var(--muted);text-transform:none;letter-spacing:0;font-weight:500;}
+.rates-divider{width:1px;align-self:stretch;background:var(--border-soft);}
+.rates-chips{display:flex;gap:8px;flex-wrap:wrap;}
+.rate-chip{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:12.5px;font-weight:600;color:var(--ink);background:var(--bg);border:1px solid var(--border);border-radius:99px;padding:5px 12px;}
+.rate-chip b{font-family:var(--font);font-weight:700;color:var(--mid);margin-right:2px;}
+.rate-chip.up{color:var(--green);}
+.rate-chip.down{color:var(--red);}
+.rate-chip .chg{font-size:10px;margin-left:1px;}
+.rates-skel{width:76px;height:25px;border-radius:99px;background:linear-gradient(90deg,var(--bg) 25%,var(--border-soft) 37%,var(--bg) 63%);background-size:400% 100%;animation:rk-shimmer 1.4s ease infinite;}
+@keyframes rk-shimmer{0%{background-position:100% 50%}100%{background-position:0 50%}}
+@media(max-width:768px){.hero{padding:56px 20px 44px;}.tools-section{padding:40px 20px 56px;}.rates-section{padding:0 20px;}.rates-bar{padding:14px 16px;gap:14px;}}
 </style>
 </head>
 <body>
@@ -145,6 +159,24 @@ h1 em{font-style:normal;background:linear-gradient(135deg,var(--blue),var(--viol
     </div>
   </div>
 </div>
+
+<section class="rates-section">
+  <div class="rates-bar" id="rates-bar">
+    <div class="rates-group">
+      <span class="rates-label">💱 Курсы валют<span class="rates-updated" id="rates-updated"></span></span>
+      <div class="rates-chips" id="fx-chips">
+        <span class="rates-skel"></span><span class="rates-skel"></span><span class="rates-skel"></span><span class="rates-skel"></span>
+      </div>
+    </div>
+    <div class="rates-divider"></div>
+    <div class="rates-group">
+      <span class="rates-label">₿ Крипта</span>
+      <div class="rates-chips" id="crypto-chips">
+        <span class="rates-skel"></span><span class="rates-skel"></span><span class="rates-skel"></span>
+      </div>
+    </div>
+  </div>
+</section>
 
 <section class="tools-section">
   <div class="section-label">Основные инструменты переведены на русский — {ruTools.length} инструментов</div>
@@ -185,6 +217,47 @@ h1 em{font-style:normal;background:linear-gradient(135deg,var(--blue),var(--viol
     var body = encodeURIComponent(text + '\n\n— отправлено с ratekit.org');
     window.location.href = 'mailto:connect4fund@gmail.com?subject=' + subject + '&body=' + body;
   });
+</script>
+
+<script>
+  (function () {
+    var fxChips = document.getElementById('fx-chips');
+    var cryptoChips = document.getElementById('crypto-chips');
+    var updatedEl = document.getElementById('rates-updated');
+    if (!fxChips) return;
+
+    function fmt(n) {
+      if (n >= 1000) return n.toLocaleString('ru-RU', { maximumFractionDigits: 0 });
+      if (n >= 1) return n.toLocaleString('ru-RU', { maximumFractionDigits: 2 });
+      return n.toLocaleString('ru-RU', { maximumFractionDigits: 4 });
+    }
+
+    function render(data) {
+      fxChips.innerHTML = data.fiat.map(function (r) {
+        return '<span class="rate-chip"><b>' + r.code + '</b>' + fmt(r.value) + ' ' + data.localCurrency + '</span>';
+      }).join('');
+      cryptoChips.innerHTML = data.crypto.map(function (c) {
+        var dir = c.change24h == null ? '' : (c.change24h >= 0 ? 'up' : 'down');
+        var arrow = c.change24h == null ? '' : (c.change24h >= 0 ? '▲' : '▼');
+        var chg = c.change24h == null ? '' : (' <span class="chg">' + arrow + Math.abs(c.change24h).toFixed(1) + '%</span>');
+        return '<span class="rate-chip ' + dir + '"><b>' + c.symbol + '</b>$' + fmt(c.usd) + chg + '</span>';
+      }).join('');
+      updatedEl.textContent = '· обновлено только что';
+    }
+
+    function load() {
+      fetch('/api/rates').then(function (r) {
+        if (!r.ok) throw new Error('bad response');
+        return r.json();
+      }).then(render).catch(function () {
+        var bar = document.getElementById('rates-bar');
+        if (bar) bar.style.display = 'none';
+      });
+    }
+
+    load();
+    setInterval(load, 5 * 60 * 1000);
+  })();
 </script>
 </body>
 </html>
