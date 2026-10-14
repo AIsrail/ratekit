@@ -68,7 +68,10 @@ const related = [
   </Fragment>
 </ToolLayout>
 
-<style>
+<style is:global>
+/* Quiz option buttons are created dynamically by the script below, so they never carry
+   Astro's scoped data-astro-cid attribute — this block must stay global or none of this
+   CSS matches them (same root cause as ToolLayout's nav/footer gotcha). */
 .quiz-panel{text-align:left;}
 .quiz-start,.quiz-end{text-align:center;padding:12px 0 8px;}
 .quiz-emoji{font-size:48px;margin-bottom:10px;line-height:1;}
@@ -86,11 +89,13 @@ const related = [
 .timer-fill{height:100%;width:100%;background:linear-gradient(90deg,var(--blue),var(--violet));border-radius:99px;transition:width .1s linear;}
 .quiz-question{font-size:19px;font-weight:700;letter-spacing:-.01em;margin-bottom:22px;line-height:1.4;}
 .quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.quiz-opt{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:16px;font-family:var(--font);font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;transition:all .15s var(--ease);text-align:left;}
+.quiz-opt{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:16px;font-family:var(--font);font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;transition:all .15s var(--ease);text-align:left;}
 .quiz-opt:hover:not(:disabled){border-color:var(--blue);background:var(--bluebg);transform:translateY(-1px);}
 .quiz-opt:disabled{cursor:default;}
 .quiz-opt.correct{border-color:var(--green);background:var(--greenbg);color:var(--green);}
 .quiz-opt.wrong{border-color:var(--red);background:var(--redbg);color:var(--red);}
+.quiz-opt.correct::after{content:'✓';flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--green);color:#fff;font-size:13px;font-weight:900;display:flex;align-items:center;justify-content:center;}
+.quiz-opt.wrong::after{content:'✕';flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--red);color:#fff;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;}
 
 .quiz-stats{display:flex;justify-content:center;gap:32px;margin:18px 0 28px;}
 .quiz-stat-val{font-family:var(--mono);font-size:1.8rem;font-weight:700;color:var(--ink);}
