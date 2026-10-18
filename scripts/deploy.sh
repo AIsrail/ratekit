@@ -95,3 +95,18 @@ if [ "$FAIL" -ne 0 ]; then
 fi
 
 echo "==> All checks passed. Live at https://ratekit.org (deploy ${DEPLOY_ID:0:8})"
+
+echo "==> Pinging IndexNow (Bing/Yandex re-crawl)"
+INDEXNOW_KEY="c3c61715fcbab3ef21315f7fb39f0f6c"
+URLS_JSON="$(grep -oE '<loc>[^<]+</loc>' public/sitemap.xml | sed -E 's#</?loc>##g' | python -c "
+import sys, json
+print(json.dumps([l.strip() for l in sys.stdin if l.strip()]))
+")"
+INDEXNOW_RESP="$(curl -s -o /dev/null -w "%{http_code}" -X POST "https://api.indexnow.org/indexnow" \
+  -H "Content-Type: application/json" \
+  -d "{\"host\":\"ratekit.org\",\"key\":\"${INDEXNOW_KEY}\",\"keyLocation\":\"https://ratekit.org/${INDEXNOW_KEY}.txt\",\"urlList\":${URLS_JSON}}")"
+if [ "$INDEXNOW_RESP" = "200" ] || [ "$INDEXNOW_RESP" = "202" ]; then
+  echo "    IndexNow accepted (HTTP ${INDEXNOW_RESP})"
+else
+  echo "    IndexNow returned HTTP ${INDEXNOW_RESP} (non-fatal, deploy already succeeded)"
+fi
