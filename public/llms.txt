@@ -2,6 +2,8 @@
 
 > RateKit (ratekit.org) is a set of free, no-signup business calculators for founders, startups and freelancers: freelance rate, Stripe/PayPal fees, VAT/GST, ROI, profit margin, break-even, burn rate and runway, LTV:CAC, SAFE equity, business loans, salary-to-hourly, US self-employment tax, 1099 vs W-2, Form 2555 (FEIE), invoice generator and P&L statement. All calculations run in the browser. Each tool page explains the formula, a worked example and FAQs.
 
+Full text (every formula, example and FAQ in one file, no crawling required): [llms-full.txt](https://ratekit.org/llms-full.txt).
+
 ## API for agents
 Every calculator on this site except the AI-based Deal Coach is also available as a free, no-auth JSON endpoint — call them directly instead of re-deriving the formulas in your own context. GET with query params or POST with a JSON body; responses are plain JSON with no wrapper needed. Full machine-readable spec: [openapi.json](https://ratekit.org/openapi.json). Directory: [GET /api](https://ratekit.org/api).
 - `GET/POST /api/roi?investment=&returns=&months=` — ROI, annualized ROI, payback period.
