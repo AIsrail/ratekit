@@ -39,8 +39,12 @@ a{text-decoration:none;color:inherit;}
 ::selection{background:var(--bluebg);color:var(--blue2);}
 
 nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.78);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border-bottom:1px solid var(--border-soft);padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;}
-.logo{font-size:18px;font-weight:700;color:var(--ink);letter-spacing:-.02em;}
-.logo span{background:linear-gradient(135deg,var(--blue),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.logo{display:inline-flex;align-items:center;font-size:18px;font-weight:800;color:var(--ink);letter-spacing:-.02em;transition:transform .3s var(--ease);}
+.logo:hover{transform:scale(1.045);}
+.logo span{background:linear-gradient(100deg,var(--blue) 0%,var(--violet) 30%,#7B8CFF 50%,var(--blue) 70%,var(--violet) 100%);background-size:250% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:rk-logo-shine 6s linear infinite;transition:filter .3s var(--ease);}
+.logo:hover span{filter:brightness(1.18) saturate(1.3);animation-duration:1.8s;}
+@keyframes rk-logo-shine{to{background-position:250% center;}}
+@media(prefers-reduced-motion:reduce){.logo span{animation:none;}}
 
 .nav-r{display:flex;align-items:center;gap:8px;}
 .translate-btn{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:5px 12px;font-family:var(--font);font-size:12px;font-weight:500;color:var(--mid);cursor:pointer;transition:all .18s var(--ease);margin-left:8px;display:inline-block;}
@@ -64,8 +68,11 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.78);backdrop-
 .en-flag{opacity:.55;font-size:10px;font-weight:600;margin-left:6px;}
 
 footer{background:var(--ink);padding:32px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;}
-.flogo{font-size:16px;font-weight:700;color:white;}
-.flogo span{background:linear-gradient(135deg,#7B8CFF,var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.flogo{font-size:16px;font-weight:800;color:white;display:inline-flex;transition:transform .3s var(--ease);}
+.flogo:hover{transform:scale(1.045);}
+.flogo span{background:linear-gradient(100deg,#7B8CFF 0%,var(--violet) 30%,#9D7CFF 50%,#7B8CFF 70%,var(--violet) 100%);background-size:250% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:rk-logo-shine 6s linear infinite;transition:filter .3s var(--ease);}
+.flogo:hover span{filter:brightness(1.25);animation-duration:1.8s;}
+@media(prefers-reduced-motion:reduce){.flogo span{animation:none;}}
 .fcopy{font-size:12px;color:rgba(255,255,255,.32);}
 .flinks{display:flex;gap:16px;list-style:none;flex-wrap:wrap;}
 .flinks a{font-size:12px;color:rgba(255,255,255,.45);transition:color .18s var(--ease);}
