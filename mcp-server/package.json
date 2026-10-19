@@ -1,0 +1,27 @@
+{
+  "name": "ratekit-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP server exposing RateKit's free business calculators (ROI, break-even, burn rate, LTV:CAC, SAFE notes, VAT, loan APR, and more) as tools for Claude and other MCP clients.",
+  "type": "module",
+  "main": "index.js",
+  "bin": {
+    "ratekit-mcp": "index.js"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "license": "MIT",
+  "homepage": "https://ratekit.org",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AIsrail/ratekit",
+    "directory": "mcp-server"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "zod": "^3.25.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

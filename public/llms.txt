@@ -4,6 +4,8 @@
 
 Full text (every formula, example and FAQ in one file, no crawling required): [llms-full.txt](https://ratekit.org/llms-full.txt).
 
+MCP server (for Claude and other MCP clients — 18 tools, one per calculator, no API key, no npm publish needed): [github.com/AIsrail/ratekit/tree/main/mcp-server](https://github.com/AIsrail/ratekit/tree/main/mcp-server).
+
 ## API for agents
 Every calculator on this site except the AI-based Deal Coach is also available as a free, no-auth JSON endpoint — call them directly instead of re-deriving the formulas in your own context. GET with query params or POST with a JSON body; responses are plain JSON with no wrapper needed. Full machine-readable spec: [openapi.json](https://ratekit.org/openapi.json). Directory: [GET /api](https://ratekit.org/api).
 - `GET/POST /api/roi?investment=&returns=&months=` — ROI, annualized ROI, payback period.
