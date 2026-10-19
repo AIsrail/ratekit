@@ -1,0 +1,158 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: 'В чём разница между gross burn и net burn?',
+    a: 'Gross burn — это все месячные расходы. Net burn вычитает выручку и показывает, как реально падает остаток денег на счету.' },
+  { q: 'Сколько runway должно быть у стартапа?',
+    a: 'Обычно 18–24 месяца после привлечения раунда. Начинайте фандрайзинг, когда остаётся минимум 6–9 месяцев, поскольку сбор раунда часто занимает 3–6 месяцев.' },
+  { q: 'Как продлить runway?',
+    a: 'Сократите или отложите крупнейшие статьи расходов (обычно найм), увеличьте выручку или собираемость платежей, пересмотрите контракты или привлеките bridge-финансирование.' },
+];
+
+const related = [
+  { label: 'SAFE Equity Calculator', path: '/safe-calculator' },
+  { label: 'LTV : CAC Calculator', path: '/ltv-cac' },
+  { label: 'Точка безубыточности', path: '/ru/break-even' },
+  { label: 'P&L Statement', path: '/pl-statement' },
+  { label: 'Глоссарий: Burn Rate', path: '/ru/glossary/burn-rate' },
+  { label: 'Глоссарий: Runway', path: '/ru/glossary/runway' },
+];
+---
+<ToolLayout
+  slug="burn-rate"
+  lang="ru"
+  title="Калькулятор Burn Rate и Runway"
+  description="Рассчитайте gross и net burn rate вашего стартапа, кассовый runway в месяцах и дату обнуления счёта. Бесплатный инструмент для фаундеров и CFO."
+  pageTag="🔥 Инструмент для стартапов"
+  pageTagColor="var(--red)"
+  h1="Калькулятор Burn Rate и Runway"
+  pageSub="Узнайте, сколько ваш стартап продержится на текущих деньгах. Рассчитайте gross и net burn rate, runway в месяцах и дату обнуления счёта."
+  dateModified="2026-10-18"
+  guideTitle="Как считать burn rate и runway"
+  faq={faq}
+  related={related}
+>
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-title">Денежная позиция</div>
+      <div class="field"><label class="lbl">Деньги в банке <span class="hint">(текущий остаток)</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="cash" value="500000" min="0"></div></div>
+      <div class="field"><label class="lbl">Дата начала</label><div class="input-wrap"><input type="date" id="startdate"></div></div>
+      <div class="field"><label class="lbl">Цель по фандрайзингу <span class="hint">(необязательно, следующий раунд)</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="target" value="0" min="0"></div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Месячные финансы</div>
+      <div class="field"><label class="lbl">Gross Burn <span class="hint">(все месячные расходы)</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="grossburn" value="50000" min="0"></div></div>
+      <div class="field"><label class="lbl">Месячная выручка <span class="hint">(MRR / месячный доход)</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="revenue" value="10000" min="0"></div></div>
+      <div class="field"><label class="lbl">Рост месячной выручки <span class="hint">(необязательно)</span></label><div class="input-wrap"><input type="number" id="growth" value="0" min="0" max="100"><span class="ifix ifix-r">%/мес</span></div></div>
+    </div>
+  </div>
+
+  <div class="results-row">
+    <div class="r-card red" id="card-burn"><div class="r-label">Net Burn Rate</div><div class="r-value" id="r-netburn">—</div><div class="r-sub">в месяц</div></div>
+    <div class="r-card amber" id="card-gross"><div class="r-label">Gross Burn</div><div class="r-value" id="r-grossburn">—</div><div class="r-sub">все расходы в месяц</div></div>
+    <div class="r-card green" id="card-runway"><div class="r-label">Runway</div><div class="r-value" id="r-runway">—</div><div class="r-sub" id="r-runway-sub">месяцев</div></div>
+    <div class="r-card" id="card-date"><div class="r-label">Дата обнуления</div><div class="r-value" id="r-date" style="font-size:1.1rem;">—</div><div class="r-sub">оценочно</div></div>
+  </div>
+
+  <div class="runway-panel">
+    <div class="panel-title">Визуализация runway</div>
+    <div class="rw-bar-wrap">
+      <div class="rw-bar-track"><div class="rw-bar-fill" id="rw-bar" style="width:0%;background:var(--green);"></div></div>
+      <div class="rw-labels"><span>Сейчас</span><span>Ноль на счету</span></div>
+    </div>
+  </div>
+
+  <div class="table-panel">
+    <div class="table-title">Месячный прогноз кассы</div>
+    <table>
+      <thead><tr><th>Месяц</th><th>Выручка</th><th>Расход</th><th>Нетто</th><th>Остаток</th></tr></thead>
+      <tbody id="proj-table"></tbody>
+    </table>
+  </div>
+
+  <div class="info-box">
+    <strong>💡 Правило:</strong> Инвесторы обычно хотят видеть <strong>18+ месяцев runway</strong> перед тем, как вложиться. Если осталось меньше 6 месяцев — пора фандрайзить прямо сейчас. Net burn = Gross burn − Выручка.
+  </div>
+
+  <Fragment slot="guide">
+    <p>Burn rate — это сколько кэша компания теряет в месяц; runway — сколько месяцев она может продержаться в таком темпе. Инвесторы смотрят на net burn (после выручки), и фаундерам обычно советуют начинать привлечение при остатке минимум 6–9 месяцев runway.</p>
+    <h3>Формула</h3>
+    <pre>Gross burn = Все месячные операционные расходы
+Net burn = Месячные расходы - Месячная выручка
+Runway (месяцев) = Деньги в банке / Net burn</pre>
+    <h3>Пример</h3>
+    <p>$600 000 на счету, $80 000 месячных расходов, $30 000 месячной выручки. Net burn = $50 000 в месяц; runway = 12 месяцев.</p>
+  </Fragment>
+
+  <script>
+    function fmt(n) { return '$' + Math.round(Math.abs(n)).toLocaleString('ru-RU'); }
+    function fmtSigned(n) { return (n >= 0 ? '+' : '-') + '$' + Math.round(Math.abs(n)).toLocaleString('ru-RU'); }
+
+    document.getElementById('startdate').value = new Date().toISOString().split('T')[0];
+
+    function calc() {
+      const cash = +document.getElementById('cash').value || 0;
+      const grossBurn = +document.getElementById('grossburn').value || 0;
+      const rev = +document.getElementById('revenue').value || 0;
+      const growth = +document.getElementById('growth').value || 0;
+      const startDate = new Date(document.getElementById('startdate').value || Date.now());
+
+      const netBurn = grossBurn - rev;
+      document.getElementById('r-netburn').textContent = fmt(netBurn) + '/мес';
+      document.getElementById('r-grossburn').textContent = fmt(grossBurn) + '/мес';
+
+      const burnCard = document.getElementById('card-burn');
+      burnCard.className = 'r-card ' + (netBurn <= 0 ? 'green' : netBurn > grossBurn * 0.8 ? 'red' : 'amber');
+
+      let balance = cash;
+      let monthlyRev = rev;
+      const rows = [];
+
+      for (let i = 1; i <= 60; i++) {
+        const net = grossBurn - monthlyRev;
+        balance -= net;
+        const d = new Date(startDate);
+        d.setMonth(d.getMonth() + i);
+        rows.push({
+          month: d.toLocaleDateString('ru-RU', { month: 'short', year: 'numeric' }),
+          rev: monthlyRev, burn: grossBurn, net, balance,
+        });
+        if (balance <= 0) break;
+        monthlyRev *= (1 + growth / 100);
+      }
+
+      const runway = rows.filter((r) => r.balance > 0).length;
+      document.getElementById('r-runway').textContent = runway + ' мес';
+      document.getElementById('r-runway-sub').textContent = runway >= 18 ? '✅ Хорошо' : runway >= 6 ? '⚠️ Пора фандрайзить' : '🚨 Критично';
+
+      const zeroDate = rows.find((r) => r.balance <= 0);
+      if (zeroDate) {
+        const zeroCashDate = new Date(startDate.getTime());
+        zeroCashDate.setMonth(zeroCashDate.getMonth() + runway + 1);
+        document.getElementById('r-date').textContent = zeroCashDate.toLocaleDateString('ru-RU', { month: 'short', year: 'numeric' });
+      } else {
+        document.getElementById('r-date').textContent = '60+ мес';
+      }
+
+      const pct = Math.min(100, runway / 24 * 100);
+      const barColor = runway >= 18 ? 'var(--green)' : runway >= 6 ? 'var(--amber)' : 'var(--red)';
+      document.getElementById('rw-bar').style.width = pct + '%';
+      document.getElementById('rw-bar').style.background = barColor;
+
+      const tableRows = rows.slice(0, 12).map((r) => `
+        <tr>
+          <td>${r.month}</td>
+          <td class="mono">$${Math.round(r.rev).toLocaleString('ru-RU')}</td>
+          <td class="mono">$${Math.round(r.burn).toLocaleString('ru-RU')}</td>
+          <td class="mono ${r.net > 0 ? 'danger' : ''}">${fmtSigned(-r.net)}</td>
+          <td class="mono ${r.balance < 0 ? 'danger' : ''}">$${Math.round(Math.max(0, r.balance)).toLocaleString('ru-RU')}</td>
+        </tr>`).join('');
+      document.getElementById('proj-table').innerHTML = tableRows;
+    }
+
+    document.addEventListener('input', calc);
+    document.addEventListener('rk:restored', calc);
+    window.addEventListener('load', calc);
+  </script>
+</ToolLayout>

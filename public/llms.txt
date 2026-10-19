@@ -79,6 +79,13 @@ Plain-English definitions for 20 business/finance terms, each linked to the calc
 - [Калькулятор НДС / GST](https://ratekit.org/ru/vat-calculator)
 - [Счёт-фактура онлайн](https://ratekit.org/ru/invoice-generator)
 - [Калькулятор бюджета и кассовых потоков](https://ratekit.org/ru/budget-calculator)
+- [Калькулятор зарплата ↔ почасовая ставка](https://ratekit.org/ru/salary-hourly)
+- [Калькулятор комиссий Stripe и PayPal](https://ratekit.org/ru/stripe-fee)
+- [Калькулятор бизнес-кредита и APR](https://ratekit.org/ru/loan-calculator)
+- [Отчёт о прибылях и убытках (P&L)](https://ratekit.org/ru/pl-statement)
+- [Калькулятор конвертации SAFE](https://ratekit.org/ru/safe-calculator)
+- [Калькулятор Burn Rate и Runway](https://ratekit.org/ru/burn-rate)
+- [Калькулятор LTV : CAC](https://ratekit.org/ru/ltv-cac)
 - [Квиз: устный счёт](https://ratekit.org/ru/math-quiz)
 
 ## Russian Glossary (русский глоссарий)

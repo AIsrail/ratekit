@@ -1,0 +1,182 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: 'Сколько Stripe берёт с каждой транзакции?',
+    a: 'Стандартный тариф в США — 2,9% + $0,30 за успешный платёж картой. Международные карты и конвертация валют добавляют комиссию сверху. Проверяйте тарифы Stripe для вашей страны.' },
+  { q: 'Как переложить комиссию Stripe на клиента?',
+    a: 'Увеличьте цену: сумма к оплате = (желаемая сумма + фиксированная комиссия) / (1 − процент). Правила доплат за эквайринг различаются по странам и платёжным сетям — сверьтесь с местными правилами.' },
+  { q: 'Что дешевле — Stripe или PayPal?',
+    a: 'При стандартных тарифах в США Stripe (2,9% + $0,30) дешевле, чем чекаут PayPal (3,49% + $0,49) для большинства сумм, но индивидуальные и региональные тарифы могут это менять.' },
+];
+
+const related = [
+  { label: 'Счёт-фактура онлайн', path: '/ru/invoice-generator' },
+  { label: 'Маржа и наценка', path: '/ru/profit-margin' },
+  { label: 'Калькулятор НДС / GST', path: '/ru/vat-calculator' },
+  { label: 'Ставка фрилансера', path: '/ru/freelance-rate' },
+  { label: 'Глоссарий: Комиссии платёжных систем', path: '/ru/glossary/payment-processing-fees' },
+];
+---
+<ToolLayout
+  slug="stripe-fee"
+  lang="ru"
+  title="Калькулятор комиссий Stripe и PayPal"
+  description="Рассчитайте точную комиссию Stripe и PayPal. Узнайте, сколько выставить клиенту, чтобы получить нужную сумму после вычета комиссии. Бесплатно, мгновенно."
+  pageTag="🔥 Популярный"
+  h1="Калькулятор комиссий Stripe и PayPal"
+  pageSub="Узнайте точно, сколько выставить клиенту, чтобы после комиссии платёжной системы получить нужную вам сумму."
+  dateModified="2026-10-18"
+  guideTitle="Как считаются комиссии Stripe и PayPal"
+  faq={faq}
+  related={related}
+>
+  <div class="panel">
+    <div class="panel-title">Режим</div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="mode-receive-btn">Хочу получить...</button>
+      <button class="mode-btn" id="mode-charge-btn">Выставляю счёт на...</button>
+    </div>
+
+    <div class="panel-title">Платёжная система</div>
+    <div class="proc-tabs">
+      <button class="proc-btn active" data-proc="stripe">Stripe (2,9% + $0,30)</button>
+      <button class="proc-btn" data-proc="paypal">PayPal (3,49% + $0,49)</button>
+      <button class="proc-btn" data-proc="square">Square (2,6% + $0,10)</button>
+      <button class="proc-btn" data-proc="custom">Свои параметры</button>
+    </div>
+
+    <div class="field" id="custom-fields" style="display:none;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div><label class="lbl">Процент комиссии</label><div class="input-wrap"><input type="number" id="custom-pct" value="2.9" step="0.01" min="0"><span class="ifix ifix-r">%</span></div></div>
+        <div><label class="lbl">Фиксированная комиссия</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="custom-fixed" value="0.30" step="0.01" min="0"></div></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="lbl" id="amount-label">Сумма, которую хотите получить</label>
+      <div class="input-wrap"><span class="ifix">$</span><input type="number" id="amount" value="1000" min="0" step="0.01"></div>
+    </div>
+  </div>
+
+  <div class="results-row" style="grid-template-columns:repeat(3,1fr);">
+    <div class="r-card primary"><div class="r-label" id="r1-label">Выставить клиенту</div><div class="r-value" id="r-charge">—</div><div class="r-sub">чтобы получить вашу сумму</div></div>
+    <div class="r-card"><div class="r-label">Сумма комиссии</div><div class="r-value" id="r-fee">—</div><div class="r-sub" id="r-fee-sub">комиссия за обработку</div></div>
+    <div class="r-card green"><div class="r-label" id="r3-label">Вы получите</div><div class="r-value" id="r-receive">—</div><div class="r-sub">после комиссии</div></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Сравнение платёжных систем</div>
+    <table class="results-table">
+      <thead><tr><th>Система</th><th>Тариф</th><th>Комиссия с суммы</th><th>Вы получите</th></tr></thead>
+      <tbody id="comp-body"></tbody>
+    </table>
+  </div>
+
+  <div class="info-box">
+    <strong>💡 Совет:</strong> Чтобы переложить комиссию на клиента, используйте формулу: <strong>Счёт = (Сумма + Фиксированная комиссия) / (1 − Процент)</strong>. Всегда указывайте комиссию за обработку платежа явно в счетах.
+  </div>
+
+  <Fragment slot="guide">
+    <p>Платёжные системы берут процент с каждого платежа плюс фиксированную комиссию за транзакцию. Стандартный онлайн-тариф в США — 2,9% + $0,30 для Stripe и 3,49% + $0,49 для чекаута PayPal; международные карты и конвертация валют добавляют проценты сверху.</p>
+    <h3>Формула</h3>
+    <pre>Комиссия = Сумма x Процент + Фиксированная комиссия
+Вы получите = Сумма - Комиссия
+Чтобы получить X, выставите счёт = (X + Фиксированная комиссия) / (1 - Процент)</pre>
+    <h3>Пример</h3>
+    <p>При платеже $100 через Stripe: $100 x 2,9% + $0,30 = $3,20 комиссии, вы получите $96,80. Чтобы получить ровно $100, выставьте счёт на ($100 + $0,30) / 0,971 = около $103,30.</p>
+  </Fragment>
+
+  <script>
+    let mode = 'receive';
+    let proc = { pct: 2.9, fixed: 0.30 };
+    const rates = {
+      stripe: { pct: 2.9, fixed: 0.30 },
+      paypal: { pct: 3.49, fixed: 0.49 },
+      square: { pct: 2.6, fixed: 0.10 },
+      custom: { pct: 2.9, fixed: 0.30 },
+    };
+
+    function setMode(m) {
+      mode = m;
+      document.getElementById('mode-receive-btn').classList.toggle('active', m === 'receive');
+      document.getElementById('mode-charge-btn').classList.toggle('active', m === 'charge');
+      document.getElementById('amount-label').textContent = m === 'receive' ? 'Сумма, которую хотите получить' : 'Сумма счёта клиенту';
+      document.getElementById('r1-label').textContent = m === 'receive' ? 'Выставить клиенту' : 'Вы получите';
+      document.getElementById('r3-label').textContent = m === 'receive' ? 'Вы получите' : 'Сумма комиссии';
+      calc();
+    }
+    document.getElementById('mode-receive-btn').addEventListener('click', () => setMode('receive'));
+    document.getElementById('mode-charge-btn').addEventListener('click', () => setMode('charge'));
+
+    document.querySelectorAll('.proc-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const p = btn.getAttribute('data-proc');
+        document.querySelectorAll('.proc-btn').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('custom-fields').style.display = p === 'custom' ? 'block' : 'none';
+        proc = rates[p];
+        if (p !== 'custom') {
+          document.getElementById('custom-pct').value = proc.pct;
+          document.getElementById('custom-fixed').value = proc.fixed;
+        }
+        calc();
+      });
+    });
+
+    function fmt(n) { return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+
+    function calc() {
+      const pct = parseFloat(document.getElementById('custom-pct').value) || proc.pct;
+      const fixed = parseFloat(document.getElementById('custom-fixed').value) || proc.fixed;
+      const amount = parseFloat(document.getElementById('amount').value) || 0;
+
+      let charge, fee, receive;
+      if (mode === 'receive') {
+        charge = (amount + fixed) / (1 - pct / 100);
+        fee = charge - amount;
+        receive = amount;
+      } else {
+        fee = amount * (pct / 100) + fixed;
+        receive = amount - fee;
+        charge = amount;
+      }
+
+      document.getElementById('r-charge').textContent = fmt(mode === 'receive' ? charge : receive);
+      document.getElementById('r-fee').textContent = fmt(fee);
+      document.getElementById('r-receive').textContent = fmt(mode === 'receive' ? receive : charge);
+      document.getElementById('r-fee-sub').textContent = `${pct}% + ${fmt(fixed)}`;
+
+      const processors = [
+        { name: 'Stripe', pct: 2.9, fixed: 0.30 },
+        { name: 'PayPal', pct: 3.49, fixed: 0.49 },
+        { name: 'Square', pct: 2.6, fixed: 0.10 },
+        { name: 'Wise Business', pct: 0.5, fixed: 0.00 },
+      ];
+      const base = amount;
+      const rows = processors.map((p) => {
+        let r;
+        if (mode === 'receive') {
+          const c = (base + p.fixed) / (1 - p.pct / 100);
+          r = { fee: c - base, receive: base, charge: c };
+        } else {
+          const f = amount * (p.pct / 100) + p.fixed;
+          r = { fee: f, receive: amount - f, charge: amount };
+        }
+        return Object.assign({}, p, r);
+      });
+      const maxReceive = Math.max.apply(null, rows.map((r) => r.receive));
+      document.getElementById('comp-body').innerHTML = rows.map((r) => `
+        <tr${r.receive === maxReceive ? ' class="highlight-row"' : ''}>
+          <td>${r.name}${r.receive === maxReceive ? ' ✅' : ''}</td>
+          <td style="color:var(--muted);font-size:12px;">${r.pct}% + ${fmt(r.fixed)}</td>
+          <td class="mono">${fmt(r.fee)}</td>
+          <td class="mono">${fmt(r.receive)}</td>
+        </tr>`).join('');
+    }
+
+    document.addEventListener('input', calc);
+    document.addEventListener('rk:restored', calc);
+    window.addEventListener('load', calc);
+  </script>
+</ToolLayout>

@@ -1,0 +1,115 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: 'В чём разница между процентной ставкой и APR?',
+    a: 'Процентная ставка — это стоимость заимствования основного долга; APR добавляет комиссию за выдачу и другие платежи, выраженную как годовая ставка. Сравнивайте кредиты именно по APR.' },
+  { q: 'Как снизить ежемесячный платёж по кредиту?',
+    a: 'Выберите более долгий срок, договоритесь о более низкой ставке или занимайте меньше. Более долгий срок снижает платёж, но увеличивает общую переплату по процентам.' },
+  { q: 'Что такое factor rate?',
+    a: 'Некоторые краткосрочные кредиторы указывают коэффициент (например, 1,2) вместо процентной ставки: вы возвращаете сумму займа, умноженную на 1,2. В пересчёте на APR такие кредиты часто оказываются очень дорогими.' },
+];
+
+const related = [
+  { label: 'Калькулятор ROI', path: '/ru/roi-calculator' },
+  { label: 'Точка безубыточности', path: '/ru/break-even' },
+  { label: 'Burn Rate & Runway Calculator', path: '/burn-rate' },
+  { label: 'Маржа и наценка', path: '/ru/profit-margin' },
+  { label: 'Глоссарий: APR', path: '/ru/glossary/apr' },
+  { label: 'Глоссарий: Амортизация кредита', path: '/ru/glossary/amortization' },
+];
+---
+<ToolLayout
+  slug="loan-calculator"
+  lang="ru"
+  title="Калькулятор бизнес-кредита и APR"
+  description="Рассчитайте ежемесячный платёж, общую переплату и реальный APR для бизнес-кредита. Сравнивайте варианты кредитов. Бесплатный калькулятор для предпринимателей."
+  pageTag="🏦 Финансовый инструмент"
+  pageTagColor="var(--amber)"
+  h1="Калькулятор бизнес-кредита и APR"
+  pageSub="Рассчитайте ежемесячный платёж, общую стоимость процентов и реальный APR. Увидите полный график погашения для любого бизнес-кредита."
+  dateModified="2026-10-18"
+  guideTitle="Как считаются платежи по кредиту и APR"
+  faq={faq}
+  related={related}
+>
+  <div class="panel">
+    <div class="field"><label class="lbl">Сумма кредита</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="principal" value="100000" min="0"></div></div>
+    <div class="field"><label class="lbl">Годовая процентная ставка (APR)</label><div class="input-wrap"><input type="number" id="rate" value="8.5" min="0" max="100" step="0.1"><span class="ifix ifix-r">%</span></div></div>
+    <div class="field"><label class="lbl">Срок кредита</label><div class="input-wrap"><input type="number" id="term" value="60" min="1" max="360"><span class="ifix ifix-r">мес.</span></div></div>
+    <div class="field"><label class="lbl">Комиссия за выдачу <span class="hint">(необязательно)</span></label><div class="input-wrap"><input type="number" id="fee" value="0" min="0" max="10" step="0.1"><span class="ifix ifix-r">%</span></div></div>
+  </div>
+
+  <div class="results-row">
+    <div class="r-card primary"><div class="r-label">Ежемесячный платёж</div><div class="r-value" id="r-monthly">—</div><div class="r-sub">основной долг + проценты</div></div>
+    <div class="r-card red"><div class="r-label">Всего процентов</div><div class="r-value" id="r-interest">—</div><div class="r-sub">полная стоимость заимствования</div></div>
+    <div class="r-card"><div class="r-label">Всего к выплате</div><div class="r-value" id="r-total">—</div><div class="r-sub">долг + все проценты</div></div>
+    <div class="r-card"><div class="r-label">Реальный APR</div><div class="r-value" id="r-apr">—</div><div class="r-sub">с учётом комиссии</div></div>
+  </div>
+
+  <div class="amort-panel">
+    <div class="panel-title">График погашения (первые 12 месяцев)</div>
+    <table>
+      <thead><tr><th>#</th><th>Платёж</th><th>Долг</th><th>Проценты</th><th>Остаток</th></tr></thead>
+      <tbody id="amort-body"></tbody>
+    </table>
+  </div>
+
+  <div class="info-box">
+    <strong>💡 Совет:</strong> Реальная стоимость кредита включает комиссию за выдачу, а не только ставку. Кредит с более низкой ставкой, но высокой комиссией может стоить дороже, чем кредит с более высокой ставкой без комиссий. Всегда сравнивайте <strong>общую сумму выплат</strong>, а не только ежемесячный платёж.
+  </div>
+
+  <Fragment slot="guide">
+    <p>Большинство срочных кредитов амортизируются: каждый ежемесячный платёж одинаков, но доля процентов в нём со временем падает, а доля основного долга растёт. APR добавляет комиссии к процентной ставке, чтобы можно было сравнивать предложения с разной структурой комиссий.</p>
+    <h3>Формула</h3>
+    <pre>Ежемесячный платёж = P x r / (1 - (1 + r)^(-n))
+P = сумма кредита, r = годовая ставка / 12, n = число ежемесячных платежей
+Всего процентов = Платёж x n - P</pre>
+    <h3>Пример</h3>
+    <p>$50 000 под 10% на 5 лет: r = 0,833%, n = 60. Ежемесячный платёж — около $1062; всего процентов — около $13 700.</p>
+  </Fragment>
+
+  <script>
+    function fmt(n) { return '$' + Math.round(n).toLocaleString('ru-RU'); }
+
+    function calc() {
+      const P = +document.getElementById('principal').value || 0;
+      const annualRate = +document.getElementById('rate').value || 0;
+      const n = +document.getElementById('term').value || 1;
+      const feePct = +document.getElementById('fee').value || 0;
+      const r = annualRate / 100 / 12;
+      let monthly;
+      if (r === 0) { monthly = P / n; }
+      else { monthly = P * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1); }
+      const totalRepay = monthly * n;
+      const totalInterest = totalRepay - P;
+      const trueAPR = annualRate + (feePct / n * 12);
+
+      document.getElementById('r-monthly').textContent = fmt(monthly);
+      document.getElementById('r-interest').textContent = fmt(totalInterest);
+      document.getElementById('r-total').textContent = fmt(totalRepay);
+      document.getElementById('r-apr').textContent = trueAPR.toFixed(2) + '%';
+
+      let balance = P;
+      let rows = '';
+      for (let i = 1; i <= Math.min(12, n); i++) {
+        const interest = balance * r;
+        const principal = monthly - interest;
+        balance -= principal;
+        rows += `<tr>
+          <td>${i}</td>
+          <td class="mono">${fmt(monthly)}</td>
+          <td class="mono">${fmt(principal)}</td>
+          <td class="mono">${fmt(interest)}</td>
+          <td class="mono">${fmt(Math.max(0, balance))}</td>
+        </tr>`;
+      }
+      if (n > 12) rows += `<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:12px;">... ещё ${n - 12} мес.</td></tr>`;
+      document.getElementById('amort-body').innerHTML = rows;
+    }
+
+    document.addEventListener('input', calc);
+    document.addEventListener('rk:restored', calc);
+    window.addEventListener('load', calc);
+  </script>
+</ToolLayout>

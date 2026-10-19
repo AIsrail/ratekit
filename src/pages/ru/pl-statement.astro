@@ -1,0 +1,201 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: 'В чём разница между P&L и отчётом о движении денег?',
+    a: 'P&L показывает прибыльность в момент начисления выручки и затрат; отчёт о движении денег показывает, когда деньги реально перемещаются. Прибыльный бизнес всё равно может остаться без наличных.' },
+  { q: 'Что входит в себестоимость (COGS)?',
+    a: 'Прямые затраты на производство продукта или услуги: материалы, производство, прямой труд, хостинг для SaaS и платёжные комиссии, привязанные к продажам.' },
+  { q: 'Как часто готовить P&L?',
+    a: 'Ежемесячно — для управленческих решений, ежеквартально — для инвесторов и кредиторов, ежегодно — для налогов.' },
+];
+
+const related = [
+  { label: 'Маржа и наценка', path: '/ru/profit-margin' },
+  { label: 'Точка безубыточности', path: '/ru/break-even' },
+  { label: 'Burn Rate & Runway Calculator', path: '/burn-rate' },
+  { label: 'Калькулятор НДС / GST', path: '/ru/vat-calculator' },
+  { label: 'Глоссарий: EBITDA', path: '/ru/glossary/ebitda' },
+  { label: 'Глоссарий: Прогноз денежного потока', path: '/ru/glossary/cash-flow-forecast' },
+];
+---
+<ToolLayout
+  slug="pl-statement"
+  lang="ru"
+  title="Отчёт о прибылях и убытках (P&L)"
+  description="Составьте отчёт о прибылях и убытках онлайн. Автоматически считает валовую прибыль, EBITDA и чистую прибыль. Бесплатный P&L-инструмент для бизнеса и стартапов."
+  pageTag="📊 Бизнес-инструмент"
+  h1="Отчёт о прибылях и убытках (P&L)"
+  pageSub="Составьте P&L онлайн. Введите цифры — валовая прибыль, EBITDA и чистая прибыль посчитаются автоматически."
+  dateModified="2026-10-18"
+  guideTitle="Как составить отчёт о прибылях и убытках (P&L)"
+  faq={faq}
+  related={related}
+>
+  <style>
+    .controls { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; align-items: center; }
+    .ctrl-btn { padding: 8px 16px; border-radius: 8px; font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); background: var(--white); color: var(--mid); transition: all .15s; }
+    .ctrl-btn:hover { border-color: var(--blue); color: var(--blue); }
+    .ctrl-btn.primary { background: var(--blue); color: white; border-color: var(--blue); }
+    .ctrl-btn.primary:hover { background: var(--blue2); }
+    .period-select { padding: 8px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-family: var(--font); font-size: 13px; color: var(--ink); background: var(--white); cursor: pointer; }
+    .pl-wrap { background: var(--white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
+    .pl-header { background: var(--ink); color: white; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+    .pl-header-title { font-size: 14px; font-weight: 700; }
+    .pl-header-period { font-size: 12px; color: rgba(255,255,255,.5); }
+    .pl-table { width: 100%; border-collapse: collapse; }
+    .pl-table td { padding: 10px 24px; border-bottom: 1px solid var(--border); font-size: 13px; }
+    .pl-table td:last-child { text-align: right; font-family: var(--mono); }
+    .pl-table td input { width: 100%; background: transparent; border: none; outline: none; font-family: var(--mono); font-size: 13px; color: var(--ink); text-align: right; padding: 0; }
+    .pl-table td input:focus { background: var(--bluebg); border-radius: 4px; padding: 2px 4px; }
+    .pl-table .section-head td { background: var(--bg); font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); padding: 8px 24px; }
+    .pl-table .subtotal td { background: #F8FAFF; font-weight: 700; color: var(--blue); border-top: 2px solid var(--border); }
+    .pl-table .subtotal td:first-child { color: var(--mid); }
+    .pl-table .grand-total td { background: var(--ink); color: white; font-weight: 700; font-size: 14px; border-top: none; }
+    .pl-table .grand-total.profit td { background: var(--green); }
+    .pl-table .grand-total.loss td { background: var(--red); }
+    .pl-table .indent td:first-child { padding-left: 40px; color: var(--mid); }
+    .pl-table .editable td:first-child { color: var(--ink); }
+    .item-name-input { width: 100%; background: transparent; border: none; outline: none; font-family: var(--font); font-size: 13px; color: var(--ink); padding: 0; }
+    .summary-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 20px; }
+    .s-card { background: var(--white); border: 1.5px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+    .s-card.green { background: var(--greenbg); border-color: #6EE7B7; }
+    .s-card.red { background: var(--redbg); border-color: #FECACA; }
+    .s-label { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .s-card.green .s-label { color: var(--green); }
+    .s-card.red .s-label { color: var(--red); }
+    .s-value { font-family: var(--mono); font-size: 1.4rem; font-weight: 600; color: var(--ink); }
+    .s-card.green .s-value { color: var(--green); }
+    .s-card.red .s-value { color: var(--red); }
+    .s-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    @media print { .controls { display: none !important; } }
+    @media (max-width: 768px) { .summary-row { grid-template-columns: 1fr 1fr; } }
+  </style>
+
+  <div class="controls">
+    <select class="period-select" id="period-select">
+      <option>1 кв. 2026</option><option>2 кв. 2026</option><option>3 кв. 2026</option><option>4 кв. 2026</option>
+      <option>2026 год</option><option>2025 год</option><option>По месяцам</option>
+    </select>
+    <select class="period-select" id="currency-select">
+      <option value="$">USD ($)</option><option value="€">EUR (€)</option><option value="£">GBP (£)</option>
+    </select>
+    <button class="ctrl-btn primary" id="export-btn">⬇ Экспорт PDF</button>
+    <button class="ctrl-btn" id="reset-btn">↺ Сбросить</button>
+  </div>
+
+  <div class="summary-row">
+    <div class="s-card"><div class="s-label">Общая выручка</div><div class="s-value" id="s-rev">$0</div><div class="s-sub">верхняя строка</div></div>
+    <div class="s-card" id="s-gross-card"><div class="s-label">Валовая прибыль</div><div class="s-value" id="s-gross">$0</div><div class="s-sub" id="s-gross-margin">0% маржа</div></div>
+    <div class="s-card" id="s-ebitda-card"><div class="s-label">EBITDA</div><div class="s-value" id="s-ebitda">$0</div><div class="s-sub">до D&A и налогов</div></div>
+    <div class="s-card" id="s-net-card"><div class="s-label">Чистая прибыль</div><div class="s-value" id="s-net">$0</div><div class="s-sub" id="s-net-margin">0% маржа</div></div>
+  </div>
+
+  <div class="pl-wrap">
+    <div class="pl-header">
+      <span class="pl-header-title">Отчёт о прибылях и убытках</span>
+      <span class="pl-header-period" id="period-display">1 кв. 2026</span>
+    </div>
+    <table class="pl-table">
+      <tr class="section-head"><td colspan="2">Выручка</td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Выручка от продукта / услуги"></td><td><input type="number" id="rev1" value="0"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Регулярная выручка (MRR × месяцы)"></td><td><input type="number" id="rev2" value="0"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Прочая выручка"></td><td><input type="number" id="rev3" value="0"></td></tr>
+      <tr class="subtotal"><td>Всего выручка</td><td id="t-rev">$0</td></tr>
+
+      <tr class="section-head"><td colspan="2">Себестоимость (COGS)</td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Прямые материалы / хостинг"></td><td><input type="number" id="cogs1" value="0"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Прямой труд / подрядчики"></td><td><input type="number" id="cogs2" value="0"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Прочая себестоимость"></td><td><input type="number" id="cogs3" value="0"></td></tr>
+      <tr class="subtotal"><td>Итого COGS</td><td id="t-cogs">$0</td></tr>
+      <tr class="subtotal" style="background:#F0FDF4;"><td style="color:var(--green);">Валовая прибыль</td><td id="t-gross" style="color:var(--green);">$0</td></tr>
+
+      <tr class="section-head"><td colspan="2">Операционные расходы (OpEx)</td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Зарплаты и ФОТ"></td><td><input type="number" id="op1" value="0"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Маркетинг и реклама"></td><td><input type="number" id="op2" value="0"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Аренда и коммунальные"></td><td><input type="number" id="op3" value="0"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Софт и подписки"></td><td><input type="number" id="op4" value="0"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Юридические и консультации"></td><td><input type="number" id="op5" value="0"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Прочие операционные расходы"></td><td><input type="number" id="op6" value="0"></td></tr>
+      <tr class="subtotal"><td>Итого OpEx</td><td id="t-opex">$0</td></tr>
+      <tr class="subtotal" style="background:#EFF6FF;"><td style="color:var(--blue);">EBITDA</td><td id="t-ebitda" style="color:var(--blue);">$0</td></tr>
+
+      <tr class="section-head"><td colspan="2">Ниже EBITDA</td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Износ и амортизация"></td><td><input type="number" id="da1" value="0"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Процентные расходы"></td><td><input type="number" id="da2" value="0"></td></tr>
+      <tr class="editable indent"><td><input class="item-name-input" value="Налог на прибыль"></td><td><input type="number" id="da3" value="0"></td></tr>
+
+      <tr class="grand-total" id="net-row"><td>Чистая прибыль / (убыток)</td><td id="t-net">$0</td></tr>
+    </table>
+  </div>
+
+  <div class="info-box">
+    <strong>💡 Как пользоваться:</strong> Введите цифры в каждую строку. Кликните по названию строки, чтобы переименовать её. Все итоги считаются автоматически. Используйте «Экспорт PDF», чтобы скачать чистую версию для печати. Данные автоматически сохраняются в вашем браузере.
+  </div>
+
+  <Fragment slot="guide">
+    <p>Отчёт P&L (отчёт о прибылях и убытках) показывает выручку, затраты и прибыль за период. Он отвечает на вопрос, заработал ли бизнес деньги и куда они ушли. Составляйте его ежемесячно, чтобы рано замечать тренды.</p>
+    <h3>Формула</h3>
+    <pre>Валовая прибыль = Выручка - Себестоимость (COGS)
+Операционная прибыль (EBIT) = Валовая прибыль - Операционные расходы
+Чистая прибыль = Операционная прибыль - Проценты - Налоги</pre>
+    <h3>Пример</h3>
+    <p>Выручка $40 000, COGS $15 000: валовая прибыль $25 000 (62,5%). Операционные расходы $18 000: операционная прибыль $7 000. После налога $1 500 чистая прибыль — $5 500 (13,75% чистой маржи).</p>
+  </Fragment>
+
+  <script>
+    const sym = () => (document.getElementById('currency-select')).value;
+    function fmt(n) { return sym() + Math.round(Math.abs(n)).toLocaleString('ru-RU'); }
+    function fmtSigned(n) { return (n >= 0 ? '' : '-') + fmt(n); }
+    function v(id) { return +(document.getElementById(id)).value || 0; }
+
+    const ids = ['rev1', 'rev2', 'rev3', 'cogs1', 'cogs2', 'cogs3', 'op1', 'op2', 'op3', 'op4', 'op5', 'op6', 'da1', 'da2', 'da3'];
+
+    function calc() {
+      const rev = v('rev1') + v('rev2') + v('rev3');
+      const cogs = v('cogs1') + v('cogs2') + v('cogs3');
+      const gross = rev - cogs;
+      const opex = v('op1') + v('op2') + v('op3') + v('op4') + v('op5') + v('op6');
+      const ebitda = gross - opex;
+      const da = v('da1') + v('da2') + v('da3');
+      const net = ebitda - da;
+      const grossMargin = rev > 0 ? gross / rev * 100 : 0;
+      const netMargin = rev > 0 ? net / rev * 100 : 0;
+
+      document.getElementById('t-rev').textContent = fmt(rev);
+      document.getElementById('t-cogs').textContent = fmt(cogs);
+      document.getElementById('t-gross').textContent = fmtSigned(gross);
+      document.getElementById('t-opex').textContent = fmt(opex);
+      document.getElementById('t-ebitda').textContent = fmtSigned(ebitda);
+      document.getElementById('t-net').textContent = fmtSigned(net);
+
+      document.getElementById('s-rev').textContent = fmt(rev);
+      document.getElementById('s-gross').textContent = fmtSigned(gross);
+      document.getElementById('s-gross-margin').textContent = grossMargin.toFixed(1) + '% маржа';
+      document.getElementById('s-ebitda').textContent = fmtSigned(ebitda);
+      document.getElementById('s-net').textContent = fmtSigned(net);
+      document.getElementById('s-net-margin').textContent = netMargin.toFixed(1) + '% маржа';
+
+      document.getElementById('s-net-card').className = 's-card ' + (net >= 0 ? 'green' : 'red');
+      document.getElementById('s-ebitda-card').className = 's-card ' + (ebitda >= 0 ? 'green' : 'red');
+      document.getElementById('s-gross-card').className = 's-card ' + (gross >= 0 ? 'green' : 'red');
+
+      document.getElementById('net-row').className = 'grand-total ' + (net >= 0 ? 'profit' : 'loss');
+
+      document.getElementById('period-display').textContent = (document.getElementById('period-select')).value;
+    }
+
+    document.getElementById('export-btn').addEventListener('click', () => window.print());
+    document.getElementById('reset-btn').addEventListener('click', () => {
+      if (!confirm('Сбросить все значения?')) return;
+      ids.forEach((id) => { (document.getElementById(id)).value = '0'; });
+      calc();
+    });
+    document.getElementById('period-select').addEventListener('change', calc);
+    document.getElementById('currency-select').addEventListener('change', calc);
+
+    document.addEventListener('input', calc);
+    document.addEventListener('rk:restored', calc);
+    window.addEventListener('load', calc);
+  </script>
+</ToolLayout>

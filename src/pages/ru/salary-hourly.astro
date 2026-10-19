@@ -1,0 +1,196 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: 'Сколько рабочих часов в году?',
+    a: '2080 часов при стандартной 40-часовой неделе за 52 недели. С учётом отпуска и праздников большинство людей реально работают 1900–2000 часов.' },
+  { q: 'Сколько в год будет при ставке $30 в час?',
+    a: 'Около $62 400 в год при 2080 часах, до вычета налогов.' },
+  { q: 'Как сравнить зарплату со ставкой фрилансера?',
+    a: 'Фрилансеру нужна намного более высокая часовая ставка, чем эквивалент зарплаты, чтобы покрыть неоплачиваемые часы, налог на самозанятость, льготы и расходы — часто в 1,5–2 раза выше ставки сотрудника на зарплате.' },
+];
+
+const related = [
+  { label: 'Ставка фрилансера', path: '/ru/freelance-rate' },
+  { label: '1099 vs W2 Calculator', path: '/1099-vs-w2' },
+  { label: 'Self-Employment Tax Calculator', path: '/self-employment-tax' },
+  { label: 'Form 2555 — Foreign Earned Income Exclusion', path: '/form-2555' },
+  { label: 'Глоссарий: Оплачиваемые часы', path: '/ru/glossary/billable-hours' },
+];
+---
+<ToolLayout
+  slug="salary-hourly"
+  lang="ru"
+  title="Калькулятор зарплата ↔ почасовая ставка"
+  description="Переведите годовую зарплату в часовую ставку или наоборот. Учитывает рабочие часы, отпуск и праздники. Бесплатный конвертер зарплаты."
+  pageTag="🔄 Бесплатный конвертер"
+  h1="Зарплата ↔ Почасовая ставка"
+  pageSub="Переведите годовую зарплату в часовую ставку — или наоборот. Учитывает отпуск, праздники и реальные рабочие часы."
+  dateModified="2026-10-18"
+  guideTitle="Как перевести годовую зарплату в почасовую оплату"
+  faq={faq}
+  related={related}
+>
+  <div class="panel">
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="mode-salary-btn">💼 Годовая зарплата → в час</button>
+      <button class="mode-btn" id="mode-hourly-btn">⏱ Ставка в час → в год</button>
+    </div>
+
+    <div class="cur-row">
+      <button class="cur-btn active" data-sym="$">$ USD</button>
+      <button class="cur-btn" data-sym="€">€ EUR</button>
+      <button class="cur-btn" data-sym="£">£ GBP</button>
+      <button class="cur-btn" data-sym="₸">₸ KZT</button>
+      <button class="cur-btn" data-sym="₽">₽ RUB</button>
+    </div>
+
+    <div id="salary-inputs">
+      <div class="field"><label class="lbl">Годовая зарплата (gross)</label><div class="input-wrap"><span class="ifix" id="sym1">$</span><input type="number" id="annual-salary" value="75000" min="0"></div></div>
+    </div>
+    <div id="hourly-inputs" style="display:none;">
+      <div class="field"><label class="lbl">Ставка в час</label><div class="input-wrap"><span class="ifix" id="sym2">$</span><input type="number" id="hourly-rate" value="36" min="0" step="0.01"></div></div>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <div class="field"><label class="lbl">Часов в день</label><div class="input-wrap"><input type="number" id="hrs-day" value="8" min="1" max="24"><span class="ifix ifix-r">ч</span></div></div>
+        <div class="field"><label class="lbl">Дней в неделю</label><div class="input-wrap"><input type="number" id="days-wk" value="5" min="1" max="7"><span class="ifix ifix-r">дн</span></div></div>
+      </div>
+      <div>
+        <div class="field"><label class="lbl">Оплачиваемый отпуск, дней/год</label><div class="input-wrap"><input type="number" id="pto" value="15" min="0" max="365"><span class="ifix ifix-r">дн</span></div></div>
+        <div class="field"><label class="lbl">Праздничные дни/год</label><div class="input-wrap"><input type="number" id="holidays" value="10" min="0" max="50"><span class="ifix ifix-r">дн</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="results-row">
+    <div class="r-card primary"><div class="r-label" id="r1-label">Ставка в час</div><div class="r-value" id="r-hourly">—</div><div class="r-sub">за отработанный час</div></div>
+    <div class="r-card"><div class="r-label">В день</div><div class="r-value" id="r-daily">—</div><div class="r-sub" id="r-daily-sub">за день</div></div>
+    <div class="r-card"><div class="r-label">В неделю</div><div class="r-value" id="r-weekly">—</div><div class="r-sub">за неделю</div></div>
+    <div class="r-card green"><div class="r-label" id="r4-label">Годовая зарплата</div><div class="r-value" id="r-annual">—</div><div class="r-sub">gross в год</div></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Полная разбивка</div>
+    <table class="results-table">
+      <thead><tr><th>Период</th><th>Часов</th><th>Сумма</th></tr></thead>
+      <tbody id="breakdown-body"></tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Ваш рабочий год</div>
+    <table class="results-table">
+      <thead><tr><th>Показатель</th><th>Дней</th></tr></thead>
+      <tbody id="workyear-body"></tbody>
+    </table>
+  </div>
+
+  <div class="info-box">
+    <strong>💡 Совет фрилансеру:</strong> При переходе с найма на фриланс ваша ставка должна быть <strong>в 1,5–2× выше</strong> эквивалентной часовой ставки сотрудника — чтобы покрыть налог на самозанятость, потерянные льготы и время на неоплачиваемую работу.
+    <br><br>Используйте <a href="/ru/freelance-rate" style="color:var(--blue);font-weight:600;">Калькулятор ставки фрилансера →</a>, чтобы найти вашу реальную минимальную ставку.
+  </div>
+
+  <Fragment slot="guide">
+    <p>Чтобы перевести зарплату в почасовую ставку, разделите её на количество часов, которые вы работаете за год. Стандартный полный рабочий год — 2080 часов (40 часов × 52 недели); чтобы учесть неоплачиваемый отпуск, используйте меньше недель.</p>
+    <h3>Формула</h3>
+    <pre>Ставка в час = Годовая зарплата / (Часов в неделю × Недель в году)
+Стандарт: Годовая зарплата / 2080
+Зарплата в месяц = Годовая зарплата / 12</pre>
+    <h3>Пример</h3>
+    <p>$75 000 в год / 2080 часов = около $36,06 в час, $6250 в месяц, или $1442 в неделю.</p>
+  </Fragment>
+
+  <script>
+    let mode = 'salary';
+    let sym = '$';
+
+    function setMode(m) {
+      mode = m;
+      document.getElementById('mode-salary-btn').classList.toggle('active', m === 'salary');
+      document.getElementById('mode-hourly-btn').classList.toggle('active', m === 'hourly');
+      document.getElementById('salary-inputs').style.display = m === 'salary' ? 'block' : 'none';
+      document.getElementById('hourly-inputs').style.display = m === 'hourly' ? 'block' : 'none';
+      calc();
+    }
+    document.getElementById('mode-salary-btn').addEventListener('click', () => setMode('salary'));
+    document.getElementById('mode-hourly-btn').addEventListener('click', () => setMode('hourly'));
+
+    document.querySelectorAll('.cur-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        sym = btn.getAttribute('data-sym') || '$';
+        document.querySelectorAll('.cur-btn').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('sym1').textContent = sym;
+        document.getElementById('sym2').textContent = sym;
+        calc();
+      });
+    });
+
+    function fmt(n) { return sym + Math.round(n).toLocaleString('ru-RU'); }
+    function fmtD(n) { return sym + n.toFixed(2); }
+
+    function calc() {
+      const hrsDay = +document.getElementById('hrs-day').value || 8;
+      const daysWk = +document.getElementById('days-wk').value || 5;
+      const pto = +document.getElementById('pto').value || 0;
+      const holidays = +document.getElementById('holidays').value || 0;
+
+      const weeksYear = 52;
+      const totalDays = weeksYear * daysWk;
+      const paidOffDays = pto + holidays;
+      const workDays = Math.max(1, totalDays - paidOffDays);
+      const workHrs = workDays * hrsDay;
+
+      let hourly, annual;
+      if (mode === 'salary') {
+        annual = +document.getElementById('annual-salary').value || 0;
+        hourly = annual / workHrs;
+      } else {
+        hourly = +document.getElementById('hourly-rate').value || 0;
+        annual = hourly * workHrs;
+      }
+
+      const daily = hourly * hrsDay;
+      const weekly = hourly * hrsDay * daysWk;
+      const monthly = annual / 12;
+
+      document.getElementById('r-hourly').textContent = fmtD(hourly);
+      document.getElementById('r-daily').textContent = fmt(daily);
+      document.getElementById('r-daily-sub').textContent = `${hrsDay}ч в день`;
+      document.getElementById('r-weekly').textContent = fmt(weekly);
+      document.getElementById('r-annual').textContent = fmt(annual);
+
+      document.getElementById('r1-label').textContent = mode === 'salary' ? 'Ставка в час' : 'Годовая зарплата';
+      document.getElementById('r4-label').textContent = mode === 'salary' ? 'Годовая зарплата' : 'Ставка в час';
+
+      if (mode === 'hourly') {
+        document.getElementById('r-hourly').textContent = fmt(annual);
+        document.getElementById('r-annual').textContent = fmtD(hourly);
+      }
+
+      document.getElementById('breakdown-body').innerHTML = [
+        { period: 'В час', hrs: 1, amt: hourly },
+        { period: 'В день', hrs: hrsDay, amt: daily },
+        { period: 'В неделю', hrs: hrsDay * daysWk, amt: weekly },
+        { period: 'Раз в 2 недели', hrs: hrsDay * daysWk * 2, amt: weekly * 2 },
+        { period: 'В месяц', hrs: workHrs / 12, amt: monthly },
+        { period: 'В квартал', hrs: workHrs / 4, amt: annual / 4 },
+        { period: 'В год', hrs: workHrs, amt: annual },
+      ].map((r) => `<tr${r.period === 'В год' ? ' class="highlight-row"' : ''}><td>${r.period}</td><td>${Math.round(r.hrs).toLocaleString('ru-RU')} ч</td><td>${fmt(r.amt)}</td></tr>`).join('');
+
+      document.getElementById('workyear-body').innerHTML = [
+        { item: 'Всего календарных рабочих дней', days: totalDays },
+        { item: 'Оплачиваемый отпуск', days: pto },
+        { item: 'Праздничные дни', days: holidays },
+        { item: 'Реально рабочих дней', days: workDays },
+        { item: 'Всего рабочих часов/год', days: workHrs + ' ч' },
+      ].map((r, i) => `<tr${i === 3 || i === 4 ? ' class="highlight-row"' : ''}><td>${r.item}</td><td>${typeof r.days === 'string' ? r.days : r.days.toLocaleString('ru-RU')}</td></tr>`).join('');
+    }
+
+    document.addEventListener('input', calc);
+    document.addEventListener('rk:restored', calc);
+    window.addEventListener('load', calc);
+  </script>
+</ToolLayout>

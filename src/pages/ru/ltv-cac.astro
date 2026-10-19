@@ -1,0 +1,142 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: 'Какое соотношение LTV к CAC считается хорошим?',
+    a: 'Около 3:1 — общепринятый ориентир. Ниже 1:1 вы теряете деньги на каждом клиенте; намного выше 5:1 может означать, что вы недостаточно инвестируете в рост.' },
+  { q: 'Какой срок окупаемости CAC считается хорошим?',
+    a: 'Для SaaS менее 12 месяцев — нормально, менее 6 месяцев — отлично.' },
+  { q: 'LTV считать от выручки или от валовой маржи?',
+    a: 'От валовой маржи. LTV от выручки завышает ценность клиента, так как игнорирует стоимость его обслуживания.' },
+];
+
+const related = [
+  { label: 'Burn Rate & Runway Calculator', path: '/burn-rate' },
+  { label: 'Калькулятор ROI', path: '/ru/roi-calculator' },
+  { label: 'Маржа и наценка', path: '/ru/profit-margin' },
+  { label: 'SAFE Equity Calculator', path: '/safe-calculator' },
+  { label: 'Глоссарий: CAC', path: '/ru/glossary/cac' },
+  { label: 'Глоссарий: LTV', path: '/ru/glossary/ltv' },
+  { label: 'Глоссарий: Соотношение LTV:CAC', path: '/ru/glossary/ltv-cac-ratio' },
+];
+---
+<ToolLayout
+  slug="ltv-cac"
+  lang="ru"
+  title="Калькулятор LTV:CAC"
+  description="Рассчитайте пожизненную ценность клиента (LTV) и стоимость его привлечения (CAC). Узнайте, здорова ли ваша юнит-экономика. Бесплатный инструмент для SaaS и стартапов."
+  pageTag="📈 Инструмент для роста"
+  pageTagColor="var(--purple)"
+  h1="Калькулятор LTV : CAC"
+  pageSub="Рассчитайте пожизненную ценность клиента и стоимость его привлечения. Узнайте, здорова ли и устойчива ли ваша юнит-экономика."
+  dateModified="2026-10-18"
+  guideTitle="Как считать LTV, CAC и соотношение LTV:CAC"
+  faq={faq}
+  related={related}
+>
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-title">Пожизненная ценность клиента (LTV)</div>
+      <div class="field"><label class="lbl">Средняя выручка с клиента <span class="hint">(в месяц)</span></label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="arpu" value="99" min="0"></div></div>
+      <div class="field"><label class="lbl">Валовая маржа <span class="hint">(после себестоимости)</span></label><div class="input-wrap"><input type="number" id="margin" value="70" min="0" max="100"><span class="ifix ifix-r">%</span></div></div>
+      <div class="field"><label class="lbl">Месячный отток клиентов <span class="hint">(% отписавшихся)</span></label><div class="input-wrap"><input type="number" id="churn" value="3" min="0.1" max="100" step="0.1"><span class="ifix ifix-r">%/мес</span></div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Стоимость привлечения клиента (CAC)</div>
+      <div class="field"><label class="lbl">Месячные расходы на продажи и маркетинг</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="spend" value="20000" min="0"></div></div>
+      <div class="field"><label class="lbl">Новых клиентов <span class="hint">(в месяц)</span></label><div class="input-wrap"><input type="number" id="newcust" value="50" min="1"></div></div>
+      <div class="field"><label class="lbl">Длительность цикла продажи <span class="hint">(необязательно)</span></label><div class="input-wrap"><input type="number" id="cycle" value="1" min="1" max="24"><span class="ifix ifix-r">мес.</span></div></div>
+    </div>
+  </div>
+
+  <div class="ratio-panel">
+    <div class="ratio-value" id="ratio-val">—</div>
+    <div class="ratio-label">Соотношение LTV : CAC</div>
+    <div class="ratio-verdict" id="ratio-verdict"></div>
+  </div>
+
+  <div class="metrics-row">
+    <div class="m-card"><div class="m-label">LTV клиента</div><div class="m-value" id="m-ltv">—</div><div class="m-sub">пожизненная ценность</div></div>
+    <div class="m-card"><div class="m-label">CAC</div><div class="m-value" id="m-cac">—</div><div class="m-sub">на привлечение 1 клиента</div></div>
+    <div class="m-card"><div class="m-label">Окупаемость CAC</div><div class="m-value" id="m-payback">—</div><div class="m-sub">месяцев до возврата CAC</div></div>
+    <div class="m-card"><div class="m-label">Ср. жизнь клиента</div><div class="m-value" id="m-life">—</div><div class="m-sub">месяцев до оттока</div></div>
+  </div>
+
+  <div class="bench-panel">
+    <div class="panel-title">Отраслевые ориентиры</div>
+    <div class="bench-row">
+      <span class="bench-range" style="color:var(--red);">&lt; 1:1</span>
+      <div class="bench-bar-wrap"><div class="bench-bar" style="width:25%;background:var(--red);"></div></div>
+      <span class="bench-label">Теряете деньги на каждом клиенте</span>
+      <span class="bench-verdict" style="background:var(--redbg);color:var(--red);">Критично</span>
+    </div>
+    <div class="bench-row">
+      <span class="bench-range" style="color:var(--amber);">1:1 – 3:1</span>
+      <div class="bench-bar-wrap"><div class="bench-bar" style="width:50%;background:var(--amber);"></div></div>
+      <span class="bench-label">На грани — нужно улучшать</span>
+      <span class="bench-verdict" style="background:#FFFBEB;color:var(--amber);">Ниже нормы</span>
+    </div>
+    <div class="bench-row">
+      <span class="bench-range" style="color:var(--green);">3:1 – 5:1</span>
+      <div class="bench-bar-wrap"><div class="bench-bar" style="width:75%;background:var(--green);"></div></div>
+      <span class="bench-label">Здоровая экономика — золотой стандарт SaaS</span>
+      <span class="bench-verdict" style="background:var(--greenbg);color:var(--green);">✅ Здорово</span>
+    </div>
+    <div class="bench-row">
+      <span class="bench-range" style="color:var(--blue);">&gt; 5:1</span>
+      <div class="bench-bar-wrap"><div class="bench-bar" style="width:100%;background:var(--blue);"></div></div>
+      <span class="bench-label">Отлично — возможно, стоит больше вкладывать в рост</span>
+      <span class="bench-verdict" style="background:var(--bluebg);color:var(--blue);">Отлично</span>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <strong>💡 Формула:</strong> LTV = (ARPU × Валовая маржа %) / Месячный отток &nbsp;·&nbsp; CAC = Расходы на S&M / Новые клиенты &nbsp;·&nbsp; Окупаемость = CAC / (ARPU × Валовая маржа %)
+  </div>
+
+  <Fragment slot="guide">
+    <p>LTV (пожизненная ценность клиента) — это валовая прибыль, которую клиент приносит за всё время сотрудничества; CAC (стоимость привлечения клиента) — сколько стоит привлечь одного клиента. Соотношение LTV:CAC показывает, прибылен ли рост; 3:1 — широко принятый ориентир.</p>
+    <h3>Формула</h3>
+    <pre>LTV = Месячная выручка с клиента x Валовая маржа / Месячный отток
+CAC = Расходы на продажи и маркетинг / Новые привлечённые клиенты
+Окупаемость CAC (мес.) = CAC / (Месячная выручка с клиента x Валовая маржа)</pre>
+    <h3>Пример</h3>
+    <p>$100 в месяц с клиента, валовая маржа 80%, отток 4% в месяц: LTV = $100 x 0,8 / 0,04 = $2000. $30 000 расходов приносят 50 клиентов: CAC = $600. LTV:CAC = 3,3:1, окупаемость 7,5 месяцев.</p>
+  </Fragment>
+
+  <script>
+    function fmt(n) { return '$' + Math.round(n).toLocaleString('ru-RU'); }
+
+    function calc() {
+      const arpu = +document.getElementById('arpu').value || 0;
+      const margin = +document.getElementById('margin').value || 0;
+      const churn = +document.getElementById('churn').value || 1;
+      const spend = +document.getElementById('spend').value || 0;
+      const newcust = +document.getElementById('newcust').value || 1;
+
+      const ltv = (arpu * (margin / 100)) / (churn / 100);
+      const cac = spend / newcust;
+      const ratio = cac > 0 ? ltv / cac : 0;
+      const payback = (arpu * (margin / 100)) > 0 ? cac / (arpu * (margin / 100)) : 0;
+      const life = 1 / (churn / 100);
+
+      document.getElementById('m-ltv').textContent = fmt(ltv);
+      document.getElementById('m-cac').textContent = fmt(cac);
+      document.getElementById('m-payback').textContent = payback.toFixed(1) + ' мес';
+      document.getElementById('m-life').textContent = life.toFixed(1) + ' мес';
+
+      const rv = document.getElementById('ratio-val');
+      const vd = document.getElementById('ratio-verdict');
+      rv.textContent = ratio.toFixed(1) + ':1';
+
+      if (ratio < 1) { rv.style.color = 'var(--red)'; vd.style.cssText = 'background:var(--redbg);color:var(--red);'; vd.textContent = '🚨 Теряете деньги — срочно чините юнит-экономику'; }
+      else if (ratio < 3) { rv.style.color = 'var(--amber)'; vd.style.cssText = 'background:#FFFBEB;color:var(--amber);'; vd.textContent = '⚠️ Ниже нормы — снижайте CAC или повышайте удержание'; }
+      else if (ratio <= 5) { rv.style.color = 'var(--green)'; vd.style.cssText = 'background:var(--greenbg);color:var(--green);'; vd.textContent = '✅ Здорово — отличная юнит-экономика'; }
+      else { rv.style.color = 'var(--blue)'; vd.style.cssText = 'background:var(--bluebg);color:var(--blue);'; vd.textContent = '🚀 Отлично — подумайте о бОльших инвестициях в рост'; }
+    }
+
+    document.addEventListener('input', calc);
+    document.addEventListener('rk:restored', calc);
+    window.addEventListener('load', calc);
+  </script>
+</ToolLayout>
