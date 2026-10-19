@@ -87,6 +87,18 @@ const ldGraph = {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+  // Embed mode: ?embed=1, or simply loaded inside an iframe at all (e.g. a site that
+  // embeds a calculator without remembering the query param). Runs before <body> paints
+  // so the chrome never flashes before hiding — see the .rk-embed rules in the global
+  // stylesheet below.
+  (function () {
+    var qs = new URLSearchParams(location.search);
+    if (qs.get('embed') === '1' || window.self !== window.top) {
+      document.documentElement.classList.add('rk-embed');
+    }
+  })();
+</script>
 <title>{fullTitle}</title>
 <meta name="description" content={description}>
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -305,6 +317,14 @@ select{flex:1;background:transparent;border:none;outline:none;color:var(--ink);f
 .rk-related a{display:inline-block;padding:7px 14px;border:1px solid var(--border);border-radius:999px;text-decoration:none;color:var(--mid);font-size:.88rem;transition:all .18s var(--ease);}
 .rk-related a:hover{border-color:var(--blue);color:var(--blue);background:var(--bluebg);}
 @media print{.rk-guide{display:none}}
+
+/* ── Embed mode (?embed=1 or loaded in an iframe) — strip chrome, keep just the calculator ── */
+.rk-embed nav,.rk-embed footer,.rk-embed .share-bar,.rk-embed .donate-bar,.rk-embed .rk-guide,.rk-embed .rk-byline,.rk-embed .breadcrumb,.rk-embed .page-tag{display:none!important;}
+.rk-embed body{background:var(--white);}
+.rk-embed .page-header{padding:18px 20px 14px;}
+.rk-embed .page-header::before{display:none;}
+.rk-embed main{padding:16px 20px 24px;max-width:100%;}
+.rk-embed .panel,.rk-embed .bench-panel,.rk-embed .chart-panel,.rk-embed .table-panel,.rk-embed .runway-panel{margin-bottom:14px;}
 </style>
 
 <meta property="og:type" content={ogType}>
