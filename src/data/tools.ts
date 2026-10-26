@@ -134,6 +134,11 @@ export const tools: Tool[] = [
       desc: 'Спланируйте ежемесячный бюджет, спроектируйте кассовый поток на 12 месяцев и рассчитайте runway вашей компании.',
       tags: ['Планирование', 'Финансы', 'Фаундеры'] } },
 
+  { slug: 'ai-token-calculator', icon: '🤖', section: 'business', accent: 'violet',
+    en: { label: 'AI Token Cost', path: '/ai-token-calculator', cardTitle: 'AI Token Cost Calculator',
+      desc: 'Estimate your monthly AI API bill from tokens and chat history. See how prompt caching, shorter answers and model routing change the cost.',
+      tags: ['AI', 'Developers', 'Cost'], badge: '🆕 New' } },
+
   // ── Startups ──
   { slug: 'safe-calculator', icon: '🚀', section: 'startups', accent: 'green',
     en: { label: 'SAFE Equity', path: '/safe-calculator', cardTitle: 'SAFE Equity Calculator',

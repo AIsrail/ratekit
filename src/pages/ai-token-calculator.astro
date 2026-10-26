@@ -1,0 +1,247 @@
+---
+import ToolLayout from '../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: 'How do AI APIs charge for tokens?',
+    a: 'Most providers bill input tokens (everything you send: system prompt, history, user message) and output tokens (the answer) separately, per million tokens. Output usually costs several times more than input.' },
+  { q: 'Why does a chat get more expensive as it goes on?',
+    a: 'Chat APIs are stateless. Each new message re-sends the whole conversation so far, so input tokens grow with every turn. A 10-turn chat sends far more than ten times the tokens of a one-off question.' },
+  { q: 'What is prompt caching?',
+    a: 'Providers can reuse the processing of a repeated prefix (usually the system prompt and fixed documents) and charge a lower rate for those cached input tokens. Caching only helps when the start of the prompt is identical between requests, so keep stable text first.' },
+  { q: 'How accurate is this calculator?',
+    a: "It is an estimate. Prices in the presets are examples, so enter your provider's current prices. Token counts are your own guesses about message length; real tokenizers differ, and non-English text (including Russian) often takes more tokens per word." },
+];
+
+const related = [
+  { label: 'Budget & Cash Flow Calculator', path: '/budget-calculator' },
+  { label: 'Burn Rate & Runway Calculator', path: '/burn-rate' },
+  { label: 'Profit Margin Calculator', path: '/profit-margin' },
+  { label: 'ROI Calculator', path: '/roi-calculator' },
+];
+---
+<ToolLayout
+  slug="ai-token-calculator"
+  lang="en"
+  title="AI Token Cost Calculator"
+  description="Estimate your monthly AI API bill from tokens, chat history and caching. See how prompt caching, shorter answers, trimmed history and model routing change the cost."
+  pageTag="🤖 AI Cost Tool"
+  pageTagColor="var(--violet)"
+  h1="AI Token Cost Calculator"
+  pageSub="Estimate what your AI API usage really costs per month, then see which savings are worth the effort: prompt caching, shorter answers, trimmed chat history or a cheaper model for easy tasks."
+  dateModified="2026-10-26"
+  guideTitle="How AI APIs bill tokens, and how to cut the bill"
+  faq={faq}
+  related={related}
+>
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-title">Model & prices <span style="font-weight:400;color:var(--muted);font-size:10px;">(USD per 1M tokens)</span></div>
+      <div class="field">
+        <label class="lbl" for="model">Preset <span class="hint">(examples, check current prices)</span></label>
+        <div class="input-wrap">
+          <select id="model">
+            <option value="mid">Mid-tier model: $3 in / $15 out</option>
+            <option value="top">Top-tier model: $5 in / $25 out</option>
+            <option value="flagship">Flagship model: $1.25 in / $10 out</option>
+            <option value="budget">Budget model: $0.25 in / $1.25 out</option>
+            <option value="custom">Custom</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label class="lbl">Input price</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="inPrice" value="3" min="0" step="0.01"></div></div>
+      <div class="field"><label class="lbl">Output price</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="outPrice" value="15" min="0" step="0.01"></div></div>
+      <div class="field"><label class="lbl">Cached input price <span class="hint">(% of input price)</span></label><div class="input-wrap"><input type="number" id="cachePct" value="10" min="0" max="100" step="1"><span class="ifix ifix-r">%</span></div></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Your usage</div>
+      <div class="field"><label class="lbl">Messages per month</label><div class="input-wrap"><input type="number" id="msgs" value="3000" min="0"><span class="ifix ifix-r">msgs</span></div></div>
+      <div class="field"><label class="lbl">Turns per conversation <span class="hint">(1 = one-off request)</span></label><div class="input-wrap"><input type="number" id="turns" value="5" min="1" step="1"><span class="ifix ifix-r">turns</span></div></div>
+      <div class="field"><label class="lbl">System prompt <span class="hint">(instructions sent every time)</span></label><div class="input-wrap"><input type="number" id="sys" value="1500" min="0"><span class="ifix ifix-r">tokens</span></div></div>
+      <div class="field"><label class="lbl">Your message</label><div class="input-wrap"><input type="number" id="user" value="300" min="0"><span class="ifix ifix-r">tokens</span></div></div>
+      <div class="field"><label class="lbl">Answer length</label><div class="input-wrap"><input type="number" id="out" value="400" min="0"><span class="ifix ifix-r">tokens</span></div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Savings levers <span style="font-weight:400;color:var(--muted);font-size:10px;">(tick what you would apply)</span></div>
+    <label class="check-row"><input type="checkbox" id="lvCache" checked> <span class="check-label"><strong>Prompt caching</strong> for the system prompt. Stable text is billed at the cached price. No quality change.</span></label>
+    <label class="check-row"><input type="checkbox" id="lvShort" checked> <span class="check-label"><strong>Shorter answers</strong>: cut answer length by</span>
+      <span class="input-wrap" style="width:110px;flex-shrink:0;"><input type="number" id="shortPct" value="30" min="0" max="90" step="1"><span class="ifix ifix-r">%</span></span></label>
+    <label class="check-row"><input type="checkbox" id="lvTrim"> <span class="check-label"><strong>Trim history</strong>: send only the last</span>
+      <span class="input-wrap" style="width:110px;flex-shrink:0;"><input type="number" id="keep" value="3" min="0" step="1"><span class="ifix ifix-r">turns</span></span></label>
+    <label class="check-row"><input type="checkbox" id="lvRoute"> <span class="check-label"><strong>Route easy tasks</strong> to a cheaper model: share of messages</span>
+      <span class="input-wrap" style="width:110px;flex-shrink:0;"><input type="number" id="routePct" value="40" min="0" max="100" step="1"><span class="ifix ifix-r">%</span></span></label>
+    <div class="grid-2" style="margin-top:16px;margin-bottom:0;">
+      <div class="field" style="margin-bottom:0;"><label class="lbl">Cheap model input price</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="cIn" value="0.25" min="0" step="0.01"></div></div>
+      <div class="field" style="margin-bottom:0;"><label class="lbl">Cheap model output price</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="cOut" value="1.25" min="0" step="0.01"></div></div>
+    </div>
+  </div>
+
+  <div class="results-row">
+    <div class="r-card"><div class="r-label">Monthly cost now</div><div class="r-value" id="r-base">—</div><div class="r-sub" id="r-base-sub">no savings applied</div></div>
+    <div class="r-card highlight"><div class="r-label">With checked levers</div><div class="r-value" id="r-opt">—</div><div class="r-sub" id="r-opt-sub">per month</div></div>
+    <div class="r-card"><div class="r-label">Savings</div><div class="r-value" id="r-save">—</div><div class="r-sub" id="r-save-sub">per month</div></div>
+    <div class="r-card"><div class="r-label">Cost per message</div><div class="r-value" id="r-per">—</div><div class="r-sub">with checked levers</div></div>
+  </div>
+
+  <div class="table-panel">
+    <div class="table-title">Which lever saves what</div>
+    <table>
+      <thead><tr><th>Step (cumulative)</th><th>Monthly cost</th><th>Saved so far</th></tr></thead>
+      <tbody id="lever-table"></tbody>
+    </table>
+    <p id="tok-line" style="font-size:12px;color:var(--muted);margin:14px 0 0;"></p>
+  </div>
+
+  <div class="info-box">
+    <strong>📐 Formula:</strong> for one conversation of T turns, message k sends the system prompt, your message and the last min(k−1, N) exchanges. Cost = input tokens × input price + output tokens × output price, per million. Monthly cost = messages ÷ T × cost per conversation.
+  </div>
+
+  <Fragment slot="guide">
+    <p>Your bill is not "messages × price". Every API call is stateless, so the provider reads the full prompt again each time. Three things set the size of that prompt: the system prompt you send every time, the history of the conversation, and the length of each answer, which is also the most expensive part per token.</p>
+
+    <h3>Where the money goes</h3>
+    <p>Output tokens usually cost several times more than input tokens. In a long chat the input grows with each turn, so a conversation of ten turns can cost many times more than two single questions. Use the "Which lever saves what" table above to see which change pays off most for your usage.</p>
+
+    <h3>Free or nearly free savings (no quality loss)</h3>
+    <ul>
+      <li><strong>Prompt caching.</strong> Put stable text first (system prompt, tool definitions, reference documents) and the changing text last. Anthropic needs you to mark the cached block; other providers may do it automatically for long prompts. Check the docs for the minimum length and how long the cache lives.</li>
+      <li><strong>Shorter system prompt.</strong> Remove duplicate rules and examples you do not really need. A 1,500-token prompt sent 3,000 times a month is 4.5 million tokens before any user writes anything.</li>
+      <li><strong>Ask for short answers and cap the length.</strong> Use the provider's max-tokens setting, and tell the model "answer in under 100 words" or "return only the JSON".</li>
+      <li><strong>Batch non-urgent work.</strong> Reports, tagging and bulk rewriting do not need a live answer. Many providers offer a batch API at a discount.</li>
+      <li><strong>Cache repeated questions in your own app.</strong> If the same question comes in often, store the answer and skip the call.</li>
+    </ul>
+
+    <h3>Trade-offs: measure before you apply them</h3>
+    <ul>
+      <li><strong>Trimming history.</strong> Sending only the last few turns cuts cost, but the model forgets earlier facts. A short running summary of the conversation keeps the key facts for a few tokens.</li>
+      <li><strong>Routing to a cheaper model.</strong> Simple classification, extraction and formatting often work well on small models. Test on 30 to 50 of your real examples, compare quality, and route by task type, not at random.</li>
+      <li><strong>Retrieval instead of whole documents.</strong> Sending only the relevant passages of a document is cheaper than pasting the whole file into every request. It adds engineering work and can miss context.</li>
+    </ul>
+
+    <h3>Apps, plugins and tools</h3>
+    <ul>
+      <li><strong>API gateways with cost tracking.</strong> Tools such as OpenRouter, Portkey and LiteLLM record token use and estimated cost per request, and can switch models from one place.</li>
+      <li><strong>Provider dashboards and budget alerts.</strong> Set a monthly spending limit and an alert at 50% and 80%. Most of the surprises come from one runaway script, not from normal use.</li>
+      <li><strong>Coding assistants.</strong> Clear or compact the context between unrelated tasks, keep the project memory file short, and attach the file you need rather than the whole folder.</li>
+    </ul>
+
+    <h3>Prompt templates that cut tokens</h3>
+    <pre>Answer in at most 80 words. No introduction, no summary at the end.</pre>
+    <pre>Return only valid JSON with the keys: title, category, priority. No other text.</pre>
+    <pre>Use the conversation summary below instead of the full history: [summary]</pre>
+
+    <h3>Suggested order</h3>
+    <p>1) Turn on caching and shorten the system prompt. 2) Cap output length. 3) Only then trim history or route to a cheaper model, and check quality on real examples each time.</p>
+  </Fragment>
+
+  <script>
+    const PRESETS = {
+      mid: [3, 15],
+      top: [5, 25],
+      flagship: [1.25, 10],
+      budget: [0.25, 1.25],
+    };
+    const $ = (id) => document.getElementById(id);
+    const num = (id) => Math.max(0, +$(id).value || 0);
+    const money = (v) => '$' + (v >= 100 ? Math.round(v).toLocaleString('en-US') : v.toFixed(2));
+    const tokens = (n) => n >= 1e9 ? (n / 1e9).toFixed(2) + 'B' : n >= 1e6 ? (n / 1e6).toFixed(2) + 'M' : n >= 1e3 ? (n / 1e3).toFixed(1) + 'K' : Math.round(n).toString();
+
+    // Cost of one conversation of T messages. Message k sends the system prompt, the new
+    // user message, and the last `keep` exchanges (each exchange = user + answer tokens).
+    function conversation({ T, s, u, o, inP, outP, cacheOn, cacheRatio, keep }) {
+      let cost = 0, inTok = 0, outTok = 0;
+      for (let k = 1; k <= T; k++) {
+        const hist = Math.min(k - 1, keep);
+        const dynIn = u + hist * (u + o);
+        const sysCost = cacheOn ? s * inP * cacheRatio : s * inP;
+        cost += sysCost + dynIn * inP + o * outP;
+        inTok += s + dynIn;
+        outTok += o;
+      }
+      return { cost: cost / 1e6, inTok, outTok };
+    }
+
+    // flags: { cache, short, trim, route } — each lever switched on or off
+    function scenario(flags) {
+      const T = Math.max(1, Math.round(num('turns')));
+      const conversations = num('msgs') / T;
+      const s = num('sys'), u = num('user'), o0 = num('out');
+      const o = flags.short ? o0 * (1 - Math.min(90, num('shortPct')) / 100) : o0;
+      const keep = flags.trim ? Math.round(num('keep')) : Infinity;
+      const cacheRatio = Math.min(100, num('cachePct')) / 100;
+      const base = { T, s, u, o, cacheOn: !!flags.cache, cacheRatio, keep };
+
+      const main = conversation({ ...base, inP: num('inPrice'), outP: num('outPrice') });
+      let perConv = main.cost;
+      if (flags.route) {
+        const f = Math.min(100, num('routePct')) / 100;
+        const cheap = conversation({ ...base, inP: num('cIn'), outP: num('cOut') });
+        perConv = (1 - f) * main.cost + f * cheap.cost;
+      }
+      return {
+        monthly: perConv * conversations,
+        perMsg: perConv / T,
+        inTokMonthly: main.inTok * conversations,
+        outTokMonthly: main.outTok * conversations,
+      };
+    }
+
+    function calc() {
+      const lever = { cache: 'lvCache', short: 'lvShort', trim: 'lvTrim', route: 'lvRoute' };
+      const applied = {};
+      Object.keys(lever).forEach((k) => { applied[k] = $(lever[k]).checked; });
+
+      const base = scenario({});
+      const opt = scenario(applied);
+      const saved = base.monthly - opt.monthly;
+      const pct = base.monthly > 0 ? (saved / base.monthly) * 100 : 0;
+
+      $('r-base').textContent = money(base.monthly);
+      $('r-opt').textContent = money(opt.monthly);
+      $('r-save').textContent = money(Math.abs(saved)) + (saved < 0 ? ' more' : pct ? ` (${pct.toFixed(0)}%)` : '');
+      $('r-save-sub').textContent = saved >= 0 ? 'per month, from the checked levers' : 'checked levers cost more here';
+      $('r-per').textContent = '$' + (opt.perMsg < 0.01 ? opt.perMsg.toFixed(4) : opt.perMsg.toFixed(3));
+      $('r-base-sub').textContent = `${tokens(base.inTokMonthly)} in / ${tokens(base.outTokMonthly)} out tokens`;
+      $('r-opt-sub').textContent = `${tokens(opt.inTokMonthly)} in / ${tokens(opt.outTokMonthly)} out tokens`;
+
+      // Cumulative waterfall: each row adds one lever on top of the rows above, if it is ticked.
+      const steps = [
+        ['Baseline: full history, no caching', null],
+        ['+ Prompt caching', 'cache'],
+        ['+ Shorter answers', 'short'],
+        ['+ Trimmed history', 'trim'],
+        ['+ Routing to cheaper model', 'route'],
+      ];
+      const acc = {};
+      let rows = '';
+      steps.forEach(([label, key], i) => {
+        const ticked = key === null || applied[key];
+        if (ticked && key) acc[key] = true;
+        const res = scenario(acc);
+        const delta = base.monthly - res.monthly;
+        rows += `<tr${i === 0 ? ' class="total-row"' : ''}>
+          <td>${label}${ticked ? '' : ' <span style="color:var(--muted);font-size:11px;">(not ticked)</span>'}</td>
+          <td class="mono">${money(res.monthly)}</td>
+          <td class="mono ${delta > 0.005 ? 'profit' : ''}">${delta > 0.005 ? '−' + money(delta) : '—'}</td>
+        </tr>`;
+      });
+      $('lever-table').innerHTML = rows;
+      $('tok-line').textContent = `Baseline input tokens per month: ${tokens(base.inTokMonthly)}. Enter your provider's current prices above.`;
+    }
+
+    $('model').addEventListener('change', (e) => {
+      const p = PRESETS[e.target.value];
+      if (p) {
+        $('inPrice').value = p[0];
+        $('outPrice').value = p[1];
+      }
+      calc();
+    });
+    document.addEventListener('input', calc);
+    document.addEventListener('change', calc);
+    document.addEventListener('rk:restored', calc);
+    window.addEventListener('load', calc);
+  </script>
+</ToolLayout>
