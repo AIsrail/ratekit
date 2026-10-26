@@ -455,7 +455,8 @@ select{flex:1;background:transparent;border:none;outline:none;color:var(--ink);f
     }
   }
   async function downloadResultCard(btn) {
-    const tiles = [...document.querySelectorAll('.results-row .r-card')].slice(0, 4);
+    // Skip tiles hidden by the page (e.g. an ingredient that is switched off).
+    const tiles = [...document.querySelectorAll('.results-row .r-card')].filter((t) => t.offsetParent !== null).slice(0, 4);
     if (tiles.length === 0) return;
     await document.fonts.ready;
 

@@ -1,0 +1,198 @@
+---
+import ToolLayout from '../layouts/ToolLayout.astro';
+
+const faq = [
+  { q: 'Are these numbers real predictions?',
+    a: 'No. They are projections of a steady return on your inputs. Markets go up and down, and the rate you enter is your assumption, not a promise.' },
+  { q: 'What does the million ingredient assume?',
+    a: 'That you invest the savings you enter, each month, at the return you choose, with no withdrawals. Change the rate or the monthly amount and the years change with it.' },
+  { q: 'Is my data stored or sent anywhere?',
+    a: 'Your inputs stay in your browser. The recipe is built from fixed text templates on the page; nothing is sent to a server or an AI model.' },
+];
+
+const related = [
+  { label: 'Budget & Cash Flow Calculator', path: '/budget-calculator' },
+  { label: 'ROI Calculator', path: '/roi-calculator' },
+  { label: 'Burn Rate & Runway Calculator', path: '/burn-rate' },
+  { label: 'AI Token Cost Calculator', path: '/ai-token-calculator' },
+];
+---
+<ToolLayout
+  slug="future-cocktail"
+  lang="en"
+  title="Future Cocktail: Mix Your Money Recipe"
+  description="Pick ingredients for your future: how much you grow in 20 years, how long to your first million, and what a small habit can give. Mix them into a recipe you can share."
+  pageTag="🍹 Fun Mixer"
+  pageTagColor="var(--amber)"
+  h1="The Future Cocktail"
+  pageSub="Pick your ingredients, add your numbers, and get a recipe for your future. Every mix ends with a next step, never a verdict."
+  dateModified="2026-10-26"
+  guideTitle="How the future cocktail works"
+  faq={faq}
+  related={related}
+>
+  <style is:global>
+    body { background: radial-gradient(circle at 8% 10%, #FFD6E8 0, transparent 38%), radial-gradient(circle at 92% 8%, #FFF1B8 0, transparent 35%), radial-gradient(circle at 50% 100%, #C9F5E4 0, transparent 45%), #FFF9F3; }
+    .page-header { background: transparent; border-bottom: none; }
+    .page-header::before { display: none; }
+    .ing-panel { border-width: 2px; }
+    .ing-panel.on { border-color: var(--amber); }
+    .recipe-card { background: var(--white); border: 2px dashed var(--amber); border-radius: var(--radius); padding: 28px; margin-bottom: 20px; }
+    .recipe-name { font-size: 1.5rem; font-weight: 700; letter-spacing: -.02em; margin-bottom: 14px; }
+    .recipe-line { font-size: 15px; color: var(--mid); line-height: 1.7; margin-bottom: 6px; }
+    .recipe-mood { margin-top: 16px; font-weight: 600; color: var(--amber); }
+  </style>
+
+  <div class="panel">
+    <div class="panel-title">Pick your ingredients <span style="font-weight:400;color:var(--muted);font-size:10px;">(mix any of them)</span></div>
+    <label class="check-row"><input type="checkbox" id="ingA" checked> <span class="check-label"><strong>🔮 Future You</strong>: what a steady habit grows into</span></label>
+    <label class="check-row"><input type="checkbox" id="ingB" checked> <span class="check-label"><strong>💰 First Million</strong>: how long until your first million</span></label>
+    <label class="check-row"><input type="checkbox" id="ingC" checked> <span class="check-label"><strong>🌱 Good Share</strong>: what a small share of your spending can give</span></label>
+  </div>
+
+  <div class="grid-2">
+    <div class="panel ing-panel on" id="panelA">
+      <div class="panel-title">🔮 Future You</div>
+      <div class="field"><label class="lbl">Monthly amount</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="aMonthly" value="200" min="0"></div></div>
+      <div class="field"><label class="lbl">Years</label><div class="input-wrap"><input type="number" id="aYears" value="20" min="1" max="60"><span class="ifix ifix-r">years</span></div></div>
+      <div class="field"><label class="lbl">Assumed yearly return</label><div class="input-wrap"><input type="number" id="aRate" value="7" min="0" max="30" step="0.5"><span class="ifix ifix-r">%</span></div></div>
+    </div>
+    <div class="panel ing-panel on" id="panelB">
+      <div class="panel-title">💰 First Million</div>
+      <div class="field"><label class="lbl">Savings you already have</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="bSavings" value="5000" min="0"></div></div>
+      <div class="field"><label class="lbl">Monthly amount</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="bMonthly" value="200" min="0"></div></div>
+      <div class="field"><label class="lbl">Assumed yearly return</label><div class="input-wrap"><input type="number" id="bRate" value="7" min="0" max="30" step="0.5"><span class="ifix ifix-r">%</span></div></div>
+    </div>
+  </div>
+
+  <div class="panel ing-panel on" id="panelC">
+    <div class="panel-title">🌱 Good Share</div>
+    <div class="grid-2" style="margin-bottom:0;">
+      <div class="field" style="margin-bottom:0;"><label class="lbl">Monthly spend on coffee, snacks or subscriptions</label><div class="input-wrap"><span class="ifix">$</span><input type="number" id="cSpend" value="150" min="0"></div></div>
+      <div class="field" style="margin-bottom:0;"><label class="lbl">Share you would give</label><div class="input-wrap"><input type="number" id="cShare" value="10" min="0" max="100" step="1"><span class="ifix ifix-r">%</span></div></div>
+    </div>
+  </div>
+
+  <div class="results-row">
+    <div class="r-card highlight" id="card-a"><div class="r-label">Future You</div><div class="r-value" id="v-a">—</div><div class="r-sub" id="s-a">in 20 years</div></div>
+    <div class="r-card" id="card-b"><div class="r-label">First Million</div><div class="r-value" id="v-b">—</div><div class="r-sub" id="s-b">to reach $1M</div></div>
+    <div class="r-card" id="card-c"><div class="r-label">Good Share</div><div class="r-value" id="v-c">—</div><div class="r-sub" id="s-c">a year</div></div>
+  </div>
+
+  <div class="recipe-card" id="recipe">
+    <div class="recipe-name" id="recipe-name">Pick at least one ingredient.</div>
+    <div id="recipe-lines"></div>
+    <div class="recipe-mood" id="recipe-mood"></div>
+  </div>
+
+  <Fragment slot="guide">
+    <p>Each ingredient is a simple projection. Future You adds a fixed monthly amount and lets it grow at your assumed return. First Million starts from the savings you have and counts the months until the total reaches your target. Good Share takes a fixed part of your small spending and turns it into a yearly figure.</p>
+    <h3>Why mix them?</h3>
+    <p>The same habit can serve several goals at once. A small monthly amount builds your future, can bring the first million closer, and, if you choose, funds a yearly gift. The recipe puts those together in one line you can share.</p>
+    <h3>Assumptions to check</h3>
+    <p>A return of 7% a year is a common long-run planning figure, not a guarantee. Use a lower rate to be cautious. Inflation is not included, so the future amounts are in today's money only if you set the return after inflation.</p>
+  </Fragment>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const num = (id) => Math.max(0, +$(id).value || 0);
+    const money = (v) => '$' + (v >= 100 ? Math.round(v).toLocaleString('en-US') : v.toFixed(2));
+
+    // Future value of a fixed monthly amount, growing at an annual rate (monthly compounding).
+    function futureValue(monthly, ratePct, years) {
+      const i = ratePct / 100 / 12;
+      const n = years * 12;
+      return i === 0 ? monthly * n : monthly * ((Math.pow(1 + i, n) - 1) / i);
+    }
+
+    // Months until savings (growing monthly) reach the target. Null if not within 100 years.
+    function monthsToTarget(savings, monthly, ratePct, target) {
+      const i = ratePct / 100 / 12;
+      let bal = savings;
+      for (let m = 0; m <= 1200; m++) {
+        if (bal >= target) return m;
+        bal = bal * (1 + i) + monthly;
+      }
+      return null;
+    }
+
+    const NAMES = { A: 'Future You', B: 'First Million', C: 'Good Share' };
+    const MOODS = [
+      'Shake well, then smile at your future self.',
+      'Best served with your morning coffee, which you already have.',
+      'Side effects may include calm, confidence and a spreadsheet you actually open.',
+      'Stir slowly. Results are stronger the longer it rests.',
+    ];
+
+    function calc() {
+      const on = { A: $('ingA').checked, B: $('ingB').checked, C: $('ingC').checked };
+      $('panelA').classList.toggle('on', on.A);
+      $('panelB').classList.toggle('on', on.B);
+      $('panelC').classList.toggle('on', on.C);
+      $('card-a').style.display = on.A ? '' : 'none';
+      $('card-b').style.display = on.B ? '' : 'none';
+      $('card-c').style.display = on.C ? '' : 'none';
+
+      const lines = [];
+      let key = '';
+      let seed = 0;
+
+      if (on.A) {
+        key += 'A';
+        const m = num('aMonthly'), y = num('aYears'), fut = futureValue(m, num('aRate'), y);
+        $('v-a').textContent = money(fut);
+        $('s-a').textContent = `in ${y} years`;
+        lines.push(m > 0
+          ? `Add ${money(m)} a month and let it grow: about ${money(fut)} in ${y} years.`
+          : 'Start with $10 a month. That is already a recipe.');
+        seed += Math.round(fut);
+      }
+
+      if (on.B) {
+        key += 'B';
+        const months = monthsToTarget(num('bSavings'), num('bMonthly'), num('bRate'), 1000000);
+        if (months === null) {
+          $('v-b').textContent = '100+ yrs';
+          $('s-b').textContent = 'at these inputs';
+          lines.push('Every extra month you add shortens the wait. Raise the monthly amount and watch the years drop.');
+        } else {
+          const yrs = Math.floor(months / 12), mo = months % 12;
+          $('v-b').textContent = months === 0 ? 'Done!' : `${yrs}y ${mo}m`;
+          $('s-b').textContent = 'to your first $1M';
+          lines.push(months === 0
+            ? 'You are already there. Time to pick the next target.'
+            : `${yrs ? yrs + ' years and ' : ''}${mo} months to your first million. Every month of growth works for you.`);
+        }
+        seed += months || 0;
+      }
+
+      if (on.C) {
+        key += 'C';
+        const give = num('cSpend') * 12 * (Math.min(100, num('cShare')) / 100);
+        $('v-c').textContent = money(give);
+        $('s-c').textContent = 'a year';
+        lines.push(give > 0
+          ? `Giving ${money(give)} a year from your small spending: a habit you can change, with real impact.`
+          : 'Even a small share counts. Try 1% of your coffee budget.');
+        seed += Math.round(give);
+      }
+
+      if (key === '') {
+        $('recipe-name').textContent = 'Pick at least one ingredient.';
+        $('recipe-lines').innerHTML = '';
+        $('recipe-mood').textContent = '';
+        return;
+      }
+
+      const title = key.split('').map((k) => NAMES[k]).join(' + ');
+      $('recipe-name').textContent = key.length === 1 ? `Single shot: ${title}` : `Cocktail: ${title}`;
+      $('recipe-lines').innerHTML = lines.map((l) => `<div class="recipe-line">• ${l}</div>`).join('');
+      $('recipe-mood').textContent = MOODS[seed % MOODS.length];
+    }
+
+    document.addEventListener('input', calc);
+    document.addEventListener('change', calc);
+    document.addEventListener('rk:restored', calc);
+    window.addEventListener('load', calc);
+  </script>
+</ToolLayout>

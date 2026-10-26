@@ -139,6 +139,11 @@ export const tools: Tool[] = [
       desc: 'Estimate your monthly AI API bill from tokens and chat history. See how prompt caching, shorter answers and model routing change the cost.',
       tags: ['AI', 'Developers', 'Cost'], badge: '🆕 New' } },
 
+  { slug: 'future-cocktail', icon: '🍹', section: 'fun', accent: 'amber',
+    en: { label: 'Future Cocktail', path: '/future-cocktail', cardTitle: 'Future Cocktail: Mix Your Money Recipe',
+      desc: 'Pick ingredients for your future: growth over 20 years, time to your first million, and what a small habit can give. Mix them into a recipe.',
+      tags: ['Fun', 'Savings', 'Motivation'], badge: '🎉 New' } },
+
   // ── Startups ──
   { slug: 'safe-calculator', icon: '🚀', section: 'startups', accent: 'green',
     en: { label: 'SAFE Equity', path: '/safe-calculator', cardTitle: 'SAFE Equity Calculator',
