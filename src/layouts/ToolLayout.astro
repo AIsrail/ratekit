@@ -378,6 +378,7 @@ select{flex:1;background:transparent;border:none;outline:none;color:var(--ink);f
       <a class="share-btn" id="li-btn" href="#" target="_blank" rel="noopener">in LinkedIn</a>
       <a class="share-btn" id="tg-btn" href="#" target="_blank" rel="noopener">✈️ Telegram</a>
       <a class="share-btn" id="wa-btn" href="#" target="_blank" rel="noopener">💬 WhatsApp</a>
+      <button class="share-btn" id="card-btn" title="Download result card">🖼 {lang === 'en' ? 'Result card (PNG)' : 'Карточка (PNG)'}</button>
       <button class="share-btn pdf-btn" id="pdf-btn">⬇ {lang === 'en' ? 'Save as PDF' : 'Сохранить PDF'}</button>
     </div>
   </div>
@@ -442,6 +443,97 @@ select{flex:1;background:transparent;border:none;outline:none;color:var(--ink);f
   }
   document.getElementById('copy-link-btn')?.addEventListener('click', (e) => copyLink(e.currentTarget));
   document.getElementById('pdf-btn')?.addEventListener('click', () => window.print());
+
+  // Result card: a 1200×630 PNG of the current numbers, built from the .r-card tiles in
+  // .results-row, so every calculator gets it without per-page wiring.
+  function fitFont(ctx, text, weight, family, maxPx, maxWidth) {
+    let px = maxPx;
+    ctx.font = `${weight} ${px}px ${family}`;
+    while (ctx.measureText(text).width > maxWidth && px > 12) {
+      px -= 2;
+      ctx.font = `${weight} ${px}px ${family}`;
+    }
+  }
+  async function downloadResultCard(btn) {
+    const tiles = [...document.querySelectorAll('.results-row .r-card')].slice(0, 4);
+    if (tiles.length === 0) return;
+    await document.fonts.ready;
+
+    const W = 1200, H = 630, PAD = 64, GAP = 24;
+    const canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+    const sans = 'Plus Jakarta Sans, sans-serif';
+    const mono = 'JetBrains Mono, monospace';
+
+    ctx.fillStyle = '#F8FAFC';
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#2563EB';
+    ctx.fillRect(0, 0, W, 12);
+
+    const h1 = document.querySelector('h1')?.textContent.trim() || '';
+    fitFont(ctx, h1, '700', sans, 52, W - PAD * 2);
+    ctx.fillStyle = '#0F172A';
+    ctx.fillText(h1, PAD, 120);
+
+    const tileW = (W - PAD * 2 - GAP * (tiles.length - 1)) / tiles.length;
+    const tileY = 170, tileH = 300;
+    tiles.forEach((tile, i) => {
+      const x = PAD + i * (tileW + GAP);
+      const primary = tile.classList.contains('primary');
+      const style = getComputedStyle(tile);
+      const valueEl = tile.querySelector('.r-value');
+      const label = (tile.querySelector('.r-label')?.textContent || '').trim().toUpperCase();
+      const value = (valueEl?.textContent || '').trim();
+      const sub = (tile.querySelector('.r-sub')?.textContent || '').trim();
+
+      ctx.beginPath();
+      ctx.roundRect(x, tileY, tileW, tileH, 20);
+      ctx.fillStyle = primary ? '#2563EB' : style.backgroundColor;
+      ctx.fill();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = primary ? '#2563EB' : style.borderTopColor;
+      ctx.stroke();
+
+      fitFont(ctx, label, '600', sans, 24, tileW - 48);
+      ctx.fillStyle = primary ? 'rgba(255,255,255,.75)' : '#64748B';
+      ctx.fillText(label, x + 24, tileY + 56);
+
+      fitFont(ctx, value, '600', mono, 64, tileW - 48);
+      ctx.fillStyle = primary ? '#FFFFFF' : getComputedStyle(valueEl ?? tile).color;
+      ctx.fillText(value, x + 24, tileY + 170);
+
+      fitFont(ctx, sub, '500', sans, 26, tileW - 48);
+      ctx.fillStyle = primary ? 'rgba(255,255,255,.8)' : '#64748B';
+      ctx.fillText(sub, x + 24, tileY + 226);
+    });
+
+    ctx.fillStyle = '#94A3B8';
+    ctx.font = '600 24px ' + sans;
+    ctx.fillText('ratekit.org · Free business calculators', PAD, H - 56);
+
+    canvas.toBlob((blob) => {
+      const slug = location.pathname.replace(/^\/+|\/+$/g, '').replace(/\//g, '-') || 'home';
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `ratekit-${slug}.png`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      const original = btn.textContent;
+      btn.textContent = '✅ Saved!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.classList.remove('copied');
+      }, 2000);
+    }, 'image/png');
+  }
+  document.getElementById('card-btn')?.addEventListener('click', (e) => downloadResultCard(e.currentTarget));
+  // Pages without result tiles (e.g. generators) have nothing to put on a card.
+  if (!document.querySelector('.results-row .r-card')) {
+    const cardBtn = document.getElementById('card-btn');
+    if (cardBtn) cardBtn.style.display = 'none';
+  }
 
   function initShare() {
     const url = encodeURIComponent(window.location.href);
