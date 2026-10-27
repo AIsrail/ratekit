@@ -42,7 +42,21 @@ const copy = {
     lastCard: 'Last week',
     planCard: 'This week',
     longTitle: 'Habits linked with a longer life',
-    longIntro: 'Researchers keep finding the same themes in people who live long and well. These are associations from observational studies, not guarantees, and this page does not predict how long you will live.',
+    longIntro: 'Rate how well each of these is going for you right now, from 1 to 10. Tap the same number again to clear it.',
+    longLabels: ['Room to grow', 'Getting there', 'Nicely balanced', 'Glowing', 'Radiant'],
+    longRecs: [
+      'Your inner peace could use a coffee break: try five quiet minutes, phone in another room.',
+      'Your hobby is waiting by the door with its shoes on, so give it twenty minutes.',
+      'Text a friend today, even a meme counts as a tiny hug.',
+      'Your fridge called and asked for one vegetable to feel useful.',
+      'Your legs have filed a request for a walk, so please approve it.',
+      'Tomorrow has not been cancelled, so give it the benefit of the doubt.',
+      'One less of the usual is a win, and your future self is already clapping.',
+    ],
+    longHigh: 'You are running a tidy little happiness factory, so keep the lights on.',
+    longNone: 'Rate one habit to get a recommendation, and maybe a smile.',
+    longDisclaimer: 'This is not based on any scientific study. It is just a reminder of some important things that can help you live longer and happier.',
+    readMore: 'Curious? These studies touch on a few of these themes. They show associations only, and the reminder above is not based on them:',
     longItems: [
       'Something that gives inner support: faith, prayer, meditation, or time to reflect on what you do',
       'A hobby or interest that absorbs you',
@@ -104,7 +118,21 @@ const copy = {
     lastCard: 'Прошлая неделя',
     planCard: 'Эта неделя',
     longTitle: 'Привычки, связанные с долгой жизнью',
-    longIntro: 'Исследователи снова и снова находят одни и те же темы у людей, которые живут долго и хорошо. Это связи из наблюдательных исследований, а не гарантии, и эта страница не предсказывает, сколько вы проживёте.',
+    longIntro: 'Оцените от 1 до 10, как у вас сейчас обстоят дела с каждым пунктом. Нажмите на ту же цифру ещё раз, чтобы снять отметку.',
+    longLabels: ['Есть куда расти', 'На пути', 'Хороший баланс', 'Сияете', 'Просто светитесь'],
+    longRecs: [
+      'Вашему внутреннему покою нужен перерыв на кофе: пять минут тишины, телефон в другой комнате.',
+      'Ваше хобби уже стоит у двери в ботинках, подарите ему двадцать минут.',
+      'Напишите сегодня другу, даже мем считается маленьким объятием.',
+      'Холодильник звонил и просил хотя бы один овощ, чтобы почувствовать себя нужным.',
+      'Ваши ноги подали заявление на прогулку, пожалуйста, одобрите.',
+      'Завтра пока никто не отменял, так что дайте ему шанс.',
+      'Одно «как обычно» меньше уже победа, и будущий вы уже аплодирует.',
+    ],
+    longHigh: 'У вас получается аккуратная маленькая фабрика счастья, так держать.',
+    longNone: 'Оцените хотя бы один пункт и получите рекомендацию, а может, и улыбку.',
+    longDisclaimer: 'Это не основано на каком-либо научном исследовании. Это просто напоминание о важных вещах, которые могут помочь жить дольше и счастливее.',
+    readMore: 'Любопытно? Эти исследования касаются нескольких из этих тем. Они показывают лишь связи, а напоминания выше на них не основаны:',
     longItems: [
       'Что-то, что даёт внутреннюю опору: вера, молитва, медитация или время обдумать, что вы делаете',
       'Хобби или интерес, который увлекает',
@@ -139,6 +167,10 @@ const jsData = {
   capLast: copy.capLast,
   capPlan: copy.capPlan,
   tipNone: copy.tipNone,
+  longLabels: copy.longLabels,
+  longRecs: copy.longRecs,
+  longHigh: copy.longHigh,
+  longNone: copy.longNone,
   saveText: copy.saveText,
   iosHelp: copy.iosHelp,
   desktopHelp: copy.desktopHelp,
@@ -167,9 +199,20 @@ const jsData = {
   .hp-note { margin: 0 0 20px; font-size: 14px; font-weight: 600; color: var(--green); min-height: 1.4em; }
   .hp-tip { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
   .hp-tip-text { font-size: 15px; color: var(--ink); line-height: 1.6; max-width: 560px; }
-  .hp-long li { margin: 0 0 8px 18px; color: var(--mid); font-size: 14px; line-height: 1.6; }
+  .hp-lrow { padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .hp-scale { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 4px; margin-top: 8px; }
+  .hp-cell { height: 30px; border: 1.5px solid var(--border); border-radius: 7px; background: var(--white); color: var(--muted); font-family: var(--font); font-size: 11px; font-weight: 600; cursor: pointer; padding: 0; transition: all .12s var(--ease); }
+  .hp-cell:hover { border-color: var(--green); }
+  .hp-cell.on { background: var(--green); border-color: var(--green); color: #fff; }
+  @media (max-width: 600px) { .hp-cell { height: 40px; font-size: 10px; } .hp-lresult { gap: 12px; padding: 14px; } .hp-lface { font-size: 2.6rem; } }
+  .hp-lresult { display: flex; align-items: center; gap: 18px; margin-top: 22px; padding: 18px; border-radius: var(--radius); background: var(--greenbg); border: 1.5px solid #6EE7B7; }
+  .hp-lface { font-size: 3.4rem; line-height: 1; flex-shrink: 0; }
+  .hp-lbody { min-width: 0; }
+  .hp-llabel { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--green); }
+  .hp-lrec { margin-top: 10px; font-size: 15px; font-weight: 500; color: var(--ink); line-height: 1.55; }
   .hp-small { font-size: 12.5px; color: var(--muted); line-height: 1.6; }
   .hp-small a { color: var(--blue); }
+  .hp-small strong { color: var(--mid); font-weight: 600; }
   .hp-results .r-card { min-width: 0; }
   @media (max-width: 600px) { .hp-results { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; } .hp-results .r-card { padding: 14px; } .hp-strip { gap: 2px; font-size: 14px; } .hp-strip span.on { transform: scale(1.2); } }
   @media (max-width: 600px) { .hp-row { grid-template-columns: 1fr 58px 58px; } .r-card .r-value.hp-face { font-size: 2.8rem; } }
@@ -232,10 +275,29 @@ const jsData = {
 <div class="panel hp-long">
   <div class="panel-title">{copy.longTitle}</div>
   <p class="hp-small" style="margin-bottom:12px;">{copy.longIntro}</p>
-  <ul style="list-style:disc;">
-    {copy.longItems.map((t) => <li>{t}</li>)}
-  </ul>
-  <p class="hp-small" style="margin-top:14px;">{copy.studyA} <a href="https://www.hsph.harvard.edu/news/press-releases/religious-service-attendance-womens-mortality-risk/" target="_blank" rel="noopener">{copy.linkA}</a></p>
+  {copy.longItems.map((t, i) => (
+    <div class="hp-lrow">
+      <div class="hp-text">{t}</div>
+      <div class="hp-scale" role="group" aria-label={t}>
+        {Array.from({ length: 10 }, (_, k) => (
+          <button type="button" class="hp-cell" data-i={i} data-v={k + 1} aria-label={`${k + 1} / 10`}>{k + 1}</button>
+        ))}
+      </div>
+    </div>
+  ))}
+
+  <div class="hp-lresult">
+    <div class="hp-lface" id="long-face">🙂</div>
+    <div class="hp-lbody">
+      <div class="hp-llabel" id="long-label"></div>
+      <div class="hp-strip" id="long-strip">{faces.map((f) => <span>{f}</span>)}</div>
+      <div class="hp-lrec" id="long-rec"></div>
+    </div>
+  </div>
+  <p class="hp-small" style="margin-top:14px;"><strong>{copy.longDisclaimer}</strong></p>
+
+  <p class="hp-small" style="margin-top:20px;">{copy.readMore}</p>
+  <p class="hp-small" style="margin-top:6px;">{copy.studyA} <a href="https://www.hsph.harvard.edu/news/press-releases/religious-service-attendance-womens-mortality-risk/" target="_blank" rel="noopener">{copy.linkA}</a></p>
   <p class="hp-small">{copy.studyB} <a href="https://www.bu.edu/articles/2019/optimists-live-longer" target="_blank" rel="noopener">{copy.linkB}</a></p>
 </div>
 
@@ -291,6 +353,39 @@ const jsData = {
       }
     } catch (e) { /* the user closed the share sheet */ }
   });
+
+  // Habits scale: 1-10 per habit, green up to the chosen cell. The face follows the average
+  // of the rated habits; the one-liner is about the lowest-rated habit.
+  const habitVals = new Array(data.longRecs.length).fill(0);
+  function renderHabits() {
+    document.querySelectorAll('.hp-cell').forEach((c) => {
+      c.classList.toggle('on', +c.dataset.v <= habitVals[+c.dataset.i]);
+    });
+    const rated = habitVals.filter((v) => v > 0);
+    const strip = $('long-strip');
+    if (rated.length === 0) {
+      $('long-face').textContent = data.faces[2];
+      $('long-face').style.opacity = '.4';
+      $('long-label').textContent = '';
+      [...strip.children].forEach((s) => s.classList.remove('on'));
+      $('long-rec').textContent = data.longNone;
+      return;
+    }
+    const avg = rated.reduce((a, b) => a + b, 0) / rated.length;
+    const lv = avg < 2.5 ? 0 : avg < 4.5 ? 1 : avg < 6.5 ? 2 : avg < 8.5 ? 3 : 4;
+    $('long-face').style.opacity = '1';
+    $('long-face').textContent = data.faces[lv];
+    $('long-label').textContent = data.longLabels[lv];
+    [...strip.children].forEach((s, i) => s.classList.toggle('on', i === lv));
+    const min = Math.min(...rated);
+    $('long-rec').textContent = min >= 7 ? data.longHigh : data.longRecs[habitVals.indexOf(min)];
+  }
+  document.querySelectorAll('.hp-cell').forEach((c) => c.addEventListener('click', () => {
+    const i = +c.dataset.i, v = +c.dataset.v;
+    habitVals[i] = habitVals[i] === v ? 0 : v;
+    renderHabits();
+  }));
+  renderHabits();
 
   // Install as an app: the browser prompt where it exists, short instructions otherwise.
   const installBtn = $('hp-install-btn');
