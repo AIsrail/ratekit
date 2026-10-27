@@ -144,6 +144,14 @@ export const tools: Tool[] = [
       desc: 'Pick ingredients for your future: growth over 20 years, time to your first million, and what a small habit can give. Mix them into a recipe.',
       tags: ['Fun', 'Savings', 'Motivation'], badge: '🎉 New' } },
 
+  { slug: 'happiness-calculator', icon: '😊', section: 'fun', accent: 'green',
+    en: { label: 'Weekly Happiness', path: '/happiness-calculator', cardTitle: 'Weekly Happiness Calculator',
+      desc: 'A gentle weekly check-in: tick what supported you last week and what you plan for this one. Two smiley scales, no scores, nothing saved.',
+      tags: ['Well-being', 'Weekly', 'Fun'], badge: '🆕 New' },
+    ru: { label: 'Счастье на неделю', path: '/ru/happiness-calculator', cardTitle: 'Калькулятор счастья на неделю',
+      desc: 'Мягкая недельная сверка: отметьте, что поддерживало вас на прошлой неделе и что планируете на этой. Две шкалы смайликов, без баллов и сохранения.',
+      tags: ['Благополучие', 'Неделя', 'Для души'], badge: '🆕 Новое' } },
+
   // ── Startups ──
   { slug: 'safe-calculator', icon: '🚀', section: 'startups', accent: 'green',
     en: { label: 'SAFE Equity', path: '/safe-calculator', cardTitle: 'SAFE Equity Calculator',

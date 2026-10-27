@@ -27,11 +27,13 @@ interface Props {
   faq: FaqItem[];
   related: RelatedItem[];
   ogType?: 'article' | 'website';
+  /** path to a web app manifest in /public; makes the page installable as an app */
+  manifest?: string;
 }
 
 const {
   slug, lang, title, description, pageTag, pageTagColor, h1, pageSub,
-  dateModified, guideTitle, faq, related, ogType = 'article',
+  dateModified, guideTitle, faq, related, ogType = 'article', manifest,
 } = Astro.props;
 
 const tool = toolBySlug(slug);
@@ -104,6 +106,8 @@ const ldGraph = {
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/favicon-180x180.png">
+{manifest && <link rel="manifest" href={manifest}>}
+{manifest && <meta name="theme-color" content="#3756F9">}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style is:global>
@@ -454,10 +458,10 @@ select{flex:1;background:transparent;border:none;outline:none;color:var(--ink);f
       ctx.font = `${weight} ${px}px ${family}`;
     }
   }
-  async function downloadResultCard(btn) {
+  async function buildResultCard() {
     // Skip tiles hidden by the page (e.g. an ingredient that is switched off).
     const tiles = [...document.querySelectorAll('.results-row .r-card')].filter((t) => t.offsetParent !== null).slice(0, 4);
-    if (tiles.length === 0) return;
+    if (tiles.length === 0) return null;
     await document.fonts.ready;
 
     const W = 1200, H = 630, PAD = 64, GAP = 24;
@@ -512,7 +516,14 @@ select{flex:1;background:transparent;border:none;outline:none;color:var(--ink);f
     ctx.fillStyle = '#94A3B8';
     ctx.font = '600 24px ' + sans;
     ctx.fillText('ratekit.org · Free business calculators', PAD, H - 56);
+    return canvas;
+  }
+  // Pages can reuse the card (e.g. to share it as a file through the Web Share API).
+  window.rkBuildResultCard = buildResultCard;
 
+  async function downloadResultCard(btn) {
+    const canvas = await buildResultCard();
+    if (!canvas) return;
     canvas.toBlob((blob) => {
       const slug = location.pathname.replace(/^\/+|\/+$/g, '').replace(/\//g, '-') || 'home';
       const a = document.createElement('a');

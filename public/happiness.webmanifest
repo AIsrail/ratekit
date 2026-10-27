@@ -1,0 +1,17 @@
+{
+  "name": "Weekly Happiness — RateKit",
+  "short_name": "Happiness",
+  "description": "A gentle weekly check-in: tick what supported you last week and what you plan for this one.",
+  "id": "/happiness-calculator",
+  "start_url": "/happiness-calculator",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "lang": "en",
+  "background_color": "#FBFAF3",
+  "theme_color": "#3756F9",
+  "icons": [
+    { "src": "/favicon-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/favicon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

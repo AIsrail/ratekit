@@ -1,0 +1,322 @@
+---
+// Weekly happiness check-in: two columns of ticks (last week / this week's plan) and a
+// smiley scale for each. No scores, nothing stored. Shared by the EN and RU pages.
+interface Props { lang: 'en' | 'ru' }
+const { lang } = Astro.props;
+
+const faces = ['😔', '😐', '🙂', '😊', '😄'];
+
+const copy = {
+  en: {
+    panelTitle: 'Your week',
+    panelHint: 'Tick what happened last week and what you would like this week. Leave a box empty if it does not apply. There are no points and nothing is saved.',
+    lastHead: 'Last week',
+    planHead: 'This week (plan)',
+    items: [
+      { text: 'Time with someone who made me feel warmer', tip: 'Send a short message to someone you enjoy talking to.' },
+      { text: 'It was clear who I could turn to for support', tip: 'Name one person or resource you could turn to if things got hard.' },
+      { text: 'Covered the basics calmly, or solved one money task', tip: 'Pick one small money task, like checking a single subscription.' },
+      { text: 'Chose how to spend part of my time', tip: 'Block 30 minutes that are only yours to choose.' },
+      { text: 'A day of good sleep and energy', tip: 'Try going to bed 20 minutes earlier once this week.' },
+      { text: 'Did something that felt important to me', tip: 'Pick one small thing that matters to you and give it 15 minutes.' },
+      { text: 'Moments of joy, interest or calm', tip: 'Notice one thing today that made you smile, if you like.' },
+    ],
+    labels: ['Quiet week', 'Steady week', 'A week with support', 'A bright week', 'A full week'],
+    capLast: [
+      'Quiet weeks happen. Plan one small thing for this week.',
+      'A calm base to build on.',
+      'Good support in several places.',
+      'A lot went well.',
+      'A week full of good things.',
+    ],
+    capPlan: [
+      'Tick one small plan and watch the face change.',
+      'A gentle start.',
+      'A week with real support planned.',
+      'A bright week in the making.',
+      'A full week of good things planned.',
+    ],
+    tipTitle: 'One gentle idea',
+    tipBtn: 'Another idea',
+    tipNone: 'Your plans already cover everything. Enjoy the week.',
+    lastCard: 'Last week',
+    planCard: 'This week',
+    longTitle: 'Habits linked with a longer life',
+    longIntro: 'Researchers keep finding the same themes in people who live long and well. These are associations from observational studies, not guarantees, and this page does not predict how long you will live.',
+    longItems: [
+      'Something that gives inner support: faith, prayer, meditation, or time to reflect on what you do',
+      'A hobby or interest that absorbs you',
+      'Regular contact with people: friends, a club, a community',
+      'Regular, simple, healthy meals (they do not have to be expensive)',
+      'Daily movement: a walk, exercise, time outside',
+      'A hopeful outlook, without forcing positive thinking',
+      'Fewer harmful habits, at your own pace and with help if you want it',
+    ],
+    studyA: 'In the Nurses\' Health Study of 74,534 women, those who attended religious services more than once a week had about 33% lower mortality than those who never did.',
+    linkA: 'Harvard T.H. Chan summary',
+    studyB: 'A 2019 PNAS study linked higher optimism to a lifespan about 11–15% longer; the authors stress the link is correlational.',
+    linkB: 'Boston University summary',
+    saveTitle: 'Keep this moment',
+    saveIntro: 'Nothing is stored here, and each visit starts fresh. If you want to remember this week, save the card or send it to yourself or friends.',
+    saveBtn: '⬇ Save image',
+    shareBtn: '↗ Share…',
+    saveText: 'My week, from RateKit',
+    installTitle: 'Put it on your phone or desktop',
+    installIntro: 'Add the weekly check-in as an app, so it is one tap away.',
+    installBtn: '📲 Install app',
+    iosHelp: 'On iPhone: tap the Share button in Safari, then "Add to Home Screen".',
+    desktopHelp: 'In Chrome or Edge, use the install icon in the address bar, or open the browser menu and choose "Install".',
+    installedText: 'Installed. You can open it from your home screen or desktop.',
+    disclaimer: 'This is a self-reflection tool, not a medical or psychological assessment. It reflects only what you tick today. If you are struggling for a long time, consider talking to a qualified professional.',
+  },
+  ru: {
+    panelTitle: 'Ваша неделя',
+    panelHint: 'Отметьте, что было на прошлой неделе и что хочется на этой. Если пункт не про вас, оставьте клетку пустой. Баллов нет, ничего не сохраняется.',
+    lastHead: 'Прошлая неделя',
+    planHead: 'Эта неделя (план)',
+    items: [
+      { text: 'Было общение, после которого стало теплее', tip: 'Отправьте короткое сообщение тому, с кем приятно общаться.' },
+      { text: 'Было понятно, к кому обратиться за поддержкой', tip: 'Назовите одного человека или ресурс, к которому можно обратиться, если станет трудно.' },
+      { text: 'Спокойно покрывались основные расходы или решена одна денежная задача', tip: 'Выберите одну небольшую денежную задачу, например проверить одну подписку.' },
+      { text: 'Сам выбрал, как провести часть времени', tip: 'Выделите 30 минут, которые вы тратите только по своему выбору.' },
+      { text: 'Был день с хорошим сном и энергией', tip: 'Попробуйте один раз на этой неделе лечь на 20 минут раньше.' },
+      { text: 'Получилось сделать что-то важное для себя', tip: 'Выберите одно небольшое важное дело и уделите ему 15 минут.' },
+      { text: 'Были моменты радости, интереса или спокойствия', tip: 'Заметьте сегодня одну вещь, от которой вы улыбнулись, если хочется.' },
+    ],
+    labels: ['Тихая неделя', 'Спокойная неделя', 'Неделя с опорой', 'Светлая неделя', 'Полная неделя'],
+    capLast: [
+      'Тихие недели бывают. Запланируйте одну небольшую вещь на эту неделю.',
+      'Спокойная основа, на которую можно опереться.',
+      'Хорошая опора сразу в нескольких местах.',
+      'Многое получилось.',
+      'Неделя, полная хорошего.',
+    ],
+    capPlan: [
+      'Отметьте один небольшой план, и лицо изменится.',
+      'Мягкое начало.',
+      'Неделя, в которую заложена настоящая опора.',
+      'Складывается светлая неделя.',
+      'Запланирована неделя, полная хорошего.',
+    ],
+    tipTitle: 'Одна мягкая идея',
+    tipBtn: 'Другая идея',
+    tipNone: 'Ваши планы уже покрывают всё. Хорошей недели.',
+    lastCard: 'Прошлая неделя',
+    planCard: 'Эта неделя',
+    longTitle: 'Привычки, связанные с долгой жизнью',
+    longIntro: 'Исследователи снова и снова находят одни и те же темы у людей, которые живут долго и хорошо. Это связи из наблюдательных исследований, а не гарантии, и эта страница не предсказывает, сколько вы проживёте.',
+    longItems: [
+      'Что-то, что даёт внутреннюю опору: вера, молитва, медитация или время обдумать, что вы делаете',
+      'Хобби или интерес, который увлекает',
+      'Регулярное общение с людьми: друзья, клуб, община',
+      'Регулярная простая здоровая еда (она не обязана быть дорогой)',
+      'Ежедневное движение: прогулка, зарядка, время на улице',
+      'Надежда и взгляд вперёд, без принуждения к позитивному мышлению',
+      'Меньше вредных привычек, в своём темпе и с помощью, если хочется',
+    ],
+    studyA: 'В исследовании Nurses\' Health Study с 74 534 женщинами те, кто посещал религиозные службы чаще раза в неделю, имели смертность примерно на 33% ниже, чем те, кто не ходил никогда.',
+    linkA: 'Сводка Harvard T.H. Chan (на английском)',
+    studyB: 'Исследование PNAS 2019 года связало более высокий оптимизм с продолжительностью жизни примерно на 11–15% больше; авторы подчёркивают, что это корреляция.',
+    linkB: 'Сводка Boston University (на английском)',
+    saveTitle: 'Сохранить этот момент',
+    saveIntro: 'Здесь ничего не хранится, и каждый раз всё начинается заново. Если хотите запомнить эту неделю, сохраните карточку или отправьте её себе или друзьям.',
+    saveBtn: '⬇ Сохранить картинку',
+    shareBtn: '↗ Поделиться…',
+    saveText: 'Моя неделя, RateKit',
+    installTitle: 'Поставить на телефон или рабочий стол',
+    installIntro: 'Добавьте недельную сверку как приложение, чтобы она была под рукой.',
+    installBtn: '📲 Установить приложение',
+    iosHelp: 'На iPhone: нажмите «Поделиться» в Safari, затем «На экран “Домой”».',
+    desktopHelp: 'В Chrome или Edge нажмите значок установки в адресной строке или откройте меню браузера и выберите «Установить».',
+    installedText: 'Установлено. Откройте приложение с главного экрана или рабочего стола.',
+    disclaimer: 'Это инструмент для самонаблюдения, а не медицинская или психологическая оценка. Он отражает только то, что вы отметили сегодня. Если вам долго тяжело, подумайте о разговоре с квалифицированным специалистом.',
+  },
+}[lang];
+
+const jsData = {
+  faces,
+  labels: copy.labels,
+  capLast: copy.capLast,
+  capPlan: copy.capPlan,
+  tipNone: copy.tipNone,
+  saveText: copy.saveText,
+  iosHelp: copy.iosHelp,
+  desktopHelp: copy.desktopHelp,
+  installedText: copy.installedText,
+  tips: copy.items.map((i) => i.tip),
+};
+---
+<style is:global>
+  html body { background: radial-gradient(circle at 8% 8%, #FFE9A8 0, transparent 40%), radial-gradient(circle at 94% 10%, #BDEBFF 0, transparent 42%), radial-gradient(circle at 52% 104%, #C9F5D9 0, transparent 52%), #FBFAF3; background-attachment: fixed; }
+  html .page-header { background: transparent; border-bottom: none; }
+  html .page-header::before { display: none; }
+  .r-card .r-value.hp-face { font-size: 3.4rem; line-height: 1.15; font-family: inherit; }
+  .hp-strip { display: flex; gap: 6px; margin-top: 12px; font-size: 20px; }
+  .hp-strip span { opacity: .3; transition: opacity .2s var(--ease), transform .2s var(--ease); }
+  .hp-strip span.on { opacity: 1; transform: scale(1.3); }
+  .hp-row { display: grid; grid-template-columns: 1fr 84px 84px; gap: 8px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .hp-row:last-child { border-bottom: none; }
+  .hp-head { padding-top: 0; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); text-align: center; }
+  .hp-head span:first-child { text-align: left; }
+  .hp-text { font-size: 14px; color: var(--ink); line-height: 1.45; }
+  .hp-chk { appearance: none; -webkit-appearance: none; width: 30px; height: 30px; border: 2px solid var(--border); border-radius: 9px; background: var(--white); cursor: pointer; display: grid; place-content: center; justify-self: center; transition: all .15s var(--ease); }
+  .hp-chk::after { content: '✓'; font-size: 18px; font-weight: 700; color: #fff; transform: scale(0); transition: transform .15s var(--ease); }
+  .hp-chk:checked { background: var(--green); border-color: var(--green); }
+  .hp-chk.plan:checked { background: var(--blue); border-color: var(--blue); }
+  .hp-chk:checked::after { transform: scale(1); }
+  .hp-note { margin: 0 0 20px; font-size: 14px; font-weight: 600; color: var(--green); min-height: 1.4em; }
+  .hp-tip { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+  .hp-tip-text { font-size: 15px; color: var(--ink); line-height: 1.6; max-width: 560px; }
+  .hp-long li { margin: 0 0 8px 18px; color: var(--mid); font-size: 14px; line-height: 1.6; }
+  .hp-small { font-size: 12.5px; color: var(--muted); line-height: 1.6; }
+  .hp-small a { color: var(--blue); }
+  .hp-results .r-card { min-width: 0; }
+  @media (max-width: 600px) { .hp-results { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; } .hp-results .r-card { padding: 14px; } .hp-strip { gap: 2px; font-size: 14px; } .hp-strip span.on { transform: scale(1.2); } }
+  @media (max-width: 600px) { .hp-row { grid-template-columns: 1fr 58px 58px; } .r-card .r-value.hp-face { font-size: 2.8rem; } }
+</style>
+
+<div class="results-row hp-results">
+  <div class="r-card highlight">
+    <div class="r-label">{copy.lastCard}</div>
+    <div class="r-value hp-face" id="face-last">{faces[0]}</div>
+    <div class="r-sub" id="lbl-last">{copy.labels[0]}</div>
+    <div class="hp-strip" id="strip-last">{faces.map((f) => <span>{f}</span>)}</div>
+    <div class="r-sub" id="cap-last"></div>
+  </div>
+  <div class="r-card">
+    <div class="r-label">{copy.planCard}</div>
+    <div class="r-value hp-face" id="face-plan">{faces[0]}</div>
+    <div class="r-sub" id="lbl-plan">{copy.labels[0]}</div>
+    <div class="hp-strip" id="strip-plan">{faces.map((f) => <span>{f}</span>)}</div>
+    <div class="r-sub" id="cap-plan"></div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-title">{copy.panelTitle}</div>
+  <p class="hp-small" style="margin:-8px 0 14px;">{copy.panelHint}</p>
+  <div class="hp-row hp-head"><span>&nbsp;</span><span>{copy.lastHead}</span><span>{copy.planHead}</span></div>
+  {copy.items.map((it, i) => (
+    <div class="hp-row">
+      <div class="hp-text">{it.text}</div>
+      <input type="checkbox" class="hp-chk last" aria-label={`${it.text}: ${copy.lastHead}`}>
+      <input type="checkbox" class="hp-chk plan" aria-label={`${it.text}: ${copy.planHead}`}>
+    </div>
+  ))}
+</div>
+
+<div class="panel">
+  <div class="panel-title">{copy.tipTitle}</div>
+  <div class="hp-tip">
+    <div class="hp-tip-text" id="hp-tip-text"></div>
+    <button class="share-btn" id="hp-tip-btn" type="button">{copy.tipBtn}</button>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-title">{copy.saveTitle}</div>
+  <p class="hp-small" style="margin-bottom:14px;">{copy.saveIntro}</p>
+  <div class="share-btns">
+    <button class="share-btn" id="hp-save-btn" type="button">{copy.saveBtn}</button>
+    <button class="share-btn" id="hp-share-btn" type="button">{copy.shareBtn}</button>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-title">{copy.installTitle}</div>
+  <p class="hp-small" style="margin-bottom:14px;">{copy.installIntro}</p>
+  <button class="share-btn pdf-btn" id="hp-install-btn" type="button">{copy.installBtn}</button>
+  <p class="hp-small" id="hp-install-help" style="margin-top:12px;" aria-live="polite"></p>
+</div>
+
+<div class="panel hp-long">
+  <div class="panel-title">{copy.longTitle}</div>
+  <p class="hp-small" style="margin-bottom:12px;">{copy.longIntro}</p>
+  <ul style="list-style:disc;">
+    {copy.longItems.map((t) => <li>{t}</li>)}
+  </ul>
+  <p class="hp-small" style="margin-top:14px;">{copy.studyA} <a href="https://www.hsph.harvard.edu/news/press-releases/religious-service-attendance-womens-mortality-risk/" target="_blank" rel="noopener">{copy.linkA}</a></p>
+  <p class="hp-small">{copy.studyB} <a href="https://www.bu.edu/articles/2019/optimists-live-longer" target="_blank" rel="noopener">{copy.linkB}</a></p>
+</div>
+
+<p class="hp-small" style="margin-bottom:20px;">{copy.disclaimer}</p>
+
+<script type="application/json" id="hp-data" set:html={JSON.stringify(jsData)} />
+
+<script>
+  const data = JSON.parse(document.getElementById('hp-data').textContent);
+  const $ = (id) => document.getElementById(id);
+  const column = (cls) => [...document.querySelectorAll('.hp-chk.' + cls)].map((b) => b.checked);
+  const count = (arr) => arr.filter(Boolean).length;
+  // 0 ticks is the starting face; 1-2, 3-4, 5-6 and 7 step it up.
+  const level = (n) => (n === 0 ? 0 : n <= 2 ? 1 : n <= 4 ? 2 : n <= 6 ? 3 : 4);
+  let tipOffset = 0;
+
+  function paint(which, n, captions) {
+    const lv = level(n);
+    $('face-' + which).textContent = data.faces[lv];
+    $('lbl-' + which).textContent = data.labels[lv];
+    $('cap-' + which).textContent = captions[lv];
+    [...$('strip-' + which).children].forEach((s, i) => s.classList.toggle('on', i === lv));
+  }
+
+  function render() {
+    const last = column('last');
+    const plan = column('plan');
+    const nLast = count(last), nPlan = count(plan);
+    paint('last', nLast, data.capLast);
+    paint('plan', nPlan, data.capPlan);
+    const open = last.map((v, i) => (!v && !plan[i] ? i : -1)).filter((i) => i >= 0);
+    $('hp-tip-text').textContent = open.length ? data.tips[open[tipOffset % open.length]] : data.tipNone;
+    $('hp-tip-btn').style.display = open.length > 1 ? '' : 'none';
+  }
+
+  document.querySelectorAll('.hp-chk').forEach((b) => b.addEventListener('change', render));
+  $('hp-tip-btn').addEventListener('click', () => { tipOffset += 1; render(); });
+
+  // Save / share the result card (built by the layout from the two face tiles).
+  $('hp-save-btn').addEventListener('click', () => document.getElementById('card-btn')?.click());
+  $('hp-share-btn').addEventListener('click', async () => {
+    const shareData = { title: document.title, text: data.saveText, url: location.href };
+    try {
+      const canvas = await window.rkBuildResultCard?.();
+      const blob = canvas ? await new Promise((r) => canvas.toBlob(r, 'image/png')) : null;
+      const file = blob ? new File([blob], 'ratekit-week.png', { type: 'image/png' }) : null;
+      if (file && navigator.canShare?.({ files: [file] })) {
+        await navigator.share({ ...shareData, files: [file] });
+      } else if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        document.getElementById('card-btn')?.click();
+      }
+    } catch (e) { /* the user closed the share sheet */ }
+  });
+
+  // Install as an app: the browser prompt where it exists, short instructions otherwise.
+  const installBtn = $('hp-install-btn');
+  const installHelp = $('hp-install-help');
+  let deferredPrompt = null;
+  const installed = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  if (installed) {
+    installBtn.style.display = 'none';
+    installHelp.textContent = data.installedText;
+  }
+  window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
+  window.addEventListener('appinstalled', () => {
+    installBtn.style.display = 'none';
+    installHelp.textContent = data.installedText;
+    deferredPrompt = null;
+  });
+  installBtn.addEventListener('click', async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      return;
+    }
+    const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    installHelp.textContent = ios ? data.iosHelp : data.desktopHelp;
+  });
+
+  render();
+</script>

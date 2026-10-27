@@ -1,0 +1,46 @@
+---
+import ToolLayout from '../layouts/ToolLayout.astro';
+import HappinessWeek from '../components/HappinessWeek.astro';
+
+const faq = [
+  { q: 'Is anything saved or sent?',
+    a: 'No. Your ticks stay on the page and disappear when you close or reload it. Nothing is sent to a server.' },
+  { q: 'Why are there no scores?',
+    a: 'Points turn a reflection into a test. Ticks only show what was there last week and what you would like this week, and the faces are a gentle picture of that, not a verdict on you.' },
+  { q: 'Why two columns?',
+    a: 'Looking back shows what already supports you. Planning gives you a small say in the coming week. Both are in your hands, so any week can end with a smile.' },
+  { q: 'Does this predict how long I will live?',
+    a: 'No. The list of habits under the calculator is based on observational studies that link certain habits with longer lives. They show associations, not guarantees.' },
+];
+
+const related = [
+  { label: 'Future Cocktail', path: '/future-cocktail' },
+  { label: 'Budget & Cash Flow Calculator', path: '/budget-calculator' },
+  { label: 'Burn Rate & Runway Calculator', path: '/burn-rate' },
+];
+---
+<ToolLayout
+  slug="happiness-calculator"
+  lang="en"
+  title="Weekly Happiness Calculator"
+  description="A gentle weekly check-in: tick what supported you last week and what you plan for this week, and see a smiley scale for each. No scores, nothing saved."
+  pageTag="😊 Weekly Check-in"
+  pageTagColor="var(--green)"
+  h1="Weekly Happiness Calculator"
+  pageSub="Tick what supported you last week and what you would like this week. Two smiley scales show the picture, with no scores and nothing saved."
+  dateModified="2026-10-27"
+  guideTitle="How the weekly check-in works"
+  manifest="/happiness.webmanifest"
+  faq={faq}
+  related={related}
+>
+  <HappinessWeek lang="en" />
+
+  <Fragment slot="guide">
+    <p>Seven short statements cover things that research links with well-being: close contact with people, knowing where support is, calm about the basics, a say over your time, sleep and energy, a sense of meaning, and moments of joy. You tick what was true last week and what you would like to be true this week. Leave a box empty if it does not apply, because there is no right answer.</p>
+    <h3>The two scales</h3>
+    <p>Each column has its own smiley scale. The face moves up as you tick more, and the first face is only the starting point, not a judgement. Because plans are yours to choose, the second scale is always one you can move.</p>
+    <h3>Limits</h3>
+    <p>This is a self-reflection tool, not a validated psychological scale. The faces describe your ticks, nothing more. If you are struggling for a long time, a qualified professional can help.</p>
+  </Fragment>
+</ToolLayout>

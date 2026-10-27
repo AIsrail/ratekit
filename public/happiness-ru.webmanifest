@@ -1,0 +1,17 @@
+{
+  "name": "Счастье на неделю — RateKit",
+  "short_name": "Счастье",
+  "description": "Мягкая недельная сверка: отметьте, что поддерживало вас на прошлой неделе и что планируете на этой.",
+  "id": "/ru/happiness-calculator",
+  "start_url": "/ru/happiness-calculator",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "lang": "ru",
+  "background_color": "#FBFAF3",
+  "theme_color": "#3756F9",
+  "icons": [
+    { "src": "/favicon-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/favicon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
