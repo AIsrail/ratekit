@@ -1,5 +1,6 @@
 ---
 import InfoLayout from '../layouts/InfoLayout.astro';
+import { projects, projectUrl } from '../data/projects';
 ---
 <InfoLayout
   path="/about"
@@ -40,6 +41,15 @@ import InfoLayout from '../layouts/InfoLayout.astro';
   <h2>Who's Behind RateKit</h2>
   <p>RateKit is built and maintained by <strong>Azat Israilov</strong>. You can see my other work at <a href="https://azatisrail.org" target="_blank" rel="noopener">azatisrail.org</a>.</p>
   <p>I'm open to suggestions, bug reports, and ideas for what to build next — email me directly at <a href="mailto:connect4fund@gmail.com">connect4fund@gmail.com</a>.</p>
+
+  <h2>Our Projects</h2>
+  <p>RateKit is one of several sites built by the same team. Each is available in English and Russian:</p>
+  <ul>
+    <li><strong>RateKit</strong> (this site) — business calculators for founders and business owners, and now much more.</li>
+    {projects.map((p) => (
+      <li><a href={projectUrl(p.url, 'about')} target="_blank" rel="noopener">{p.name}</a> — {p.en}</li>
+    ))}
+  </ul>
 
   <h2>Contact Us</h2>
   <p>Have a suggestion for a new calculator? Found a bug? Just want to say hi?</p>
