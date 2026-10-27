@@ -274,12 +274,25 @@ const jsData = {
 
   const exprText = (arr) => arr.map((t) => (typeof t === 'number' ? pretty(fmtNum(t)) : SYMBOL[t])).join(' ');
 
+  // Write text into an element; the accessibility page can ask for one span per character.
+  function put(el, text) {
+    if (!window.rkChars) { el.textContent = text; return; }
+    el.textContent = '';
+    [...text].forEach((ch, i) => {
+      const s = document.createElement('span');
+      s.className = 'al-ch';
+      s.style.setProperty('--i', String(i));
+      s.textContent = ch;
+      el.appendChild(s);
+    });
+  }
+
   function show(msg) {
     $('pc-msg').textContent = msg || '';
     const main = pretty(cur);
-    $('pc-main').textContent = main;
+    put($('pc-main'), main);
     $('pc-main').style.fontSize = main.length > 14 ? '1.7rem' : main.length > 11 ? '2.1rem' : main.length > 8 ? '2.6rem' : '';
-    $('pc-sub').textContent = exprText(tokens);
+    put($('pc-sub'), exprText(tokens));
   }
 
   function press(type, v) {
@@ -349,10 +362,10 @@ const jsData = {
       line.dataset.res = row.res;
       const e = document.createElement('div');
       e.className = 'pc-expr';
-      e.textContent = row.expr + ' =';
+      put(e, row.expr + ' =');
       const r = document.createElement('div');
       r.className = 'pc-res';
-      r.textContent = pretty(row.res);
+      put(r, pretty(row.res));
       line.append(e, r);
       box.appendChild(line);
     });

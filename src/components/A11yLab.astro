@@ -43,6 +43,11 @@ const copy = {
       ['graph', 'Dysgraphia: small, tight keys'],
     ],
     diffNote: 'A simplified picture of what can be hard, not of how it feels. Choosing one of these resets the vision and colour settings above.',
+    diffNotes: {
+      dys: 'Digits sway and flip, look-alike keys change shape (6 and 9, 2 and 5, 3), and the text is crowded.',
+      calc: 'Numbers lose their grouping, + looks like ×, all keys look alike, the working line disappears and the tape fades.',
+      graph: 'Keys are tiny and tight, and taps land slightly off target, so some presses miss. The keyboard still works.',
+    },
     helpTitle: 'Reading, numbers and writing',
     helpIntro: 'These conditions are not something a filter can show. Instead, here is what can be hard and what can help. Switch a helper on and it changes the calculator above.',
     hard: 'Can be hard',
@@ -115,6 +120,11 @@ const copy = {
       ['graph', 'Дисграфия: мелкие тесные клавиши'],
     ],
     diffNote: 'Упрощённая картинка того, что может быть трудно, а не того, как это ощущается. Выбор одного из вариантов сбрасывает настройки зрения и цвета выше.',
+    diffNotes: {
+      dys: 'Цифры качаются и переворачиваются, похожие клавиши меняют форму (6 и 9, 2 и 5, 3), а текст сжат.',
+      calc: 'Числа теряют группировку, + похож на ×, все клавиши выглядят одинаково, строка вычислений пропадает, а лента бледнеет.',
+      graph: 'Клавиши крошечные и тесные, нажатия попадают с небольшой погрешностью, поэтому часть нажатий мимо. Клавиатура работает как обычно.',
+    },
     helpTitle: 'Чтение, числа и письмо',
     helpIntro: 'Эти особенности нельзя показать фильтром. Поэтому здесь описано, что может быть трудно и что может помочь. Включите помощник, и калькулятор выше изменится.',
     hard: 'Что может быть трудно',
@@ -164,6 +174,7 @@ const jsData = {
   visionNames: Object.fromEntries(copy.vision),
   colorNames: Object.fromEntries(copy.color),
   diffNames: Object.fromEntries(copy.diff),
+  diffNotes: copy.diffNotes,
   normal: copy.vision[0][1],
 };
 ---
@@ -233,6 +244,28 @@ const jsData = {
   .al-view.d-graph .pc-mini, .al-view.d-graph .pc-theme { transform: scale(.8); }
   .al-view.d-calc .pc-main { letter-spacing: .02em; }
 
+  /* Stronger, clearly illustrative versions (see the disclaimer at the top). */
+  .al-lab { display: inline-block; }
+  @keyframes al-swim { 0%, 100% { transform: translateY(0) rotate(0); } 25% { transform: translateY(-3px) rotate(-9deg); } 50% { transform: translateY(2px) rotate(7deg); } 75% { transform: translateY(-2px) rotate(-5deg); } }
+  .al-view.d-dys .al-ch, .al-view.d-dys .pc-key .al-lab { display: inline-block; animation: al-swim 2.4s ease-in-out infinite; }
+  .al-view.d-dys .al-ch { animation-delay: calc(var(--i, 0) * -.37s); }
+  .al-view.d-dys .al-ch:nth-child(3n+2) { scale: -1 1; }
+  .al-view.d-dys .pc-key:nth-child(odd) .al-lab { animation-delay: -1.2s; }
+  .al-view.d-dys .pc-key[data-v="6"] .al-lab, .al-view.d-dys .pc-key[data-v="9"] .al-lab { rotate: 180deg; }
+  .al-view.d-dys .pc-key[data-v="2"] .al-lab, .al-view.d-dys .pc-key[data-v="5"] .al-lab, .al-view.d-dys .pc-key[data-v="3"] .al-lab { scale: -1 1; }
+  .al-view.d-dys .pc-main { font-size: 3.4rem; }
+  @media (prefers-reduced-motion: reduce) { .al-view.d-dys .al-ch, .al-view.d-dys .pc-key .al-lab { animation: none; } }
+
+  .al-view.d-calc .pc-key, .al-view.d-calc .pc-key.fn, .al-view.d-calc .pc-key.op, .al-view.d-calc .pc-key.eq { background: #E7EAF0; color: #8B95A7; box-shadow: 0 6px 0 #CDD3DE, 0 12px 18px rgba(0, 0, 0, .06); }
+  .al-view.d-calc .pc-key[data-v="+"] .al-lab { rotate: 45deg; }
+  .al-view.d-calc .pc-sub { visibility: hidden; }
+  .al-view.d-calc .pc-lines { opacity: .14; }
+  .al-view.d-calc .pc-main { letter-spacing: .06em; }
+
+  .al-view.d-graph .pc-keys { gap: 2px; }
+  .al-view.d-graph .pc-key { min-height: 26px; font-size: .85rem; border-radius: 7px; }
+  .al-view.d-graph .pc-display { min-height: 96px; }
+
   /* Helper modes applied to the calculator */
   .al-view.m-dys .pc-main, .al-view.m-dys .pc-sub, .al-view.m-dys .pc-res, .al-view.m-dys .pc-expr, .al-view.m-dys .pc-key { font-family: Verdana, Tahoma, 'Trebuchet MS', sans-serif; letter-spacing: .1em; font-variant-numeric: slashed-zero; }
   .al-view.m-dys .pc-main { font-size: 3.2rem; line-height: 1.4; }
@@ -280,6 +313,7 @@ const jsData = {
       {copy.diff.map(([id, name]) => <button type="button" class="al-chip" data-diff={id} aria-pressed={id === 'normal' ? 'true' : 'false'}>{name}</button>)}
     </div>
     <p class="al-note">{copy.diffNote}</p>
+    <p class="al-note" id="al-modenote" aria-live="polite" style="font-weight:600;color:var(--ink);"></p>
   </div>
   <div class="al-bar">
     <span>{copy.viewing}: <strong id="al-now"></strong></span>
@@ -360,12 +394,18 @@ const jsData = {
     lowcontrast: { f: 'contrast(.35) brightness(1.1)', o: '' },
   };
   let vision = 'normal', color = 'normal', diff = 'normal';
+  let jitterOn = false;
   const DIFF_CLASS = { dys: 'd-dys', calc: 'd-calc', graph: 'd-graph' };
 
   function apply() {
     Object.values(DIFF_CLASS).forEach((c) => view.classList.toggle(c, DIFF_CLASS[diff] === c));
-    const plain = diff === 'calc';
-    if (!!window.rkPlain !== plain) { window.rkPlain = plain; if (window.rkRefresh) window.rkRefresh(); }
+    const plain = diff === 'calc', chars = diff === 'dys';
+    let changed = false;
+    if (!!window.rkPlain !== plain) { window.rkPlain = plain; changed = true; }
+    if (!!window.rkChars !== chars) { window.rkChars = chars; changed = true; }
+    if (changed && window.rkRefresh) window.rkRefresh();
+    jitterOn = diff === 'graph';
+    $('al-modenote').textContent = diff === 'normal' ? '' : data.diffNotes[diff];
     document.querySelectorAll('[data-diff]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.diff === diff)));
     const parts = [];
     if (color !== 'normal') parts.push(`url(#cvd-${color})`);
@@ -439,6 +479,27 @@ const jsData = {
     if (mode === 'place') $('al-place-panel').hidden = !on;
     else view.classList.toggle(mode, on);
   }));
+
+  // Wrap each key label so single characters can be flipped, rotated or animated.
+  document.querySelectorAll('.pc-key').forEach((k) => {
+    const label = k.textContent;
+    k.textContent = '';
+    const s = document.createElement('span');
+    s.className = 'al-lab';
+    s.textContent = label;
+    k.appendChild(s);
+  });
+
+  // Dysgraphia view: taps land slightly off target, so some presses hit a neighbour or miss.
+  document.querySelector('.pc-keys').addEventListener('click', (e) => {
+    if (!jitterOn || !e.isTrusted || e.detail === 0) return; // keyboard presses are left alone
+    const a = Math.random() * Math.PI * 2, r = 8 + Math.random() * 16;
+    const hit = document.elementFromPoint(e.clientX + Math.cos(a) * r, e.clientY + Math.sin(a) * r);
+    const key = hit && hit.closest ? hit.closest('.pc-key') : null;
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    if (key) key.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+  }, true);
 
   apply();
 </script>
