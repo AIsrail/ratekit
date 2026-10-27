@@ -57,6 +57,7 @@ Plain-English definitions for 20 business/finance terms, each linked to the calc
 - [About RateKit](https://ratekit.org/about): RateKit is a collection of free business calculators for founders, freelancers and entrepreneurs. No signup, no data stored.
 - [Break-even Calculator](https://ratekit.org/break-even): Calculate your break-even point in units and revenue. Find out how many sales you need to cover fixed and variable costs. Free tool for businesses and startups.
 - [Budget & Cash Flow Calculator](https://ratekit.org/budget-calculator): Plan a monthly budget, forecast 12-month cash flow, and calculate runway. Revenue, fixed/variable costs, profit scenarios. Free tool for founders.
+- [Pebble Calculator](https://ratekit.org/calculator): A calm everyday calculator with a paper tape, four themes and keyboard support. Installable as an app and works offline.
 - [Weekly Happiness Calculator](https://ratekit.org/happiness-calculator): A gentle weekly check-in. Tick what supported you last week and what you plan for this week; two smiley scales, no scores, nothing saved.
 - [Future Cocktail](https://ratekit.org/future-cocktail): Mix ingredients for your future: growth over 20 years, time to a first million, and what a small habit can give. Produces a shareable recipe.
 - [AI Token Cost Calculator](https://ratekit.org/ai-token-calculator): Estimate monthly AI API spend from tokens, chat history and caching. Compare prompt caching, shorter answers, trimmed history and model routing.

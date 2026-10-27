@@ -47,6 +47,14 @@ export const tools: Tool[] = [
       desc: 'Мягкая недельная сверка: отметьте, что поддерживало вас на прошлой неделе и что планируете на этой. Две шкалы смайликов, без баллов и сохранения.',
       tags: ['Благополучие', 'Неделя', 'Для души'], badge: '🆕 Новое' } },
 
+  { slug: 'calculator', icon: '🧮', section: 'featured', accent: 'blue',
+    en: { label: 'Pebble Calculator', path: '/calculator', cardTitle: 'Pebble Calculator',
+      desc: 'A calm, good-looking calculator with a paper tape and four themes. Install it as an app and it works offline.',
+      tags: ['Everyday', 'Offline', 'App'], badge: '🆕 New' },
+    ru: { label: 'Калькулятор «Галька»', path: '/ru/calculator', cardTitle: 'Калькулятор «Галька»',
+      desc: 'Спокойный и красивый калькулятор с бумажной лентой и четырьмя темами. Установите как приложение, и он работает без интернета.',
+      tags: ['На каждый день', 'Офлайн', 'Приложение'], badge: '🆕 Новое' } },
+
   // ── Freelancers ──
   { slug: 'freelance-rate', icon: '💰', section: 'freelancers', accent: 'blue',
     en: { label: 'Freelance Rate', path: '/freelance-rate', cardTitle: 'Freelance Rate Calculator',

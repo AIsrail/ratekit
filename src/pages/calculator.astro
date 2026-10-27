@@ -1,0 +1,46 @@
+---
+import ToolLayout from '../layouts/ToolLayout.astro';
+import CalcApp from '../components/CalcApp.astro';
+
+const faq = [
+  { q: 'Does the calculator work without internet?',
+    a: 'Yes, after the first visit. The page keeps its files on your device, so it opens offline in the browser or as an installed app. The very first visit needs a connection.' },
+  { q: 'How do I put it on my phone or desktop?',
+    a: 'Use the Install button below the calculator. In Chrome and Edge the browser asks to install it. On iPhone, tap Share in Safari and choose Add to Home Screen.' },
+  { q: 'Is my tape saved anywhere?',
+    a: 'Only in your own browser, on this device. Nothing is sent to a server. Use Clear tape to remove it.' },
+  { q: 'How does the percent key work?',
+    a: 'On its own it divides the number by 100. After plus or minus it takes that share of the first number, so 200 + 10% gives 220.' },
+];
+
+const related = [
+  { label: 'Weekly Happiness Calculator', path: '/happiness-calculator' },
+  { label: 'Profit Margin Calculator', path: '/profit-margin' },
+  { label: 'VAT / GST Calculator', path: '/vat-calculator' },
+];
+---
+<ToolLayout
+  slug="calculator"
+  lang="en"
+  title="Pebble Calculator with Paper Tape"
+  description="A calm, good-looking online calculator with a paper tape, four themes and keyboard support. Install it as an app and it also works offline."
+  pageTag="🧮 Everyday Tool"
+  pageTagColor="var(--blue)"
+  h1="Pebble Calculator"
+  pageSub="A plain calculator that is a pleasure to use: soft keys, a paper tape that remembers your sums, four themes. Install it and it works offline."
+  dateModified="2026-10-27"
+  guideTitle="About this calculator"
+  manifest="/calculator.webmanifest"
+  faq={faq}
+  related={related}
+>
+  <CalcApp lang="en" />
+
+  <Fragment slot="guide">
+    <p>Pebble Calculator does the everyday sums: add, subtract, multiply, divide, percent and plus-or-minus. Multiplication and division are done before addition and subtraction, as in a written sum, so 2 + 3 × 4 gives 14.</p>
+    <h3>The paper tape</h3>
+    <p>Every finished sum is printed on the tape. Tap a result to bring it back, copy the whole tape as text, or save it as an image to send or keep. The tape is stored only in your browser.</p>
+    <h3>Offline and as an app</h3>
+    <p>After your first visit the page keeps what it needs on your device. Install it from the button below the calculator and it opens from your home screen or desktop, with or without internet.</p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,505 @@
+---
+// Pebble Calculator: a plain calculator with a paper tape, soft keys and four themes.
+// Works offline once cached (see /sw.js). Shared by the EN and RU pages.
+interface Props { lang: 'en' | 'ru' }
+const { lang } = Astro.props;
+
+const copy = {
+  en: {
+    tapeTitle: 'Paper tape',
+    tapeEmpty: 'Your calculations will print here. Tap a result to bring it back.',
+    copyResult: 'Copy result',
+    copyTape: 'Copy tape',
+    saveTape: 'Save image',
+    clearTape: 'Clear tape',
+    sound: 'Sound',
+    soundOn: 'Sound on',
+    soundOff: 'Sound off',
+    themes: { pebble: 'Pebble', sunset: 'Sunset', ocean: 'Ocean', night: 'Night' },
+    themeLabel: 'Theme',
+    divZero: "Can't divide by zero. Try another number.",
+    copied: 'Copied',
+    nothing: 'Nothing to copy yet',
+    keyboard: 'The keyboard works too: digits, + − * /, Enter, Backspace, Esc. The tape stays on this device only.',
+    installTitle: 'Keep it on your phone or desktop',
+    installIntro: 'Install the calculator as an app. After the first visit it also opens without internet.',
+    installBtn: '📲 Install app',
+    iosHelp: 'On iPhone: tap the Share button in Safari, then "Add to Home Screen".',
+    desktopHelp: 'In Chrome or Edge, use the install icon in the address bar, or open the browser menu and choose "Install".',
+    installedText: 'Installed. You can open it from your home screen or desktop.',
+    offlineReady: '✓ Ready to work offline',
+    offlineChecking: 'Preparing offline mode…',
+    aria: { clear: 'Clear', back: 'Backspace', pct: 'Percent', div: 'Divide', mul: 'Multiply', sub: 'Subtract', add: 'Add', neg: 'Plus or minus', dot: 'Decimal point', eq: 'Equals' },
+    tapeHeading: 'RateKit · Pebble Calculator',
+  },
+  ru: {
+    tapeTitle: 'Бумажная лента',
+    tapeEmpty: 'Здесь будут печататься ваши вычисления. Нажмите на результат, чтобы вернуть его.',
+    copyResult: 'Копировать результат',
+    copyTape: 'Копировать ленту',
+    saveTape: 'Сохранить картинку',
+    clearTape: 'Очистить ленту',
+    sound: 'Звук',
+    soundOn: 'Звук включён',
+    soundOff: 'Звук выключен',
+    themes: { pebble: 'Галька', sunset: 'Закат', ocean: 'Океан', night: 'Ночь' },
+    themeLabel: 'Тема',
+    divZero: 'На ноль делить нельзя. Попробуйте другое число.',
+    copied: 'Скопировано',
+    nothing: 'Пока нечего копировать',
+    keyboard: 'Клавиатура тоже работает: цифры, + − * /, Enter, Backspace, Esc. Лента хранится только на этом устройстве.',
+    installTitle: 'Держите под рукой на телефоне или компьютере',
+    installIntro: 'Установите калькулятор как приложение. После первого посещения он открывается и без интернета.',
+    installBtn: '📲 Установить приложение',
+    iosHelp: 'На iPhone: нажмите «Поделиться» в Safari, затем «На экран “Домой”».',
+    desktopHelp: 'В Chrome или Edge нажмите значок установки в адресной строке или откройте меню браузера и выберите «Установить».',
+    installedText: 'Установлено. Откройте приложение с главного экрана или рабочего стола.',
+    offlineReady: '✓ Готов к работе без интернета',
+    offlineChecking: 'Готовим режим без интернета…',
+    aria: { clear: 'Очистить', back: 'Удалить символ', pct: 'Процент', div: 'Разделить', mul: 'Умножить', sub: 'Вычесть', add: 'Сложить', neg: 'Плюс или минус', dot: 'Десятичная точка', eq: 'Равно' },
+    tapeHeading: 'RateKit · Калькулятор «Галька»',
+  },
+}[lang];
+
+const locale = lang === 'ru' ? 'ru-RU' : 'en-US';
+
+const rows = [
+  [{ l: 'C', t: 'clear', c: 'fn', a: copy.aria.clear }, { l: '⌫', t: 'back', c: 'fn', a: copy.aria.back }, { l: '%', t: 'pct', c: 'fn', a: copy.aria.pct }, { l: '÷', t: 'op', v: '/', c: 'op', a: copy.aria.div }],
+  [{ l: '7', t: 'num', v: '7' }, { l: '8', t: 'num', v: '8' }, { l: '9', t: 'num', v: '9' }, { l: '×', t: 'op', v: '*', c: 'op', a: copy.aria.mul }],
+  [{ l: '4', t: 'num', v: '4' }, { l: '5', t: 'num', v: '5' }, { l: '6', t: 'num', v: '6' }, { l: '−', t: 'op', v: '-', c: 'op', a: copy.aria.sub }],
+  [{ l: '1', t: 'num', v: '1' }, { l: '2', t: 'num', v: '2' }, { l: '3', t: 'num', v: '3' }, { l: '+', t: 'op', v: '+', c: 'op', a: copy.aria.add }],
+  [{ l: '±', t: 'neg', c: 'fn', a: copy.aria.neg }, { l: '0', t: 'num', v: '0' }, { l: lang === 'ru' ? ',' : '.', t: 'dot', c: 'fn', a: copy.aria.dot }, { l: '=', t: 'eq', c: 'eq', a: copy.aria.eq }],
+];
+
+const jsData = {
+  locale,
+  divZero: copy.divZero,
+  copied: copy.copied,
+  nothing: copy.nothing,
+  soundOn: copy.soundOn,
+  soundOff: copy.soundOff,
+  iosHelp: copy.iosHelp,
+  desktopHelp: copy.desktopHelp,
+  installedText: copy.installedText,
+  offlineReady: copy.offlineReady,
+  offlineChecking: copy.offlineChecking,
+  tapeHeading: copy.tapeHeading,
+  tapeEmpty: copy.tapeEmpty,
+};
+---
+<style is:global>
+  html body { background: radial-gradient(circle at 8% 6%, #FFD9E4 0, transparent 42%), radial-gradient(circle at 94% 10%, #FFF0B8 0, transparent 40%), radial-gradient(circle at 50% 104%, #C8F3E3 0, transparent 52%), #FBF8F4; background-attachment: fixed; }
+  html[data-pc-theme="sunset"] body { background: radial-gradient(circle at 8% 6%, #FFC9A8 0, transparent 44%), radial-gradient(circle at 94% 10%, #FFB3D1 0, transparent 42%), radial-gradient(circle at 50% 104%, #D7C2FF 0, transparent 52%), #FFF5EE; background-attachment: fixed; }
+  html[data-pc-theme="ocean"] body { background: radial-gradient(circle at 8% 6%, #B9E9FF 0, transparent 44%), radial-gradient(circle at 94% 10%, #B8F2E6 0, transparent 42%), radial-gradient(circle at 50% 104%, #C9D6FF 0, transparent 52%), #F1FAFD; background-attachment: fixed; }
+  html[data-pc-theme="night"] body { background: radial-gradient(circle at 8% 6%, #DAD8F5 0, transparent 44%), radial-gradient(circle at 94% 10%, #D3E3F7 0, transparent 42%), #F4F5FA; background-attachment: fixed; }
+  html .page-header { background: transparent; border-bottom: none; }
+  html .page-header::before { display: none; }
+  html .page-sub { font-size: 17px; color: var(--mid); }
+
+  .pc-app {
+    --pc-body: #FFFFFF; --pc-display-bg: #F6F2EC; --pc-display-text: #1F2433; --pc-sub: #6A7283;
+    --pc-key: #FFFFFF; --pc-key-edge: #E4DED5; --pc-key-text: #1F2433;
+    --pc-fn: #F0EAE0; --pc-fn-edge: #DDD4C6; --pc-fn-text: #5A4F40;
+    --pc-op-a: #FF9E7A; --pc-op-b: #FF7AA2; --pc-op-edge: #E2587F;
+    --pc-eq-a: #3756F9; --pc-eq-b: #7B5CFA; --pc-eq-edge: #2B3FC0;
+    --pc-paper: #FFFEF7; --pc-paper-text: #2A2F3D;
+    display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, .9fr); gap: 22px; align-items: stretch; margin-bottom: 20px;
+  }
+  html[data-pc-theme="sunset"] .pc-app { --pc-display-bg: #FFF1E8; --pc-key-edge: #F3D3C0; --pc-fn: #FFE3D3; --pc-fn-edge: #F2C3A7; --pc-op-a: #FF8A5B; --pc-op-b: #E94F8A; --pc-op-edge: #C23A70; --pc-eq-a: #E94F8A; --pc-eq-b: #8E4DFF; --pc-eq-edge: #6A2FD0; }
+  html[data-pc-theme="ocean"] .pc-app { --pc-display-bg: #EAF7FB; --pc-key-edge: #CBE4EE; --pc-fn: #DDF0F6; --pc-fn-edge: #BCD8E3; --pc-fn-text: #35566A; --pc-op-a: #2EC4B6; --pc-op-b: #2D9CDB; --pc-op-edge: #1D7FB8; --pc-eq-a: #2D9CDB; --pc-eq-b: #5B6CFF; --pc-eq-edge: #3A47C4; }
+  html[data-pc-theme="night"] .pc-app { --pc-body: #1B1E33; --pc-display-bg: #12142A; --pc-display-text: #F3F4FB; --pc-sub: #9AA3C2; --pc-key: #2A2E4A; --pc-key-edge: #14162B; --pc-key-text: #ECEEFA; --pc-fn: #3A3F63; --pc-fn-edge: #14162B; --pc-fn-text: #C9CEEE; --pc-op-a: #FFB36B; --pc-op-b: #FF6F91; --pc-op-edge: #C24468; --pc-eq-a: #5B8CFF; --pc-eq-b: #9A6BFF; --pc-eq-edge: #3A4FC4; }
+
+  .pc-tape { background: var(--pc-paper); color: var(--pc-paper-text); border-radius: 18px; padding: 18px 18px 14px; box-shadow: 0 1px 0 rgba(255,255,255,.9) inset, 0 10px 30px rgba(31, 36, 51, .10); display: flex; flex-direction: column; min-height: 520px; }
+  .pc-tape-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding-bottom: 10px; border-bottom: 2px dashed #CFC8B8; margin-bottom: 8px; }
+  .pc-tape-title { font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #5C5648; }
+  .pc-tape-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pc-mini { border: 1.5px solid #CFC8B8; background: #fff; color: #4B4638; border-radius: 9px; padding: 6px 10px; font-family: var(--font); font-size: 12.5px; font-weight: 600; cursor: pointer; }
+  .pc-mini:hover { border-color: var(--blue); color: var(--blue); }
+  .pc-lines { flex: 1; overflow-y: auto; font-family: var(--mono); max-height: 460px; }
+  .pc-line { padding: 10px 2px; border-bottom: 1px dotted #D8D2C3; cursor: pointer; }
+  .pc-line:hover { background: rgba(55, 86, 249, .05); }
+  .pc-expr { font-size: 14px; color: #6A6455; overflow-wrap: anywhere; }
+  .pc-res { font-size: 20px; font-weight: 600; text-align: right; overflow-wrap: anywhere; }
+  .pc-empty { font-family: var(--font); font-size: 15px; color: #6A6455; line-height: 1.6; padding: 14px 2px; }
+
+  .pc-device { background: var(--pc-body); border-radius: 30px; padding: 18px; box-shadow: 0 1px 0 rgba(255,255,255,.7) inset, 0 18px 50px rgba(31, 36, 51, .16); }
+  .pc-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+  .pc-themes { display: flex; align-items: center; gap: 8px; }
+  .pc-theme { width: 26px; height: 26px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 1.5px #A7AFBF; cursor: pointer; padding: 0; }
+  .pc-theme[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--blue); }
+  .pc-theme[data-t="pebble"] { background: linear-gradient(135deg, #FFD9E4, #C8F3E3); }
+  .pc-theme[data-t="sunset"] { background: linear-gradient(135deg, #FF8A5B, #E94F8A); }
+  .pc-theme[data-t="ocean"] { background: linear-gradient(135deg, #2EC4B6, #2D9CDB); }
+  .pc-theme[data-t="night"] { background: linear-gradient(135deg, #1B1E33, #5B8CFF); }
+  .pc-tools { display: flex; gap: 6px; }
+  .pc-device .pc-mini { background: var(--pc-display-bg); border-color: transparent; color: var(--pc-display-text); }
+  .pc-device .pc-mini:hover { color: var(--blue); }
+
+  .pc-display { background: var(--pc-display-bg); border-radius: 20px; padding: 14px 18px; margin-bottom: 16px; text-align: right; min-height: 128px; display: flex; flex-direction: column; justify-content: flex-end; box-shadow: inset 0 2px 8px rgba(0, 0, 0, .08); overflow: hidden; }
+  .pc-sub { font-family: var(--mono); font-size: 15px; color: var(--pc-sub); min-height: 22px; overflow-wrap: anywhere; }
+  .pc-main { font-family: var(--mono); font-weight: 600; font-size: 3.1rem; line-height: 1.15; color: var(--pc-display-text); overflow-wrap: anywhere; }
+  .pc-msg { font-family: var(--font); font-size: 15px; font-weight: 600; color: var(--pc-op-edge); min-height: 20px; }
+
+  .pc-keys { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .pc-key { min-height: 66px; border: none; border-radius: 22px; background: var(--pc-key); color: var(--pc-key-text); font-family: var(--font); font-size: 1.55rem; font-weight: 600; cursor: pointer; box-shadow: 0 6px 0 var(--pc-key-edge), 0 12px 18px rgba(0, 0, 0, .08); transition: transform .06s var(--ease), box-shadow .06s var(--ease), filter .15s; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+  .pc-key:hover { filter: brightness(1.03); }
+  .pc-key:active, .pc-key.press { transform: translateY(5px); box-shadow: 0 1px 0 var(--pc-key-edge), 0 4px 8px rgba(0, 0, 0, .1); }
+  .pc-key.fn { background: var(--pc-fn); color: var(--pc-fn-text); box-shadow: 0 6px 0 var(--pc-fn-edge), 0 12px 18px rgba(0, 0, 0, .08); }
+  .pc-key.fn:active, .pc-key.fn.press { box-shadow: 0 1px 0 var(--pc-fn-edge), 0 4px 8px rgba(0, 0, 0, .1); }
+  .pc-key.op { background: linear-gradient(135deg, var(--pc-op-a), var(--pc-op-b)); color: #fff; box-shadow: 0 6px 0 var(--pc-op-edge), 0 12px 18px rgba(0, 0, 0, .1); }
+  .pc-key.op:active, .pc-key.op.press { box-shadow: 0 1px 0 var(--pc-op-edge), 0 4px 8px rgba(0, 0, 0, .1); }
+  .pc-key.eq { background: linear-gradient(135deg, var(--pc-eq-a), var(--pc-eq-b)); color: #fff; box-shadow: 0 6px 0 var(--pc-eq-edge), 0 12px 18px rgba(0, 0, 0, .12); }
+  .pc-key.eq:active, .pc-key.eq.press { box-shadow: 0 1px 0 var(--pc-eq-edge), 0 4px 8px rgba(0, 0, 0, .1); }
+  .pc-note { font-size: 14.5px; color: var(--mid); line-height: 1.6; margin: 0 0 20px; }
+  .pc-status { font-size: 13.5px; font-weight: 600; color: var(--green); min-height: 1.4em; }
+  html:root { --muted: #566073; }
+  html .panel-title { font-size: 13px; color: var(--mid); }
+
+  @media (max-width: 820px) {
+    .pc-app { grid-template-columns: minmax(0, 1fr); }
+    .pc-device { order: 1; }
+    .pc-tape { order: 2; min-height: 0; }
+    .pc-lines { max-height: 260px; }
+    .pc-key { min-height: 62px; font-size: 1.45rem; }
+    .pc-main { font-size: 2.6rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { .pc-key { transition: none; } }
+</style>
+
+<div class="pc-app">
+  <div class="pc-device">
+    <div class="pc-bar">
+      <div class="pc-themes" role="group" aria-label={copy.themeLabel}>
+        {Object.entries(copy.themes).map(([id, name]) => (
+          <button type="button" class="pc-theme" data-t={id} aria-label={name} title={name} aria-pressed="false"></button>
+        ))}
+      </div>
+      <div class="pc-tools">
+        <button type="button" class="pc-mini" id="pc-sound" aria-pressed="false">🔇 {copy.sound}</button>
+        <button type="button" class="pc-mini" id="pc-copy">{copy.copyResult}</button>
+      </div>
+    </div>
+
+    <div class="pc-display" role="status" aria-live="polite">
+      <div class="pc-msg" id="pc-msg"></div>
+      <div class="pc-sub" id="pc-sub"></div>
+      <div class="pc-main" id="pc-main">0</div>
+    </div>
+
+    <div class="pc-keys">
+      {rows.flat().map((k) => (
+        <button type="button" class={`pc-key ${k.c ?? ''}`} data-t={k.t} data-v={k.v ?? ''} aria-label={k.a ?? k.l}>{k.l}</button>
+      ))}
+    </div>
+  </div>
+
+  <div class="pc-tape">
+    <div class="pc-tape-head">
+      <div class="pc-tape-title">{copy.tapeTitle}</div>
+      <div class="pc-tape-actions">
+        <button type="button" class="pc-mini" id="pc-copy-tape">{copy.copyTape}</button>
+        <button type="button" class="pc-mini" id="pc-save-tape">{copy.saveTape}</button>
+        <button type="button" class="pc-mini" id="pc-clear-tape">{copy.clearTape}</button>
+      </div>
+    </div>
+    <div class="pc-lines" id="pc-lines"></div>
+  </div>
+</div>
+
+<p class="pc-note">{copy.keyboard}</p>
+<div class="pc-status" id="pc-status" aria-live="polite"></div>
+
+<div class="panel">
+  <div class="panel-title">{copy.installTitle}</div>
+  <p class="pc-note" style="margin-bottom:14px;">{copy.installIntro}</p>
+  <button class="share-btn pdf-btn" id="pc-install-btn" type="button">{copy.installBtn}</button>
+  <p class="pc-note" id="pc-install-help" style="margin:12px 0 0;" aria-live="polite"></p>
+  <p class="pc-status" id="pc-offline" style="margin:12px 0 0;"></p>
+</div>
+
+<script type="application/json" id="pc-data" set:html={JSON.stringify(jsData)} />
+
+<script>
+  const data = JSON.parse(document.getElementById('pc-data').textContent);
+  const $ = (id) => document.getElementById(id);
+  const root = document.documentElement;
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage unavailable */ } },
+  };
+
+  // ── Calculator state ──
+  let tokens = [];           // numbers and operators waiting to be evaluated
+  let cur = '0';             // the number being typed
+  let awaiting = false;      // an operator was just pressed
+  let justEvaluated = false; // the display shows a finished result
+  let tape = store.get('rk_pc_tape', []);
+  if (!Array.isArray(tape)) tape = [];
+
+  const SYMBOL = { '+': '+', '-': '−', '*': '×', '/': '÷' };
+  const round = (n) => parseFloat(n.toPrecision(12));
+  const fmtNum = (n) => {
+    const r = round(n);
+    return Math.abs(r) >= 1e15 || (Math.abs(r) < 1e-9 && r !== 0) ? r.toExponential(6).replace(/\.?0+e/, 'e') : String(r);
+  };
+  // Group the digits of a number string for display only.
+  function pretty(str) {
+    if (str.includes('e')) return str;
+    const neg = str.startsWith('-');
+    const body = neg ? str.slice(1) : str;
+    const [int, frac] = body.split('.');
+    const grouped = Number(int).toLocaleString(data.locale, { maximumFractionDigits: 0 });
+    const dec = data.locale === 'ru-RU' ? ',' : '.';
+    return (neg ? '−' : '') + grouped + (frac !== undefined ? dec + frac : '');
+  }
+
+  function evaluate(arr) {
+    const out = [arr[0]];
+    for (let i = 1; i < arr.length; i += 2) {
+      const op = arr[i], n = arr[i + 1];
+      if (op === '*') out[out.length - 1] *= n;
+      else if (op === '/') {
+        if (n === 0) throw new Error('div0');
+        out[out.length - 1] /= n;
+      } else out.push(op, n);
+    }
+    let r = out[0];
+    for (let i = 1; i < out.length; i += 2) r = out[i] === '+' ? r + out[i + 1] : r - out[i + 1];
+    return round(r);
+  }
+
+  const exprText = (arr) => arr.map((t) => (typeof t === 'number' ? pretty(fmtNum(t)) : SYMBOL[t])).join(' ');
+
+  function show(msg) {
+    $('pc-msg').textContent = msg || '';
+    const main = pretty(cur);
+    $('pc-main').textContent = main;
+    $('pc-main').style.fontSize = main.length > 14 ? '1.7rem' : main.length > 11 ? '2.1rem' : main.length > 8 ? '2.6rem' : '';
+    $('pc-sub').textContent = exprText(tokens);
+  }
+
+  function press(type, v) {
+    $('pc-msg').textContent = '';
+    if (type === 'num') {
+      if (justEvaluated) { tokens = []; cur = '0'; justEvaluated = false; }
+      if (awaiting) { cur = '0'; awaiting = false; }
+      if (cur === '0') cur = v;
+      else if (cur === '-0') cur = '-' + v;
+      else if (cur.replace(/[-.]/g, '').length < 15) cur += v;
+    } else if (type === 'dot') {
+      if (justEvaluated) { tokens = []; cur = '0'; justEvaluated = false; }
+      if (awaiting) { cur = '0'; awaiting = false; }
+      if (!cur.includes('.') && !cur.includes('e')) cur += '.';
+    } else if (type === 'op') {
+      if (justEvaluated) { tokens = [Number(cur)]; justEvaluated = false; tokens.push(v); awaiting = true; }
+      else if (awaiting) tokens[tokens.length - 1] = v;
+      else { tokens.push(Number(cur)); tokens.push(v); awaiting = true; }
+    } else if (type === 'neg') {
+      if (cur !== '0' && !awaiting) cur = cur.startsWith('-') ? cur.slice(1) : '-' + cur;
+    } else if (type === 'pct') {
+      const val = Number(cur);
+      const last = tokens[tokens.length - 1];
+      if (!awaiting && !justEvaluated && tokens.length >= 2 && (last === '+' || last === '-')) {
+        try { cur = fmtNum(evaluate(tokens.slice(0, -1)) * val / 100); } catch (e) { cur = fmtNum(val / 100); }
+      } else cur = fmtNum(val / 100);
+    } else if (type === 'back') {
+      if (!awaiting && !justEvaluated) {
+        cur = cur.slice(0, -1);
+        if (cur === '' || cur === '-') cur = '0';
+      }
+    } else if (type === 'clear') {
+      tokens = []; cur = '0'; awaiting = false; justEvaluated = false;
+    } else if (type === 'eq') {
+      if (awaiting) { tokens.pop(); awaiting = false; }
+      if (tokens.length === 0) { show(); return; }
+      const full = [...tokens, Number(cur)];
+      try {
+        const result = evaluate(full);
+        addTape(exprText(full), fmtNum(result));
+        cur = fmtNum(result);
+        tokens = [];
+        justEvaluated = true;
+      } catch (e) {
+        tokens = []; cur = '0'; justEvaluated = false;
+        show(data.divZero);
+        return;
+      }
+    }
+    show();
+  }
+
+  // ── Tape ──
+  function renderTape() {
+    const box = $('pc-lines');
+    box.textContent = '';
+    if (tape.length === 0) {
+      const p = document.createElement('div');
+      p.className = 'pc-empty';
+      p.textContent = data.tapeEmpty;
+      box.appendChild(p);
+      return;
+    }
+    tape.forEach((row) => {
+      const line = document.createElement('div');
+      line.className = 'pc-line';
+      line.dataset.res = row.res;
+      const e = document.createElement('div');
+      e.className = 'pc-expr';
+      e.textContent = row.expr + ' =';
+      const r = document.createElement('div');
+      r.className = 'pc-res';
+      r.textContent = pretty(row.res);
+      line.append(e, r);
+      box.appendChild(line);
+    });
+    box.scrollTop = box.scrollHeight;
+  }
+  function addTape(expr, res) {
+    tape.push({ expr, res });
+    if (tape.length > 60) tape = tape.slice(-60);
+    store.set('rk_pc_tape', tape);
+    renderTape();
+  }
+  $('pc-lines').addEventListener('click', (e) => {
+    const line = e.target.closest('.pc-line');
+    if (!line) return;
+    tokens = []; cur = line.dataset.res; awaiting = false; justEvaluated = true;
+    show();
+  });
+  $('pc-clear-tape').addEventListener('click', () => { tape = []; store.set('rk_pc_tape', tape); renderTape(); });
+
+  let statusTimer = 0;
+  function flash(text) {
+    $('pc-status').textContent = text;
+    clearTimeout(statusTimer);
+    statusTimer = setTimeout(() => { $('pc-status').textContent = ''; }, 1800);
+  }
+  async function copyText(text) {
+    if (!text) { flash(data.nothing); return; }
+    try { await navigator.clipboard.writeText(text); flash(data.copied); } catch (e) { flash(text); }
+  }
+  $('pc-copy').addEventListener('click', () => copyText(pretty(cur)));
+  $('pc-copy-tape').addEventListener('click', () => copyText(tape.map((r) => `${r.expr} = ${pretty(r.res)}`).join('\n')));
+
+  $('pc-save-tape').addEventListener('click', () => {
+    if (tape.length === 0) { flash(data.nothing); return; }
+    const W = 640, rowH = 64, top = 100, H = top + tape.length * rowH + 40;
+    const c = document.createElement('canvas');
+    c.width = W; c.height = H;
+    const g = c.getContext('2d');
+    g.fillStyle = '#FFFEF7'; g.fillRect(0, 0, W, H);
+    g.fillStyle = '#2A2F3D'; g.font = '700 22px Plus Jakarta Sans, sans-serif'; g.textAlign = 'left';
+    g.fillText(data.tapeHeading, 32, 52);
+    g.strokeStyle = '#CFC8B8'; g.setLineDash([6, 6]); g.beginPath(); g.moveTo(32, 72); g.lineTo(W - 32, 72); g.stroke();
+    tape.forEach((r, i) => {
+      const y = top + i * rowH;
+      g.fillStyle = '#6A6455'; g.font = '16px JetBrains Mono, monospace'; g.textAlign = 'left';
+      g.fillText(r.expr + ' =', 32, y + 18);
+      g.fillStyle = '#2A2F3D'; g.font = '600 24px JetBrains Mono, monospace'; g.textAlign = 'right';
+      g.fillText(pretty(r.res), W - 32, y + 48);
+      g.strokeStyle = '#D8D2C3'; g.setLineDash([2, 4]); g.beginPath(); g.moveTo(32, y + 58); g.lineTo(W - 32, y + 58); g.stroke();
+    });
+    c.toBlob((blob) => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'ratekit-tape.png';
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    }, 'image/png');
+  });
+
+  // ── Sound and haptics ──
+  let soundOn = store.get('rk_pc_sound', false) === true;
+  let audio = null;
+  function paintSound() {
+    $('pc-sound').textContent = (soundOn ? '🔊 ' : '🔇 ') + (soundOn ? data.soundOn : data.soundOff);
+    $('pc-sound').setAttribute('aria-pressed', String(soundOn));
+  }
+  function click() {
+    if (navigator.vibrate) navigator.vibrate(6);
+    if (!soundOn) return;
+    try {
+      audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+      const o = audio.createOscillator(), gn = audio.createGain();
+      o.type = 'sine'; o.frequency.value = 620;
+      gn.gain.setValueAtTime(0.04, audio.currentTime);
+      gn.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime + 0.07);
+      o.connect(gn); gn.connect(audio.destination);
+      o.start(); o.stop(audio.currentTime + 0.08);
+    } catch (e) { /* audio not available */ }
+  }
+  $('pc-sound').addEventListener('click', () => { soundOn = !soundOn; store.set('rk_pc_sound', soundOn); paintSound(); click(); });
+
+  // ── Themes ──
+  function setTheme(t) {
+    root.setAttribute('data-pc-theme', t);
+    document.querySelectorAll('.pc-theme').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.t === t)));
+    store.set('rk_pc_theme', t);
+  }
+  document.querySelectorAll('.pc-theme').forEach((b) => b.addEventListener('click', () => setTheme(b.dataset.t)));
+  const savedTheme = store.get('rk_pc_theme', 'pebble');
+  setTheme(['pebble', 'sunset', 'ocean', 'night'].includes(savedTheme) ? savedTheme : 'pebble');
+
+  // ── Keys and keyboard ──
+  document.querySelectorAll('.pc-key').forEach((b) => b.addEventListener('click', () => {
+    click();
+    press(b.dataset.t, b.dataset.v);
+  }));
+  const KEYMAP = { '.': ['dot'], ',': ['dot'], '+': ['op', '+'], '-': ['op', '-'], '*': ['op', '*'], x: ['op', '*'], X: ['op', '*'], '/': ['op', '/'], Enter: ['eq'], '=': ['eq'], Backspace: ['back'], Escape: ['clear'], Delete: ['clear'], '%': ['pct'] };
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const el = e.target;
+    if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT')) return;
+    // A focused key already reacts to Enter/Space through its own click.
+    if (el && el.classList && el.classList.contains('pc-key') && (e.key === 'Enter' || e.key === ' ')) return;
+    let action = null;
+    if (/^[0-9]$/.test(e.key)) action = ['num', e.key];
+    else if (KEYMAP[e.key]) action = KEYMAP[e.key];
+    if (!action) return;
+    e.preventDefault();
+    click();
+    press(action[0], action[1]);
+    const sel = action[0] === 'num' ? `.pc-key[data-t="num"][data-v="${action[1]}"]` : action[0] === 'op' ? `.pc-key[data-t="op"][data-v="${action[1]}"]` : `.pc-key[data-t="${action[0]}"]`;
+    const keyEl = document.querySelector(sel);
+    if (keyEl) { keyEl.classList.add('press'); setTimeout(() => keyEl.classList.remove('press'), 90); }
+  });
+
+  // ── Install as an app ──
+  const installBtn = $('pc-install-btn');
+  const installHelp = $('pc-install-help');
+  let deferredPrompt = null;
+  const installed = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  if (installed) { installBtn.style.display = 'none'; installHelp.textContent = data.installedText; }
+  window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
+  window.addEventListener('appinstalled', () => { installBtn.style.display = 'none'; installHelp.textContent = data.installedText; deferredPrompt = null; });
+  installBtn.addEventListener('click', async () => {
+    if (deferredPrompt) { deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt = null; return; }
+    const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    installHelp.textContent = ios ? data.iosHelp : data.desktopHelp;
+  });
+
+  // ── Offline: register the service worker, then ask it to keep this page's files ──
+  if ('serviceWorker' in navigator) {
+    $('pc-offline').textContent = data.offlineChecking;
+    navigator.serviceWorker.addEventListener('message', (e) => {
+      if (e.data && e.data.type === 'cached') $('pc-offline').textContent = data.offlineReady;
+    });
+    navigator.serviceWorker.register('/sw.js').then(() => navigator.serviceWorker.ready).then((reg) => {
+      const urls = new Set([location.pathname, '/favicon-32x32.png', '/favicon-180x180.png', '/favicon-192x192.png', '/favicon-512x512.png', '/favicon.ico']);
+      document.querySelectorAll('link[rel="stylesheet"], link[rel="manifest"], script[src]').forEach((n) => { const u = n.href || n.src; if (u) urls.add(u); });
+      performance.getEntriesByType('resource').forEach((r) => { if (/\/_astro\/|fonts\.googleapis|fonts\.gstatic/.test(r.name)) urls.add(r.name); });
+      // Only our own files and Google Fonts; never analytics or ad scripts.
+      const allowed = (u) => {
+        try {
+          const x = new URL(u, location.href);
+          return x.origin === location.origin || x.hostname === 'fonts.googleapis.com' || x.hostname === 'fonts.gstatic.com';
+        } catch (e) { return false; }
+      };
+      (reg.active || navigator.serviceWorker.controller)?.postMessage({ type: 'cache-urls', urls: [...urls].filter(allowed) });
+    }).catch(() => { $('pc-offline').textContent = ''; });
+  }
+
+  paintSound();
+  renderTape();
+  show();
+</script>
