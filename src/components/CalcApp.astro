@@ -247,6 +247,8 @@ const jsData = {
   // Group the digits of a number string for display only.
   function pretty(str) {
     if (str.includes('e')) return str;
+    // The accessibility page can ask for numbers without digit grouping.
+    if (window.rkPlain) return (str.startsWith('-') ? '−' + str.slice(1) : str).replace('.', data.locale === 'ru-RU' ? ',' : '.');
     const neg = str.startsWith('-');
     const body = neg ? str.slice(1) : str;
     const [int, frac] = body.split('.');
@@ -504,6 +506,7 @@ const jsData = {
     }).catch(() => { $('pc-offline').textContent = ''; });
   }
 
+  window.rkRefresh = () => { renderTape(); show(); };
   paintSound();
   renderTape();
   show();

@@ -35,6 +35,14 @@ const copy = {
     reset: 'Reset',
     visionNote: 'Blur is a rough stand-in for how sharp text looks; glasses or lenses often correct it. Real sight loss can also change brightness, glare, depth and much more.',
     colorNote: 'Colour filters are approximations. Many people see some colours better than these filters show.',
+    diffTitle: 'Reading, numbers, writing',
+    diff: [
+      ['normal', 'Typical'],
+      ['dys', 'Dyslexia: crowded text'],
+      ['calc', 'Dyscalculia: numbers without places'],
+      ['graph', 'Dysgraphia: small, tight keys'],
+    ],
+    diffNote: 'A simplified picture of what can be hard, not of how it feels. Choosing one of these resets the vision and colour settings above.',
     helpTitle: 'Reading, numbers and writing',
     helpIntro: 'These conditions are not something a filter can show. Instead, here is what can be hard and what can help. Switch a helper on and it changes the calculator above.',
     hard: 'Can be hard',
@@ -99,6 +107,14 @@ const copy = {
     reset: 'Сбросить',
     visionNote: 'Размытие лишь грубо показывает, насколько чёткий текст; очки или линзы часто это исправляют. Реальная потеря зрения может менять также яркость, блики, глубину и многое другое.',
     colorNote: 'Цветовые фильтры — приближения. Многие люди различают часть цветов лучше, чем показывают эти фильтры.',
+    diffTitle: 'Чтение, числа, письмо',
+    diff: [
+      ['normal', 'Типичное'],
+      ['dys', 'Дислексия: плотный текст'],
+      ['calc', 'Дискалькулия: числа без разрядов'],
+      ['graph', 'Дисграфия: мелкие тесные клавиши'],
+    ],
+    diffNote: 'Упрощённая картинка того, что может быть трудно, а не того, как это ощущается. Выбор одного из вариантов сбрасывает настройки зрения и цвета выше.',
     helpTitle: 'Чтение, числа и письмо',
     helpIntro: 'Эти особенности нельзя показать фильтром. Поэтому здесь описано, что может быть трудно и что может помочь. Включите помощник, и калькулятор выше изменится.',
     hard: 'Что может быть трудно',
@@ -147,6 +163,7 @@ const jsData = {
   off: copy.off,
   visionNames: Object.fromEntries(copy.vision),
   colorNames: Object.fromEntries(copy.color),
+  diffNames: Object.fromEntries(copy.diff),
   normal: copy.vision[0][1],
 };
 ---
@@ -201,6 +218,21 @@ const jsData = {
   .al-place-panel[hidden] { display: none; }
   .al-end { font-size: 14.5px; color: var(--mid); line-height: 1.65; margin-bottom: 20px; }
 
+  /* "Possible difficulty" views: simplified, not how it feels. */
+  .al-view.d-dys .pc-main, .al-view.d-dys .pc-sub, .al-view.d-dys .pc-res, .al-view.d-dys .pc-expr, .al-view.d-dys .pc-key { letter-spacing: -.09em; word-spacing: -.3em; }
+  .al-view.d-dys .pc-main { line-height: 1; }
+  .al-view.d-dys .pc-line { padding: 5px 2px; }
+  .al-view.d-dys .pc-key[data-t="num"][data-v="6"], .al-view.d-dys .pc-key[data-t="num"][data-v="9"] { outline: 3px dashed #D97706; outline-offset: -5px; }
+  .al-view.d-dys .pc-key[data-t="num"][data-v="2"], .al-view.d-dys .pc-key[data-t="num"][data-v="5"] { outline: 3px dashed #7B5CFA; outline-offset: -5px; }
+  .al-view.d-dys .pc-key[data-t="num"][data-v="3"], .al-view.d-dys .pc-key[data-t="num"][data-v="8"] { outline: 3px dashed #0D9668; outline-offset: -5px; }
+  .al-view.d-graph .pc-keys { gap: 4px; }
+  .al-view.d-graph .pc-key { min-height: 34px; font-size: 1rem; border-radius: 9px; box-shadow: 0 3px 0 var(--pc-key-edge), 0 4px 6px rgba(0,0,0,.08); }
+  .al-view.d-graph .pc-key.fn { box-shadow: 0 3px 0 var(--pc-fn-edge), 0 4px 6px rgba(0,0,0,.08); }
+  .al-view.d-graph .pc-key.op { box-shadow: 0 3px 0 var(--pc-op-edge), 0 4px 6px rgba(0,0,0,.08); }
+  .al-view.d-graph .pc-key.eq { box-shadow: 0 3px 0 var(--pc-eq-edge), 0 4px 6px rgba(0,0,0,.08); }
+  .al-view.d-graph .pc-mini, .al-view.d-graph .pc-theme { transform: scale(.8); }
+  .al-view.d-calc .pc-main { letter-spacing: .02em; }
+
   /* Helper modes applied to the calculator */
   .al-view.m-dys .pc-main, .al-view.m-dys .pc-sub, .al-view.m-dys .pc-res, .al-view.m-dys .pc-expr, .al-view.m-dys .pc-key { font-family: Verdana, Tahoma, 'Trebuchet MS', sans-serif; letter-spacing: .1em; font-variant-numeric: slashed-zero; }
   .al-view.m-dys .pc-main { font-size: 3.2rem; line-height: 1.4; }
@@ -241,6 +273,13 @@ const jsData = {
       {copy.color.map(([id, name]) => <button type="button" class="al-chip" data-color={id} aria-pressed={id === 'normal' ? 'true' : 'false'}>{name}</button>)}
     </div>
     <p class="al-note">{copy.colorNote}</p>
+  </div>
+  <div class="al-row">
+    <div class="al-row-title">{copy.diffTitle}</div>
+    <div class="al-chips" role="group" aria-label={copy.diffTitle}>
+      {copy.diff.map(([id, name]) => <button type="button" class="al-chip" data-diff={id} aria-pressed={id === 'normal' ? 'true' : 'false'}>{name}</button>)}
+    </div>
+    <p class="al-note">{copy.diffNote}</p>
   </div>
   <div class="al-bar">
     <span>{copy.viewing}: <strong id="al-now"></strong></span>
@@ -320,9 +359,14 @@ const jsData = {
     central: { f: '', o: 'central' },
     lowcontrast: { f: 'contrast(.35) brightness(1.1)', o: '' },
   };
-  let vision = 'normal', color = 'normal';
+  let vision = 'normal', color = 'normal', diff = 'normal';
+  const DIFF_CLASS = { dys: 'd-dys', calc: 'd-calc', graph: 'd-graph' };
 
   function apply() {
+    Object.values(DIFF_CLASS).forEach((c) => view.classList.toggle(c, DIFF_CLASS[diff] === c));
+    const plain = diff === 'calc';
+    if (!!window.rkPlain !== plain) { window.rkPlain = plain; if (window.rkRefresh) window.rkRefresh(); }
+    document.querySelectorAll('[data-diff]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.diff === diff)));
     const parts = [];
     if (color !== 'normal') parts.push(`url(#cvd-${color})`);
     if (VISION[vision].f) parts.push(VISION[vision].f);
@@ -333,11 +377,18 @@ const jsData = {
     const names = [];
     if (vision !== 'normal') names.push(data.visionNames[vision]);
     if (color !== 'normal') names.push(data.colorNames[color]);
+    if (diff !== 'normal') names.push(data.diffNames[diff]);
     $('al-now').textContent = names.length ? names.join(' + ') : data.normal;
   }
   document.querySelectorAll('[data-vision]').forEach((b) => b.addEventListener('click', () => { vision = b.dataset.vision; apply(); }));
   document.querySelectorAll('[data-color]').forEach((b) => b.addEventListener('click', () => { color = b.dataset.color; apply(); }));
-  $('al-reset').addEventListener('click', () => { vision = 'normal'; color = 'normal'; apply(); });
+  // Choosing a reading/number/writing view clears the vision and colour choices.
+  document.querySelectorAll('[data-diff]').forEach((b) => b.addEventListener('click', () => {
+    diff = b.dataset.diff;
+    if (diff !== 'normal') { vision = 'normal'; color = 'normal'; }
+    apply();
+  }));
+  $('al-reset').addEventListener('click', () => { vision = 'normal'; color = 'normal'; diff = 'normal'; apply(); });
 
   // Place value: break the number on the calculator display into its places.
   const PALETTE = ['#3756F9', '#0D9668', '#D97706', '#7B5CFA', '#DC2626', '#0E7490', '#B45309', '#4F46E5', '#BE185D'];
