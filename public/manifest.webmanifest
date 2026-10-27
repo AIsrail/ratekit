@@ -1,0 +1,23 @@
+{
+  "name": "RateKit — Business Calculators",
+  "short_name": "RateKit",
+  "description": "Free business calculators for founders and freelancers. Works offline once installed.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "lang": "en",
+  "background_color": "#FAFAFC",
+  "theme_color": "#3756F9",
+  "categories": ["finance", "productivity", "utilities"],
+  "icons": [
+    { "src": "/favicon-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/favicon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ],
+  "shortcuts": [
+    { "name": "Pebble Calculator", "short_name": "Calculator", "url": "/calculator" },
+    { "name": "Weekly Happiness", "short_name": "Happiness", "url": "/happiness-calculator" },
+    { "name": "Freelance Rate", "short_name": "Rate", "url": "/freelance-rate" }
+  ]
+}

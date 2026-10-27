@@ -1,0 +1,23 @@
+---
+import InfoLayout from '../../layouts/InfoLayout.astro';
+---
+<InfoLayout
+  path="/ru/offline"
+  lang="ru"
+  altLangPath="/offline"
+  title="Нет подключения"
+  description="Эта страница пока недоступна без интернета."
+  pageTag="📴 Без сети"
+  h1="Нет подключения"
+  pageSub="Эта страница ещё не сохранена на вашем устройстве. Вот те, что готовы."
+  breadcrumbLabel="Без сети"
+  noindex
+>
+  <ul>
+    <li><a href="/ru">Главная</a></li>
+    <li><a href="/ru/calculator">Калькулятор «Галька»</a></li>
+    <li><a href="/ru/happiness-calculator">Калькулятор счастья на неделю</a></li>
+    <li><a href="/ru/app">О приложении</a></li>
+  </ul>
+  <p>Откройте любую страницу один раз с интернетом, и в следующий раз она будет доступна без сети.</p>
+</InfoLayout>

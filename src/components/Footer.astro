@@ -5,13 +5,15 @@ interface Props {
 const { lang } = Astro.props;
 const home = lang === 'en' ? '/' : '/ru';
 const labels = lang === 'en'
-  ? { about: 'About', contact: 'Contact', press: 'Press', privacy: 'Privacy', terms: 'Terms', cookies: 'Cookies', tagline: 'Free business calculators' }
-  : { about: 'О нас', contact: 'Контакты', press: 'Пресса', privacy: 'Приватность', terms: 'Условия', cookies: 'Cookies', tagline: 'Бесплатные бизнес-калькуляторы' };
+  ? { about: 'About', contact: 'Contact', press: 'Press', privacy: 'Privacy', terms: 'Terms', cookies: 'Cookies', app: 'Get the app', tagline: 'Free business calculators' }
+  : { about: 'О нас', contact: 'Контакты', press: 'Пресса', privacy: 'Приватность', terms: 'Условия', cookies: 'Cookies', app: 'Приложение', tagline: 'Бесплатные бизнес-калькуляторы' };
+const appPath = lang === 'en' ? '/app' : '/ru/app';
 ---
 <footer>
   <a href={home} class="flogo">Rate<span>Kit</span></a>
   <span class="fcopy">© 2026 RateKit · {labels.tagline}</span>
   <ul class="flinks">
+    <li><a href={appPath}>{labels.app}</a></li>
     <li><a href="/about">{labels.about}</a></li>
     <li><a href="/contact">{labels.contact}</a></li>
     <li><a href="/press">{labels.press}</a></li>

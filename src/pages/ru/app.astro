@@ -1,0 +1,67 @@
+---
+import InfoLayout from '../../layouts/InfoLayout.astro';
+---
+<InfoLayout
+  path="/ru/app"
+  lang="ru"
+  altLangPath="/app"
+  title="Приложение RateKit"
+  description="Установите RateKit на телефон или компьютер. Бесплатно, без аккаунта и магазина приложений. Открытые страницы работают без интернета."
+  pageTag="📲 Приложение"
+  h1="Приложение RateKit"
+  pageSub="Поставьте RateKit на телефон или компьютер за одно нажатие. Бесплатно, без аккаунта и магазина приложений, а открытые страницы работают без интернета."
+  breadcrumbLabel="Приложение"
+>
+  <div class="highlight-box">
+    <strong>Установка в одно нажатие.</strong> RateKit — веб-приложение: тот же сайт, только установленный. Он открывается в своём окне, у него свой значок, и он обновляется сам.
+  </div>
+
+  <button type="button" class="app-btn" id="app-install">📲 Установить RateKit</button>
+  <p id="app-help" class="app-help" aria-live="polite"></p>
+
+  <h2>Как установить</h2>
+  <h3>iPhone или iPad (Safari)</h3>
+  <p>Нажмите «Поделиться», затем выберите <strong>«На экран “Домой”»</strong>.</p>
+  <h3>Android (Chrome)</h3>
+  <p>Нажмите <strong>«Установить»</strong> выше или откройте меню браузера и выберите <strong>«Установить приложение»</strong>.</p>
+  <h3>Windows или Mac (Chrome или Edge)</h3>
+  <p>Нажмите <strong>«Установить»</strong> выше или значок установки справа в адресной строке.</p>
+
+  <h2>Что работает без интернета</h2>
+  <ul>
+    <li><a href="/ru/calculator">Калькулятор «Галька»</a> и инструменты, которые вы уже открывали.</li>
+    <li>Первый заход требует интернета; потом устройство хранит нужное.</li>
+    <li>Живые курсы валют и функции с ИИ требуют подключения.</li>
+  </ul>
+
+  <h2>Полезно знать</h2>
+  <ul>
+    <li>Введённые данные остаются на вашем устройстве. Аккаунт не нужен.</li>
+    <li>Удаляется как любое приложение и занимает совсем мало места.</li>
+    <li>На iPhone Safari может очистить сохранённые страницы, если приложением не пользоваться несколько недель. При следующем заходе они снова сохранятся.</li>
+  </ul>
+</InfoLayout>
+
+<style is:global>
+  .app-btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 24px; border: none; border-radius: 99px; background: linear-gradient(135deg, var(--blue), var(--violet)); color: #fff; font-family: var(--font); font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: var(--shadow-glow); margin: 4px 0 8px; }
+  .app-btn:hover { filter: brightness(1.06); }
+  .app-help { font-size: 15px; color: var(--mid); min-height: 1.6em; }
+</style>
+
+<script>
+  const btn = document.getElementById('app-install');
+  const help = document.getElementById('app-help');
+  const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  if (standalone) {
+    btn.style.display = 'none';
+    help.textContent = 'RateKit уже установлен на этом устройстве.';
+  }
+  btn.addEventListener('click', async () => {
+    const p = window.rkInstallPrompt;
+    if (p) { p.prompt(); await p.userChoice; window.rkInstallPrompt = null; return; }
+    const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    help.textContent = ios
+      ? 'В Safari нажмите «Поделиться», затем «На экран “Домой”».'
+      : 'В Chrome или Edge нажмите значок установки в адресной строке или откройте меню браузера и выберите «Установить».';
+  });
+</script>

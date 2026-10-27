@@ -1,0 +1,21 @@
+---
+import InfoLayout from '../layouts/InfoLayout.astro';
+---
+<InfoLayout
+  path="/offline"
+  title="You are offline"
+  description="This page is not available offline yet."
+  pageTag="📴 Offline"
+  h1="You are offline"
+  pageSub="This page has not been saved on your device yet. These ones are ready."
+  breadcrumbLabel="Offline"
+  noindex
+>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/calculator">Pebble Calculator</a></li>
+    <li><a href="/happiness-calculator">Weekly Happiness Calculator</a></li>
+    <li><a href="/app">About the app</a></li>
+  </ul>
+  <p>Open any page once with internet and it will be available offline next time.</p>
+</InfoLayout>

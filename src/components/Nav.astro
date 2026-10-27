@@ -24,6 +24,7 @@ function visibleItems(section: Section) {
 <nav id="nav">
   <a href={lang === 'en' ? '/' : '/ru'} class="logo">Rate<span>Kit</span></a>
   <div class="nav-r">
+    <button type="button" class="translate-btn" id="nav-install" style="display:none;margin-left:0;" title={lang === 'en' ? 'Install RateKit as an app' : 'Установить RateKit как приложение'}>⬇ {lang === 'en' ? 'Install' : 'Установить'}</button>
     <a href={altLangPath} class="translate-btn" title={lang === 'en' ? 'Русская версия' : 'Switch to English'}>
       {lang === 'en' ? 'RU' : 'EN'}
     </a>
@@ -75,4 +76,44 @@ function visibleItems(section: Section) {
     const dd = document.getElementById('tools-dropdown');
     if (dd && !dd.contains(e.target)) dd.classList.remove('open');
   });
+
+  // Install prompt and offline support, on every page. The prompt is kept on window so the
+  // /app page and the calculators can use it too.
+  const installBtn = document.getElementById('nav-install');
+  const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    window.rkInstallPrompt = e;
+    window.dispatchEvent(new Event('rk:installable'));
+    if (installBtn && !standalone) installBtn.style.display = '';
+  });
+  window.addEventListener('appinstalled', () => {
+    window.rkInstallPrompt = null;
+    if (installBtn) installBtn.style.display = 'none';
+  });
+  installBtn?.addEventListener('click', async () => {
+    const p = window.rkInstallPrompt;
+    if (!p) return;
+    p.prompt();
+    await p.userChoice;
+    window.rkInstallPrompt = null;
+    installBtn.style.display = 'none';
+  });
+
+  const secure = location.protocol === 'https:' || location.hostname === 'localhost';
+  if ('serviceWorker' in navigator && secure && window.self === window.top) {
+    navigator.serviceWorker.register('/sw.js').then(() => navigator.serviceWorker.ready).then((reg) => {
+      const urls = new Set(['/favicon-32x32.png', '/favicon-180x180.png', '/favicon-192x192.png', '/favicon-512x512.png', '/favicon.ico', '/manifest.webmanifest']);
+      document.querySelectorAll('link[rel="stylesheet"], script[src]').forEach((n) => { const u = n.href || n.src; if (u) urls.add(u); });
+      performance.getEntriesByType('resource').forEach((r) => { if (/\/_astro\/|fonts\.googleapis|fonts\.gstatic/.test(r.name)) urls.add(r.name); });
+      // Only our own files and Google Fonts; never analytics or ad scripts.
+      const allowed = (u) => {
+        try {
+          const x = new URL(u, location.href);
+          return x.origin === location.origin || x.hostname === 'fonts.googleapis.com' || x.hostname === 'fonts.gstatic.com';
+        } catch (e) { return false; }
+      };
+      (reg.active || navigator.serviceWorker.controller)?.postMessage({ type: 'cache-urls', urls: [...urls].filter(allowed) });
+    }).catch(() => {});
+  }
 </script>

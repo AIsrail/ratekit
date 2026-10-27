@@ -1,0 +1,67 @@
+---
+import InfoLayout from '../layouts/InfoLayout.astro';
+---
+<InfoLayout
+  path="/app"
+  lang="en"
+  altLangPath="/ru/app"
+  title="Get the RateKit App"
+  description="Install RateKit on your phone or computer. Free, no account and no app store. Pages you have opened work offline."
+  pageTag="📲 App"
+  h1="Get the RateKit app"
+  pageSub="Put RateKit on your phone or computer in one tap. It is free, needs no account or app store, and pages you have opened keep working without internet."
+  breadcrumbLabel="App"
+>
+  <div class="highlight-box">
+    <strong>One tap install.</strong> RateKit is a web app: the same site, installed. It opens in its own window, has its own icon, and updates itself.
+  </div>
+
+  <button type="button" class="app-btn" id="app-install">📲 Install RateKit</button>
+  <p id="app-help" class="app-help" aria-live="polite"></p>
+
+  <h2>How to install</h2>
+  <h3>iPhone or iPad (Safari)</h3>
+  <p>Tap the Share button, then choose <strong>Add to Home Screen</strong>.</p>
+  <h3>Android (Chrome)</h3>
+  <p>Tap <strong>Install</strong> above, or open the browser menu and choose <strong>Install app</strong>.</p>
+  <h3>Windows or Mac (Chrome or Edge)</h3>
+  <p>Click <strong>Install</strong> above, or use the install icon at the right of the address bar.</p>
+
+  <h2>What works offline</h2>
+  <ul>
+    <li>The <a href="/calculator">Pebble Calculator</a> and the tools you have already opened.</li>
+    <li>The first visit needs internet; after that your device keeps what it needs.</li>
+    <li>Live exchange rates and the AI features need an internet connection.</li>
+  </ul>
+
+  <h2>Good to know</h2>
+  <ul>
+    <li>Your inputs stay on your device. We do not need an account.</li>
+    <li>Remove it like any app. It takes almost no space.</li>
+    <li>On iPhone, Safari may clear saved pages if the app is unused for several weeks. It will refill on your next visit.</li>
+  </ul>
+</InfoLayout>
+
+<style is:global>
+  .app-btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 24px; border: none; border-radius: 99px; background: linear-gradient(135deg, var(--blue), var(--violet)); color: #fff; font-family: var(--font); font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: var(--shadow-glow); margin: 4px 0 8px; }
+  .app-btn:hover { filter: brightness(1.06); }
+  .app-help { font-size: 15px; color: var(--mid); min-height: 1.6em; }
+</style>
+
+<script>
+  const btn = document.getElementById('app-install');
+  const help = document.getElementById('app-help');
+  const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  if (standalone) {
+    btn.style.display = 'none';
+    help.textContent = 'RateKit is already installed on this device.';
+  }
+  btn.addEventListener('click', async () => {
+    const p = window.rkInstallPrompt;
+    if (p) { p.prompt(); await p.userChoice; window.rkInstallPrompt = null; return; }
+    const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    help.textContent = ios
+      ? 'In Safari, tap the Share button, then "Add to Home Screen".'
+      : 'In Chrome or Edge, use the install icon in the address bar, or open the browser menu and choose "Install".';
+  });
+</script>
