@@ -193,6 +193,15 @@ export const tools: Tool[] = [
     ru: { label: 'Квиз на устный счёт', path: '/ru/math-quiz', cardTitle: 'Квиз: быстрый устный счёт',
       desc: 'Проверьте устный счёт и деловую смекалку за 60 секунд. Без калькулятора — для тренировки ума.',
       tags: ['Игра', 'Тренировка ума', 'Развлечение'], badge: '🎮 Новое' } },
+
+  // ── Last in the list ──
+  { slug: 'calculator-for-everyone', icon: '♿', section: 'fun', accent: 'blue',
+    en: { label: 'Calculator for Everyone', path: '/calculator-for-everyone', cardTitle: 'Calculator for Everyone',
+      desc: 'See a calculator through simplified low-vision and colour-blindness views, and try helpful settings for dyslexia, dyscalculia and dysgraphia.',
+      tags: ['Accessibility', 'Design', 'Learn'], badge: '♿ Access' },
+    ru: { label: 'Калькулятор для всех', path: '/ru/calculator-for-everyone', cardTitle: 'Калькулятор для всех',
+      desc: 'Посмотрите на калькулятор через упрощённые режимы слабого зрения и дальтонизма и попробуйте помощников для дислексии, дискалькулии и дисграфии.',
+      tags: ['Доступность', 'Дизайн', 'Узнать'], badge: '♿ Доступность' } },
 ];
 
 export function toolBySlug(slug: string): Tool | undefined {

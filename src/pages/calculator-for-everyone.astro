@@ -1,0 +1,47 @@
+---
+import ToolLayout from '../layouts/ToolLayout.astro';
+import A11yLab from '../components/A11yLab.astro';
+
+const faq = [
+  { q: 'Are these views accurate?',
+    a: 'No. They are simplified illustrations to start a conversation. Real experiences can be completely different and vary a lot from person to person. They are not medical simulations.' },
+  { q: 'Why do some conditions show a helper instead of a picture?',
+    a: 'Dyslexia, dyscalculia and dysgraphia cannot be shown with a filter, and imitations often mislead. It is more useful to show what can be hard and what can help.' },
+  { q: 'Is anything stored or sent?',
+    a: 'No. The views run in your browser. The calculator tape stays on your device.' },
+];
+
+const related = [
+  { label: 'Pebble Calculator', path: '/calculator' },
+  { label: 'Weekly Happiness Calculator', path: '/happiness-calculator' },
+];
+---
+<ToolLayout
+  slug="calculator-for-everyone"
+  lang="en"
+  title="Calculator for Everyone: How Different People May See It"
+  description="See a working calculator through simplified low-vision and colour-blindness views, and try helpful settings for dyslexia, dyscalculia and dysgraphia. An illustration, not a simulation."
+  pageTag="♿ Accessibility"
+  pageTagColor="var(--blue)"
+  h1="Calculator for Everyone"
+  pageSub="See one calculator through simplified low-vision and colour-blindness views, then try settings that can help with reading, numbers and writing."
+  dateModified="2026-10-27"
+  guideTitle="About this page"
+  faq={faq}
+  related={related}
+>
+  <A11yLab lang="en" />
+
+  <Fragment slot="guide">
+    <p>This page is a way to notice how much design choices matter. Small changes such as larger keys, clear digits, strong contrast and not relying on colour alone make everyday tools easier for many people, including people who never think of themselves as having a disability.</p>
+    <h3>Design tips that help many people</h3>
+    <ul>
+      <li>Do not rely on colour alone. Add a sign, label or shape.</li>
+      <li>Keep strong contrast between text and background.</li>
+      <li>Use large, well-spaced targets for taps and clicks.</li>
+      <li>Keep a visible history so nothing has to be remembered.</li>
+      <li>Show the place value of long numbers.</li>
+    </ul>
+    <p>The views here are illustrations. To build well for people with these conditions, ask people who live with them.</p>
+  </Fragment>
+</ToolLayout>

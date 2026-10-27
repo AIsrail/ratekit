@@ -1,8 +1,8 @@
 ---
 // Pebble Calculator: a plain calculator with a paper tape, soft keys and four themes.
 // Works offline once cached (see /sw.js). Shared by the EN and RU pages.
-interface Props { lang: 'en' | 'ru' }
-const { lang } = Astro.props;
+interface Props { lang: 'en' | 'ru'; /** embedded use: no install panel, no offline registration */ compact?: boolean }
+const { lang, compact = false } = Astro.props;
 
 const copy = {
   en: {
@@ -206,16 +206,18 @@ const jsData = {
   </div>
 </div>
 
-<p class="pc-note">{copy.keyboard}</p>
+{!compact && <p class="pc-note">{copy.keyboard}</p>}
 <div class="pc-status" id="pc-status" aria-live="polite"></div>
 
-<div class="panel">
-  <div class="panel-title">{copy.installTitle}</div>
-  <p class="pc-note" style="margin-bottom:14px;">{copy.installIntro}</p>
-  <button class="share-btn pdf-btn" id="pc-install-btn" type="button">{copy.installBtn}</button>
-  <p class="pc-note" id="pc-install-help" style="margin:12px 0 0;" aria-live="polite"></p>
-  <p class="pc-status" id="pc-offline" style="margin:12px 0 0;"></p>
-</div>
+{!compact && (
+  <div class="panel">
+    <div class="panel-title">{copy.installTitle}</div>
+    <p class="pc-note" style="margin-bottom:14px;">{copy.installIntro}</p>
+    <button class="share-btn pdf-btn" id="pc-install-btn" type="button">{copy.installBtn}</button>
+    <p class="pc-note" id="pc-install-help" style="margin:12px 0 0;" aria-live="polite"></p>
+    <p class="pc-status" id="pc-offline" style="margin:12px 0 0;"></p>
+  </div>
+)}
 
 <script type="application/json" id="pc-data" set:html={JSON.stringify(jsData)} />
 
@@ -466,6 +468,7 @@ const jsData = {
 
   // ── Install as an app ──
   const installBtn = $('pc-install-btn');
+  if (installBtn) {
   const installHelp = $('pc-install-help');
   let deferredPrompt = null;
   const installed = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
@@ -478,8 +481,10 @@ const jsData = {
     installHelp.textContent = ios ? data.iosHelp : data.desktopHelp;
   });
 
+  }
+
   // ── Offline: register the service worker, then ask it to keep this page's files ──
-  if ('serviceWorker' in navigator) {
+  if ($('pc-offline') && 'serviceWorker' in navigator) {
     $('pc-offline').textContent = data.offlineChecking;
     navigator.serviceWorker.addEventListener('message', (e) => {
       if (e.data && e.data.type === 'cached') $('pc-offline').textContent = data.offlineReady;
