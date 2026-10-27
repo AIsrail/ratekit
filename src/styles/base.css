@@ -33,7 +33,7 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
-body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased;}
+body{font-family:var(--font);background:radial-gradient(1100px 560px at 88% -8%,rgba(123,92,250,.11),transparent 62%),radial-gradient(900px 520px at -6% -4%,rgba(55,86,249,.10),transparent 58%),var(--bg);background-attachment:fixed;color:var(--ink);line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
 a{text-decoration:none;color:inherit;}
 :focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:4px;}
 ::selection{background:var(--bluebg);color:var(--blue2);}
@@ -77,6 +77,19 @@ footer{background:var(--ink);padding:32px 48px;display:flex;justify-content:spac
 .flinks{display:flex;gap:16px;list-style:none;flex-wrap:wrap;}
 .flinks a{font-size:12px;color:rgba(255,255,255,.45);transition:color .18s var(--ease);}
 .flinks a:hover{color:white;}
+
+/* ── Premium pass: hairline gradients, refined surfaces, tighter display type ── */
+nav::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:1px;background:linear-gradient(90deg,transparent,rgba(55,86,249,.45),rgba(123,92,250,.45),transparent);pointer-events:none;}
+nav{position:sticky;}
+footer{position:relative;background:linear-gradient(180deg,#14162A 0%,var(--ink) 100%);}
+footer::before{content:'';position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,transparent,rgba(123,140,255,.6),rgba(157,124,255,.6),transparent);}
+h1,h2{font-feature-settings:'ss01','cv11';}
+h1{letter-spacing:-.03em;}
+.panel,.bench-panel,.chart-panel,.table-panel,.runway-panel,.breakdown-panel,.eligibility-panel,.amort-panel,.ratio-panel,.compare-panel,.verdict-panel,.recipe-card{box-shadow:0 1px 0 rgba(255,255,255,.8) inset,0 1px 2px rgba(11,12,20,.04),0 8px 24px rgba(11,12,20,.05);}
+.r-card{background-image:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,0));}
+.r-card.primary{background-image:linear-gradient(135deg,var(--blue),var(--violet));}
+.page-tag{box-shadow:inset 0 0 0 1px rgba(123,92,250,.12);}
+.rk-related a:hover,.share-btn:hover{box-shadow:0 6px 16px rgba(55,86,249,.12);}
 
 @media(max-width:768px){
   nav{padding:0 20px;}
