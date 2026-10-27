@@ -3,7 +3,7 @@
 // this is what let budget-calculator ship without appearing in menus or the grid
 // (see REBUILD_PLAN.md, audit 2026-10-13).
 
-export type Section = 'freelancers' | 'business' | 'startups' | 'fun';
+export type Section = 'featured' | 'freelancers' | 'business' | 'startups' | 'fun';
 export type Accent = 'blue' | 'violet' | 'green' | 'amber' | 'red';
 
 interface LangEntry {
@@ -30,6 +30,7 @@ export interface Tool {
 }
 
 export const sectionLabel: Record<Section, { en: string; ru: string }> = {
+  featured: { en: 'New', ru: 'Новое' },
   freelancers: { en: 'Freelancers', ru: 'Фрилансерам' },
   business: { en: 'Business & Startups', ru: 'Бизнес и стартапы' },
   startups: { en: 'Startups', ru: 'Стартапы' },
@@ -37,6 +38,15 @@ export const sectionLabel: Record<Section, { en: string; ru: string }> = {
 };
 
 export const tools: Tool[] = [
+  // ── Featured (first in the menu and on the homepage grid) ──
+  { slug: 'happiness-calculator', icon: '😊', section: 'featured', accent: 'green',
+    en: { label: 'Weekly Happiness', path: '/happiness-calculator', cardTitle: 'Weekly Happiness Calculator',
+      desc: 'A gentle weekly check-in: tick what supported you last week and what you plan for this one. Two smiley scales, no scores, nothing saved.',
+      tags: ['Well-being', 'Weekly', 'Fun'], badge: '🆕 New' },
+    ru: { label: 'Счастье на неделю', path: '/ru/happiness-calculator', cardTitle: 'Калькулятор счастья на неделю',
+      desc: 'Мягкая недельная сверка: отметьте, что поддерживало вас на прошлой неделе и что планируете на этой. Две шкалы смайликов, без баллов и сохранения.',
+      tags: ['Благополучие', 'Неделя', 'Для души'], badge: '🆕 Новое' } },
+
   // ── Freelancers ──
   { slug: 'freelance-rate', icon: '💰', section: 'freelancers', accent: 'blue',
     en: { label: 'Freelance Rate', path: '/freelance-rate', cardTitle: 'Freelance Rate Calculator',
@@ -143,14 +153,6 @@ export const tools: Tool[] = [
     en: { label: 'Future Cocktail', path: '/future-cocktail', cardTitle: 'Future Cocktail: Mix Your Money Recipe',
       desc: 'Pick ingredients for your future: growth over 20 years, time to your first million, and what a small habit can give. Mix them into a recipe.',
       tags: ['Fun', 'Savings', 'Motivation'], badge: '🎉 New' } },
-
-  { slug: 'happiness-calculator', icon: '😊', section: 'fun', accent: 'green',
-    en: { label: 'Weekly Happiness', path: '/happiness-calculator', cardTitle: 'Weekly Happiness Calculator',
-      desc: 'A gentle weekly check-in: tick what supported you last week and what you plan for this one. Two smiley scales, no scores, nothing saved.',
-      tags: ['Well-being', 'Weekly', 'Fun'], badge: '🆕 New' },
-    ru: { label: 'Счастье на неделю', path: '/ru/happiness-calculator', cardTitle: 'Калькулятор счастья на неделю',
-      desc: 'Мягкая недельная сверка: отметьте, что поддерживало вас на прошлой неделе и что планируете на этой. Две шкалы смайликов, без баллов и сохранения.',
-      tags: ['Благополучие', 'Неделя', 'Для души'], badge: '🆕 Новое' } },
 
   // ── Startups ──
   { slug: 'safe-calculator', icon: '🚀', section: 'startups', accent: 'green',

@@ -11,7 +11,7 @@ interface Props {
 
 const { lang, activeSlug, altLangPath } = Astro.props;
 
-const sections: Section[] = ['freelancers', 'business', 'startups', 'fun'];
+const sections: Section[] = ['featured', 'freelancers', 'business', 'startups', 'fun'];
 
 function visibleItems(section: Section) {
   return tools.filter((t) => {

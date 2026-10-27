@@ -213,6 +213,23 @@ const jsData = {
   .hp-small { font-size: 12.5px; color: var(--muted); line-height: 1.6; }
   .hp-small a { color: var(--blue); }
   .hp-small strong { color: var(--mid); font-weight: 600; }
+
+  /* Readability: larger type, darker greys, clearly visible empty cells. */
+  html:root { --muted: #566073; }
+  html .page-sub { font-size: 17px; color: var(--mid); }
+  html .panel-title { font-size: 13px; color: var(--mid); }
+  html .r-label { font-size: 12px; color: var(--mid); }
+  html .r-card.highlight .r-label { color: var(--green); }
+  html .r-sub { font-size: 13.5px; color: var(--mid); }
+  html .hp-text { font-size: 16px; }
+  html .hp-small { font-size: 14.5px; color: var(--mid); }
+  html .hp-head { font-size: 12px; color: var(--mid); }
+  html .hp-row { grid-template-columns: 1fr 100px 100px; }
+  html .hp-chk { width: 36px; height: 36px; border: 2.5px solid #7C8799; background: #EEF1F6; box-shadow: 0 1px 2px rgba(11, 12, 20, .1); }
+  html .hp-cell { border: 1.5px solid #7C8799; background: #EEF1F6; color: var(--mid); font-size: 12px; }
+  html .hp-llabel { font-size: 12.5px; }
+  html .hp-lrec { font-size: 16.5px; }
+  @media (max-width: 600px) { html .hp-row { grid-template-columns: 1fr 66px 66px; } html .hp-chk { width: 34px; height: 34px; } html .hp-cell { font-size: 11px; } }
   .hp-results .r-card { min-width: 0; }
   @media (max-width: 600px) { .hp-results { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; } .hp-results .r-card { padding: 14px; } .hp-strip { gap: 2px; font-size: 14px; } .hp-strip span.on { transform: scale(1.2); } }
   @media (max-width: 600px) { .hp-row { grid-template-columns: 1fr 58px 58px; } .r-card .r-value.hp-face { font-size: 2.8rem; } }
